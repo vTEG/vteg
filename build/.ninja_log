@@ -1,9 +1,8 @@
 # ninja log v5
-1	220	0	CMakeFiles/VTEg_autogen	9e30f351c0e21c62
-1	220	0	VTEg_autogen/mocs_compilation.cpp	9e30f351c0e21c62
+4	39	0	CMakeFiles/VTEg_autogen	ade81e5a3c4c92e3
+4	39	0	VTEg_autogen/mocs_compilation.cpp	ade81e5a3c4c92e3
 221	423	6453708915596225	CMakeFiles/VTEg.dir/VTEg_autogen/mocs_compilation.cpp.obj	470df616b23e4094
 240	429	6453708915666046	CMakeFiles/VTEg.dir/mainwindow.cpp.obj	27ee9622becd59e9
 1344	1490	6453708926237961	VTEg.exe	555500048fcd70ac
 236	1340	6453708924752005	CMakeFiles/VTEg.dir/main.cpp.obj	31cb1d738b8065c1
-6	274	0	CMakeFiles/VTEg_autogen	ade81e5a3c4c92e3
-6	274	0	VTEg_autogen/mocs_compilation.cpp	ade81e5a3c4c92e3
+1	402	6453719387997098	build.ninja	6fb9acab144fb6fd
