@@ -19,7 +19,7 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::on_actionOpen_triggered() {
-    QString filename = QFileDialog::getOpenFileName(this, "Open a File", "Video File (*.mp4, *.mpg)");
+    QString filename = QFileDialog::getOpenFileName(this, "Open a File", "*.*");
     on_actionStop_triggered();
 
     player->setMedia(QUrl::fromLocalFile(filename));
