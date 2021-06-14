@@ -19,8 +19,9 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Gui Multimedia MultimediaW
 
 set(PROJECT_SOURCES
         main.cpp
-        ${TS_FILES}
-        mainwindow.cpp mainwindow.h)
+        mainwindow.cpp
+        mainwindow.h
+        mainwindow.ui)
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(VTEg
@@ -39,8 +40,6 @@ else()
             ${PROJECT_SOURCES}
         )
     endif()
-
-    qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
 endif()
 
 target_link_libraries(VTEg PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Gui Qt${QT_VERSION_MAJOR}::Multimedia Qt${QT_VERSION_MAJOR}::MultimediaWidgets)
