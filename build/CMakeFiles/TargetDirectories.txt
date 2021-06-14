@@ -1,0 +1,4 @@
+D:/Nextcloud/BNDSummerOfCode/build/CMakeFiles/VTEg.dir
+D:/Nextcloud/BNDSummerOfCode/build/CMakeFiles/edit_cache.dir
+D:/Nextcloud/BNDSummerOfCode/build/CMakeFiles/rebuild_cache.dir
+D:/Nextcloud/BNDSummerOfCode/build/CMakeFiles/VTEg_autogen.dir

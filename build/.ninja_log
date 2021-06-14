@@ -1,0 +1,9 @@
+# ninja log v5
+1	220	0	CMakeFiles/VTEg_autogen	aa01ed97e7b2cb0e
+1	220	0	VTEg_autogen/mocs_compilation.cpp	aa01ed97e7b2cb0e
+236	411	6453705547688340	CMakeFiles/VTEg.dir/VTEg_autogen/mocs_compilation.cpp.obj	c0d03f4639715519
+239	413	6453705547698306	CMakeFiles/VTEg.dir/mainwindow.cpp.obj	cd07b6549508fe2f
+220	1321	6453705556764088	CMakeFiles/VTEg.dir/main.cpp.obj	9ba63279ecb519e3
+1323	1469	6453705558220189	VTEg.exe	555500048fcd70ac
+9	159	0	CMakeFiles/VTEg_autogen	aa01ed97e7b2cb0e
+9	159	0	VTEg_autogen/mocs_compilation.cpp	aa01ed97e7b2cb0e
