@@ -10,8 +10,11 @@
 #include <QMediaPlayer>
 #include <QVideoWidget>
 #include <QFileDialog>
-#include <QProgressBar>
+#include <QLabel>
 #include <QSlider>
+#include <QListWidget>
+#include <QHBoxLayout>
+#include <QPushButton>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -21,8 +24,9 @@ class MainWindow : public QMainWindow {
         Q_OBJECT
 
 public:
-        explicit MainWindow(QWidget *parent = 0);
-        ~MainWindow() override;
+    explicit MainWindow(QWidget *parent = 0);
+    ~MainWindow() override;
+    QListWidget *listView;
 
 private slots:
     void on_actionOpen_triggered();
@@ -34,8 +38,18 @@ private:
     Ui::MainWindow *ui;
     QMediaPlayer *player;
     QVideoWidget *vw{};
-    QProgressBar *bar{};
-    QSlider *slider{};
+    QWidget *mainWidget, *tagWidget, *tagButtonWidget;
+    QSlider *slider{}, *volume;
+    QLabel *timeLabel;
+    QPushButton *addTag, *removeTag, *jumpToTag;
+    QList<int> *timestamps;
+
+    int currentTime = 0;
+
+    void addTagToList() const;
+    void removeTagFromList() const;
+    void jumpToSelectedTag() const;
+    void changeLabelTime(qint64);
 };
 
 #endif //MAINWINDOW_H
