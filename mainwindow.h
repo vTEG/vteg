@@ -19,6 +19,7 @@
 // Includes for time. (Detection of single- vs double-click on ListItems)
 #include <ctime>
 #include <chrono>
+#include "VideoTag.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -42,9 +43,13 @@ private slots:
     void onTagEntryClicked(QListWidgetItem *item);
     void onTagEntryDoubleClicked(QListWidgetItem *item);
 
+protected:
+    bool eventFilter(QObject* object, QEvent* event);
+
 private:
     Ui::MainWindow *ui;
     QMediaPlayer *player;
+    QMediaPlayer::State playerState;
     QVideoWidget *vw{};
     QWidget *mainWidget, *tagWidget, *tagButtonWidget;
     QSlider *slider{}, *volume;
@@ -52,6 +57,7 @@ private:
     QPushButton *addTag, *removeTag, *jumpToTag;
     QList<int> *timestamps;
     QListWidgetItem* tagListClickedItem;
+    std::list<VideoTag*> tagList;
 
     int currentTime = 0;
     bool mDoubleClicked;

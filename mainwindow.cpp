@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 #include <QTimer>
+#include <QKeyEvent>
 
 MainWindow::MainWindow(QWidget *parent)
         : QMainWindow(parent)
@@ -16,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
      * Creating objects
      */
     player = new QMediaPlayer(this);
+    playerState = QMediaPlayer::StoppedState;
     vw = new QVideoWidget(this);
     slider = new QSlider(this);
     volume = new QSlider(this);
@@ -94,10 +96,15 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(player, &QMediaPlayer::positionChanged, this, &MainWindow::changeLabelTime);
 
-    // Single & Double click events
+    /*
+     * Register Events
+     */
     connect(listView, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(onTagEntryClicked(QListWidgetItem * )));
     connect(listView, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(
             onTagEntryDoubleClicked(QListWidgetItem * )));
+
+
+    this->installEventFilter(this);
 }
 
 MainWindow::~MainWindow()
@@ -116,15 +123,17 @@ void MainWindow::on_actionOpen_triggered() {
 }
 void MainWindow::on_actionPlay_triggered() {
     player->play();
-
+    playerState = QMediaPlayer::PlayingState;
     ui->statusbar->showMessage("Playing");
 }
 void MainWindow::on_actionPause_triggered() {
     player->pause();
+    playerState = QMediaPlayer::PausedState;
     ui->statusbar->showMessage("Paused");
 }
 void MainWindow::on_actionStop_triggered() {
     player->stop();
+    playerState = QMediaPlayer::StoppedState;
     ui->statusbar->showMessage("Stopped");
     timeLabel->clear();
 }
@@ -140,6 +149,11 @@ void MainWindow::addTagToList() const {
     secs = secs%60;
     listView->insertItem(timestamps->indexOf(currentTime), QString::asprintf("%02d:%02d", mins, secs));
     qDebug() << "Appended Element to list";
+
+    auto *tag = new VideoTag();
+    tag->setTitle(QString::asprintf("%02d:%02d", mins, secs));
+
+
 }
 
 void MainWindow::removeTagFromList() const {
@@ -199,6 +213,7 @@ void MainWindow::onTagEntryDoubleClicked(QListWidgetItem *item) {
     mDoubleClicked = true;
 
     qDebug() << "Double click." << item->text();
+    jumpToSelectedTag();
 }
 
 /**
@@ -212,5 +227,45 @@ void MainWindow::tagEntryClickTimeout() {
     }
 }
 
+
+bool MainWindow::eventFilter(QObject *object, QEvent *event) {
+    if (event->type() == QEvent::KeyPress){
+        auto *keyEvent = dynamic_cast<QKeyEvent*>(event);
+
+        switch (keyEvent->key()){
+            case Qt::Key_Space:
+                qDebug("Space (Play/Pause Toggle)");
+                switch (playerState){
+                    case QMediaPlayer::StoppedState:
+                        qDebug() << "Can't toggle play/pause on stopped video.";
+                    case QMediaPlayer::PlayingState:
+                        on_actionPause_triggered();
+                        break;
+                    case QMediaPlayer::PausedState:
+                        on_actionPlay_triggered();
+                        break;
+                }
+                break;
+            case Qt::Key_S:
+                if (keyEvent->modifiers().testFlag(Qt::ControlModifier) && keyEvent->modifiers().testFlag(Qt::AltModifier)) {
+                    qDebug("Ctrl+Alt+S");
+                } else if (keyEvent->modifiers().testFlag(Qt::AltModifier)) {
+                    qDebug("Alt+S");
+                } else if (keyEvent->modifiers().testFlag(Qt::ControlModifier)) {
+                    qDebug("Ctrl+S");
+                } else {
+                    qDebug("'S'");
+                }
+                break;
+            default:
+                /* Ignored */;
+        }
+
+        //qDebug() << "Ate key press: " << keyEvent->key();
+        return true;
+    } else {
+        return QMainWindow::eventFilter(object, event);
+    }
+}
 
 
