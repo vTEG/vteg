@@ -2,6 +2,9 @@
 #include "./ui_mainwindow.h"
 #include <QTimer>
 #include <QKeyEvent>
+#include <QVideoProbe>
+
+// ToDo: https://stackoverflow.com/questions/30800772/how-to-grab-video-frames-in-qt
 
 MainWindow::MainWindow(QWidget *parent)
         : QMainWindow(parent)
@@ -18,6 +21,7 @@ MainWindow::MainWindow(QWidget *parent)
      */
     player = new QMediaPlayer(this);
     playerState = QMediaPlayer::StoppedState;
+    videoProbe = new QVideoProbe(this);
     vw = new QVideoWidget(this);
     slider = new QSlider(this);
     volume = new QSlider(this);
@@ -104,7 +108,26 @@ MainWindow::MainWindow(QWidget *parent)
             onTagEntryDoubleClicked(QListWidgetItem * )));
 
 
+    if (videoProbe->setSource(player)){
+        qDebug() << "Connected QVideoProbe to 'player' instance.";
+        connect(videoProbe, SIGNAL(videoFrameProbed(QVideoFrame)),
+                this, SLOT(processFrame(QVideoFrame)));
+
+    } else {
+        qDebug() << "WARNING: COULD NOT CONNECT QVideoProbe";
+    }
+
+    connect(videoProbe, SIGNAL(videoFrameProbed(QVideoFrame)), this, SLOT(processFrame(QVideoFrame)));
+
+
+    // Enable mouse tracking for the listview
+    listView->setMouseTracking(true);
+
+    // Register EventFilter for all major objects on GUI.
     this->installEventFilter(this);
+    listView->installEventFilter(this);
+    player->installEventFilter(this);
+
 }
 
 MainWindow::~MainWindow()
@@ -149,6 +172,8 @@ void MainWindow::addTagToList() const {
     secs = secs%60;
     listView->insertItem(timestamps->indexOf(currentTime), QString::asprintf("%02d:%02d", mins, secs));
     qDebug() << "Appended Element to list";
+
+    listView->item(timestamps->indexOf(currentTime))->setToolTip("Something hidden.");
 
     auto *tag = new VideoTag();
     tag->setTitle(QString::asprintf("%02d:%02d", mins, secs));
@@ -256,15 +281,51 @@ bool MainWindow::eventFilter(QObject *object, QEvent *event) {
                     qDebug("'S'");
                 }
                 break;
+            case Qt::Key_Enter:
+                saveNextFrame = true;
+                qDebug() << "Saving next frame..";
+                // ToDo:
+
+                break;
             default:
                 /* Ignored */;
         }
 
         //qDebug() << "Ate key press: " << keyEvent->key();
         return true;
-    } else {
-        return QMainWindow::eventFilter(object, event);
     }
+
+    if (event->type() == QEvent::MouseMove){
+        auto *m = dynamic_cast<QMouseEvent*>(event);
+
+        QPoint p = this->mapFromGlobal(QCursor::pos());
+        qDebug() << QString::asprintf("Global-X: %d, Global-Y: %d", p.x(), p.y());
+        qDebug() << QString::asprintf("X: %d, Y: %d", m->pos().x(), m->pos().y());
+        return true;
+    }
+
+    return QMainWindow::eventFilter(object, event);
 }
 
+void MainWindow::processFrame(const QVideoFrame& frame) {
+    qDebug() << "Processing..";
+    if (saveNextFrame){
+        QImage image(
+                frame.bits(),
+                frame.width(),
+                frame.height(),
+                frame.bytesPerLine(),
+                QImage::Format_RGB888
+        );
+
+        if (image.save("something.png")){
+            qDebug("Saved file.");
+        } else {
+            qDebug("Something went wrong.");
+        }
+        saveNextFrame = false;
+    } else {
+        qDebug() << "Nothing to do.";
+    }
+}
 
