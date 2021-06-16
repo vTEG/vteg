@@ -234,7 +234,6 @@ bool MainWindow::eventFilter(QObject *object, QEvent *event) {
 
         switch (keyEvent->key()){
             case Qt::Key_Space:
-                qDebug("Space (Play/Pause Toggle)");
                 switch (playerState){
                     case QMediaPlayer::StoppedState:
                         qDebug() << "Can't toggle play/pause on stopped video.";
