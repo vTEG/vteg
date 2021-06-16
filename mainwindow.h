@@ -16,6 +16,10 @@
 #include <QHBoxLayout>
 #include <QPushButton>
 
+// Includes for time. (Detection of single- vs double-click on ListItems)
+#include <ctime>
+#include <chrono>
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -34,6 +38,10 @@ private slots:
     void on_actionPause_triggered();
     void on_actionStop_triggered();
 
+    void tagEntryClickTimeout();
+    void onTagEntryClicked(QListWidgetItem *item);
+    void onTagEntryDoubleClicked(QListWidgetItem *item);
+
 private:
     Ui::MainWindow *ui;
     QMediaPlayer *player;
@@ -43,8 +51,10 @@ private:
     QLabel *timeLabel;
     QPushButton *addTag, *removeTag, *jumpToTag;
     QList<int> *timestamps;
+    QListWidgetItem* tagListClickedItem;
 
     int currentTime = 0;
+    bool mDoubleClicked;
 
     void addTagToList() const;
     void removeTagFromList() const;

@@ -1,11 +1,11 @@
 cmake_minimum_required(VERSION 3.19)
-
+set(CMAKE_TRY_COMPILE_TARGET_TYPE "STATIC_LIBRARY")
 project(VTEg VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 #Change this path to your local QT cmake path
-set(CMAKE_PREFIX_PATH "C:/Qt/5.12.11/mingw73_64/lib/cmake")
+#set(CMAKE_PREFIX_PATH "C:/Qt/5.12.11/mingw73_64/lib/cmake")
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
@@ -14,7 +14,9 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets Gui Multimedia MultimediaWidgets LinguistTools REQUIRED)
+set(CMAKE_PREFIX_PATH "C:\\Qt\\5.12.11\\mingw73_64\\lib\\cmake")
+
+find_package(QT NAMES Qt5 COMPONENTS Widgets Gui Multimedia MultimediaWidgets LinguistTools REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Gui Multimedia MultimediaWidgets LinguistTools REQUIRED)
 
 set(PROJECT_SOURCES

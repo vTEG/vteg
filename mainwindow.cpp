@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
+#include <QTimer>
 
 MainWindow::MainWindow(QWidget *parent)
         : QMainWindow(parent)
@@ -92,6 +93,11 @@ MainWindow::MainWindow(QWidget *parent)
     connect(jumpToTag, &QPushButton::clicked, this, &MainWindow::jumpToSelectedTag);
 
     connect(player, &QMediaPlayer::positionChanged, this, &MainWindow::changeLabelTime);
+
+    // Single & Double click events
+    connect(listView, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(onTagEntryClicked(QListWidgetItem * )));
+    connect(listView, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(
+            onTagEntryDoubleClicked(QListWidgetItem * )));
 }
 
 MainWindow::~MainWindow()
@@ -100,6 +106,7 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::on_actionOpen_triggered() {
+    qDebug() << "Opening file..";
     QString filename = QFileDialog::getOpenFileName(this, "Open a File", "*.*");
     on_actionStop_triggered();
 
@@ -171,3 +178,39 @@ void MainWindow::changeLabelTime(qint64 i) {
 
     timeLabel->setText(QString::asprintf("%02d:%02d", mins, secs));
 }
+
+/**
+ * Event being called once the user clicks (1) on a timestamp in the listview.
+ * Note: actual implementation in MainWindow::tagEntryClickTimeout()
+ * @param item: The selected entry
+ */
+void MainWindow::onTagEntryClicked(QListWidgetItem *item) {
+    if (!mDoubleClicked){
+        QTimer::singleShot(300, this, SLOT(tagEntryClickTimeout()));
+        tagListClickedItem = item;
+    }
+}
+
+/**
+ * Event being called once the user double clicks on a timestamp in the listview
+ * @param item: The selected entry
+ */
+void MainWindow::onTagEntryDoubleClicked(QListWidgetItem *item) {
+    mDoubleClicked = true;
+
+    qDebug() << "Double click." << item->text();
+}
+
+/**
+ * Helper function to prevent MainWindow::onTagEntryClicked from being called twice on a double click.
+ */
+void MainWindow::tagEntryClickTimeout() {
+    if (!mDoubleClicked){
+        qDebug() << "Single Click." << tagListClickedItem->text();
+    } else {
+        mDoubleClicked = false;
+    }
+}
+
+
+
