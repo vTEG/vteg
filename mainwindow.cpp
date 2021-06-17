@@ -219,8 +219,8 @@ void MainWindow::jumpToSelectedTag() const {
     auto rml = listView->selectionModel()->selectedIndexes();
     if(rml.isEmpty()) return;
     player->setPosition(timestamps->value(rml.first().row()));
-
-    int secs = currentTime/1000;
+    int cur = static_cast<int>(timestamps->value(rml.first().row()));
+    int secs = cur/1000;
     int mins = secs/60;
     secs = secs%60;
 
