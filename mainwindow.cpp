@@ -346,6 +346,7 @@ void MainWindow::setPosition(int position)
 
 
 bool MainWindow::eventFilter(QObject *object, QEvent *event) {
+    QImage frame;
     if (event->type() == QEvent::KeyPress){
         auto *keyEvent = dynamic_cast<QKeyEvent*>(event);
 
@@ -373,8 +374,24 @@ bool MainWindow::eventFilter(QObject *object, QEvent *event) {
                     qDebug("'S'");
                 }
                 break;
+
+            case Qt::Key_L:
+                frame = vw->getSurface()->getLastFrame();
+                if (frame.isNull()){
+                    qDebug() << "Unable to load last frame.";
+                } else {
+                    if (frame.save("screenshot.png", 0, -1)){
+                        qDebug() << "Saved!";
+                    } else {
+                        qDebug() << "Error while saving img.";
+                    }
+                }
+                break;
             default:
-                /* Ignored */;
+                /*
+                 * ignored
+                 */
+                break;
         }
 
         //qDebug() << "Ate key press: " << keyEvent->key();

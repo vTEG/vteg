@@ -131,10 +131,17 @@ void VideoWidgetSurface::paint(QPainter *painter)
                 currentFrame.bytesPerLine(),
                 imageFormat);
 
+        lastSavedImage = image;
+
+
         painter->drawImage(targetRect, image, sourceRect);
 
         painter->setTransform(oldTransform);
 
         currentFrame.unmap();
     }
+}
+
+QImage VideoWidgetSurface::getLastFrame() {
+    return lastSavedImage;
 }

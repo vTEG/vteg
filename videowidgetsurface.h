@@ -32,6 +32,7 @@ public:
     void updateVideoRect();
 
     void paint(QPainter *painter);
+    QImage getLastFrame();
 
 private:
     QWidget *widget;
@@ -39,6 +40,8 @@ private:
     QRect targetRect;
     QRect sourceRect;
     QVideoFrame currentFrame;
+
+    QImage lastSavedImage;
 };
 
 #endif //VTEG_VIDEOWIDGETSURFACE_H
