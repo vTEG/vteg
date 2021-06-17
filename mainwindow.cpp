@@ -1,8 +1,10 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
+
 #include <QTimer>
 #include <QKeyEvent>
 #include <QVideoProbe>
+
 
 // ToDo: https://stackoverflow.com/questions/30800772/how-to-grab-video-frames-in-qt
 
@@ -20,7 +22,6 @@ MainWindow::MainWindow(QWidget *parent)
     /*
      * Creating objects
      */
-    player = new QMediaPlayer(this);
     playerState = QMediaPlayer::StoppedState;
     videoProbe = new QVideoProbe(this);
     vw = new VideoWidget;
@@ -37,6 +38,9 @@ MainWindow::MainWindow(QWidget *parent)
     jumpToTag = new QPushButton("->", tagButtonWidget);
     listView = new QListWidget(this);
     timestamps = new QList<int>;
+
+
+
 
     /*
      * Size of the media player Window and output setting

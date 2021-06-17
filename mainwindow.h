@@ -20,7 +20,10 @@
 #include <ctime>
 #include <chrono>
 #include <QVideoProbe>
+
 #include "VideoTag.h"
+#include "videowidget.h"
+#include "videowidgetsurface.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -44,7 +47,9 @@ private slots:
     void onTagEntryClicked(QListWidgetItem *item);
     void onTagEntryDoubleClicked(QListWidgetItem *item);
 
-    void processFrame(const QVideoFrame& frame);
+    void positionChanged(quint64);
+    void durationChanged(quint64);
+    void setPosition(int);
 
 protected:
     bool eventFilter(QObject* object, QEvent* event) override;
@@ -61,8 +66,9 @@ private:
     QLabel *timeLabel;
     QPushButton *addTag, *removeTag, *jumpToTag;
     QList<int> *timestamps;
-    QListWidgetItem* tagListClickedItem;
-    std::list<VideoTag*> tagList;
+    QListWidgetItem* tagListClickedItem{};
+
+
 
     int currentTime = 0;
     bool mDoubleClicked{};
