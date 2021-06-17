@@ -70,3 +70,9 @@ void VideoWidget::resizeEvent(QResizeEvent *event)
 
     surface->updateVideoRect();
 }
+//! [4]
+
+VideoWidgetSurface* VideoWidget::getSurface()
+{
+    return surface;
+}

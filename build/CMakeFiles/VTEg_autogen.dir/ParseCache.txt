@@ -3,10 +3,10 @@ D:/Nextcloud/BNDSummerOfCode/QtVideoExample/VideoTag.h
 D:/Nextcloud/BNDSummerOfCode/QtVideoExample/mainwindow.h
  mmc:Q_OBJECT
 D:/Nextcloud/BNDSummerOfCode/QtVideoExample/VideoTag.cpp
+D:/Nextcloud/BNDSummerOfCode/QtVideoExample/MyVideoSurface.h
 D:/Nextcloud/BNDSummerOfCode/QtVideoExample/mainwindow.cpp
  uic:./ui_mainwindow.h
 D:/Nextcloud/BNDSummerOfCode/QtVideoExample/main.cpp
-D:/Nextcloud/BNDSummerOfCode/QtVideoExample/MyVideoSurface.h
 D:/Nextcloud/BNDSummerOfCode/QtVideoExample/videowidget.h
  mmc:Q_OBJECT
 D:/Nextcloud/BNDSummerOfCode/QtVideoExample/videowidget.cpp

@@ -7,6 +7,7 @@
 
 
 #include <QString>
+#include <QImage>
 
 class VideoTag {
 
@@ -14,6 +15,7 @@ private:
     // Displayable information
     QString title;
     QString description;
+    QImage image;
 
     // Coloring and icon
     QString iconPath;
@@ -33,31 +35,35 @@ public:
 
     const QString &getTitle() const;
 
-    void setTitle(const QString &title);
+    void setTitle(const QString&);
 
     const QString &getDescription() const;
 
     void setDescription(const QString &description);
 
+    const QImage &getImage() const;
+
+    void setImage(const QImage&);
+
     const QString &getIconPath() const;
 
-    void setIconPath(const QString &iconPath);
+    void setIconPath(const QString&);
 
     const QString &getColorCode() const;
 
-    void setColorCode(const QString &colorCode);
+    void setColorCode(const QString&);
 
     const QString &getColorCodeBackground() const;
 
-    void setColorCodeBackground(const QString &colorCodeBackground);
+    void setColorCodeBackground(const QString&);
 
     qint64 getTimestamp() const;
 
-    void setTimestamp(qint64 timestamp);
+    void setTimestamp(qint64);
 
     bool isAutoStopOnJump() const;
 
-    void setAutoStopOnJump(bool autoStopOnJump);
+    void setAutoStopOnJump(bool);
 };
 
 

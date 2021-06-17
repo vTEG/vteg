@@ -23,6 +23,8 @@ public:
 
     QSize sizeHint() const override;
 
+    VideoWidgetSurface* getSurface();
+
 protected:
     void paintEvent(QPaintEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;

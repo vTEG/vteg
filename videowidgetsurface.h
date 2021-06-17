@@ -17,6 +17,8 @@ Q_OBJECT
 public:
     explicit VideoWidgetSurface(QWidget *widget, QObject *parent = nullptr);
 
+    ~VideoWidgetSurface() override;
+
     QList<QVideoFrame::PixelFormat> supportedPixelFormats(
             QAbstractVideoBuffer::HandleType handleType = QAbstractVideoBuffer::NoHandle) const override;
     bool isFormatSupported(const QVideoSurfaceFormat &format) const override;
@@ -35,7 +37,6 @@ private:
     QWidget *widget;
     QImage::Format imageFormat;
     QRect targetRect;
-    QSize imageSize;
     QRect sourceRect;
     QVideoFrame currentFrame;
 };

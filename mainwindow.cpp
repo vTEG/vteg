@@ -40,8 +40,6 @@ MainWindow::MainWindow(QWidget *parent)
     timestamps = new QList<int>;
 
 
-
-
     /*
      * Size of the media player Window and output setting
      */
@@ -140,6 +138,7 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete player;
 }
 
 /**
