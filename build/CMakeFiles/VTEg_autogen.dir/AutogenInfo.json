@@ -94,6 +94,16 @@
 			"D:/Nextcloud/BNDSummerOfCode/QtVideoExample/mainwindow.h",
 			"MU",
 			"EWIEGA46WW/moc_mainwindow.cpp"
+		],
+		[
+			"D:/Nextcloud/BNDSummerOfCode/QtVideoExample/videowidget.h",
+			"MU",
+			"EWIEGA46WW/moc_videowidget.cpp"
+		],
+		[
+			"D:/Nextcloud/BNDSummerOfCode/QtVideoExample/videowidgetsurface.h",
+			"MU",
+			"EWIEGA46WW/moc_videowidgetsurface.cpp"
 		]
 	],
 	"HEADER_EXTENSIONS" : [ "h", "hh", "h++", "hm", "hpp", "hxx", "in", "txx" ],
@@ -161,7 +171,12 @@
 	[
 		[ "D:/Nextcloud/BNDSummerOfCode/QtVideoExample/VideoTag.cpp", "MU" ],
 		[ "D:/Nextcloud/BNDSummerOfCode/QtVideoExample/main.cpp", "MU" ],
-		[ "D:/Nextcloud/BNDSummerOfCode/QtVideoExample/mainwindow.cpp", "MU" ]
+		[ "D:/Nextcloud/BNDSummerOfCode/QtVideoExample/mainwindow.cpp", "MU" ],
+		[ "D:/Nextcloud/BNDSummerOfCode/QtVideoExample/videowidget.cpp", "MU" ],
+		[
+			"D:/Nextcloud/BNDSummerOfCode/QtVideoExample/videowidgetsurface.cpp",
+			"MU"
+		]
 	],
 	"UIC_OPTIONS" : [],
 	"UIC_SEARCH_PATHS" : [],

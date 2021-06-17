@@ -75,6 +75,22 @@ build CMakeFiles/VTEg.dir/VideoTag.cpp.obj: CXX_COMPILER__VTEg_Debug ../VideoTag
   OBJECT_DIR = CMakeFiles\VTEg.dir
   OBJECT_FILE_DIR = CMakeFiles\VTEg.dir
 
+build CMakeFiles/VTEg.dir/videowidget.cpp.obj: CXX_COMPILER__VTEg_Debug ../videowidget.cpp || cmake_object_order_depends_target_VTEg
+  DEFINES = -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIAWIDGETS_LIB -DQT_MULTIMEDIA_LIB -DQT_NETWORK_LIB -DQT_WIDGETS_LIB
+  DEP_FILE = CMakeFiles\VTEg.dir\videowidget.cpp.obj.d
+  FLAGS = -g -std=gnu++11
+  INCLUDES = -I. -I../ -IVTEg_autogen/include -isystem C:/Qt/5.12.11/mingw73_64/include -isystem C:/Qt/5.12.11/mingw73_64/include/QtWidgets -isystem C:/Qt/5.12.11/mingw73_64/include/QtGui -isystem C:/Qt/5.12.11/mingw73_64/include/QtANGLE -isystem C:/Qt/5.12.11/mingw73_64/include/QtCore -isystem C:/Qt/5.12.11/mingw73_64/./mkspecs/win32-g++ -isystem C:/Qt/5.12.11/mingw73_64/include/QtMultimedia -isystem C:/Qt/5.12.11/mingw73_64/include/QtNetwork -isystem C:/Qt/5.12.11/mingw73_64/include/QtMultimediaWidgets
+  OBJECT_DIR = CMakeFiles\VTEg.dir
+  OBJECT_FILE_DIR = CMakeFiles\VTEg.dir
+
+build CMakeFiles/VTEg.dir/videowidgetsurface.cpp.obj: CXX_COMPILER__VTEg_Debug ../videowidgetsurface.cpp || cmake_object_order_depends_target_VTEg
+  DEFINES = -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIAWIDGETS_LIB -DQT_MULTIMEDIA_LIB -DQT_NETWORK_LIB -DQT_WIDGETS_LIB
+  DEP_FILE = CMakeFiles\VTEg.dir\videowidgetsurface.cpp.obj.d
+  FLAGS = -g -std=gnu++11
+  INCLUDES = -I. -I../ -IVTEg_autogen/include -isystem C:/Qt/5.12.11/mingw73_64/include -isystem C:/Qt/5.12.11/mingw73_64/include/QtWidgets -isystem C:/Qt/5.12.11/mingw73_64/include/QtGui -isystem C:/Qt/5.12.11/mingw73_64/include/QtANGLE -isystem C:/Qt/5.12.11/mingw73_64/include/QtCore -isystem C:/Qt/5.12.11/mingw73_64/./mkspecs/win32-g++ -isystem C:/Qt/5.12.11/mingw73_64/include/QtMultimedia -isystem C:/Qt/5.12.11/mingw73_64/include/QtNetwork -isystem C:/Qt/5.12.11/mingw73_64/include/QtMultimediaWidgets
+  OBJECT_DIR = CMakeFiles\VTEg.dir
+  OBJECT_FILE_DIR = CMakeFiles\VTEg.dir
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target VTEg
@@ -83,7 +99,7 @@ build CMakeFiles/VTEg.dir/VideoTag.cpp.obj: CXX_COMPILER__VTEg_Debug ../VideoTag
 #############################################
 # Link the executable VTEg.exe
 
-build VTEg.exe: CXX_EXECUTABLE_LINKER__VTEg_Debug CMakeFiles/VTEg.dir/VTEg_autogen/mocs_compilation.cpp.obj CMakeFiles/VTEg.dir/main.cpp.obj CMakeFiles/VTEg.dir/mainwindow.cpp.obj CMakeFiles/VTEg.dir/VideoTag.cpp.obj | C$:/Qt/5.12.11/mingw73_64/lib/libQt5MultimediaWidgetsd.a C$:/Qt/5.12.11/mingw73_64/lib/libQt5Widgetsd.a C$:/Qt/5.12.11/mingw73_64/lib/libQt5Multimediad.a C$:/Qt/5.12.11/mingw73_64/lib/libQt5Guid.a C$:/Qt/5.12.11/mingw73_64/lib/libQt5Networkd.a C$:/Qt/5.12.11/mingw73_64/lib/libQt5Cored.a || VTEg_autogen
+build VTEg.exe: CXX_EXECUTABLE_LINKER__VTEg_Debug CMakeFiles/VTEg.dir/VTEg_autogen/mocs_compilation.cpp.obj CMakeFiles/VTEg.dir/main.cpp.obj CMakeFiles/VTEg.dir/mainwindow.cpp.obj CMakeFiles/VTEg.dir/VideoTag.cpp.obj CMakeFiles/VTEg.dir/videowidget.cpp.obj CMakeFiles/VTEg.dir/videowidgetsurface.cpp.obj | C$:/Qt/5.12.11/mingw73_64/lib/libQt5MultimediaWidgetsd.a C$:/Qt/5.12.11/mingw73_64/lib/libQt5Widgetsd.a C$:/Qt/5.12.11/mingw73_64/lib/libQt5Multimediad.a C$:/Qt/5.12.11/mingw73_64/lib/libQt5Guid.a C$:/Qt/5.12.11/mingw73_64/lib/libQt5Networkd.a C$:/Qt/5.12.11/mingw73_64/lib/libQt5Cored.a || VTEg_autogen
   FLAGS = -g
   LINK_LIBRARIES = C:/Qt/5.12.11/mingw73_64/lib/libQt5MultimediaWidgetsd.a  C:/Qt/5.12.11/mingw73_64/lib/libQt5Widgetsd.a  C:/Qt/5.12.11/mingw73_64/lib/libQt5Multimediad.a  C:/Qt/5.12.11/mingw73_64/lib/libQt5Guid.a  C:/Qt/5.12.11/mingw73_64/lib/libQt5Networkd.a  C:/Qt/5.12.11/mingw73_64/lib/libQt5Cored.a  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\VTEg.dir

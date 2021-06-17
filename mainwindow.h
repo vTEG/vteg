@@ -30,7 +30,7 @@ class MainWindow : public QMainWindow {
         Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
+    explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow() override;
     QListWidget *listView;
 
@@ -47,17 +47,15 @@ private slots:
     void processFrame(const QVideoFrame& frame);
 
 protected:
-    bool eventFilter(QObject* object, QEvent* event);
-    void resizeEvent(QResizeEvent*);
+    bool eventFilter(QObject* object, QEvent* event) override;
+    void resizeEvent(QResizeEvent*) override;
 
 private:
     Ui::MainWindow *ui;
     QMediaPlayer *player;
     QMediaPlayer::State playerState;
     QVideoProbe *videoProbe;
-    QVideoFrame *lastVideoFrame{nullptr};
-    QImage *lastVideoImage;
-    QVideoWidget *vw{};
+    VideoWidget *vw{};
     QWidget *mainWidget, *videoWidget, *videoControlsWidget, *tagWidget, *tagButtonWidget;
     QSlider *slider{}, *volume;
     QLabel *timeLabel;
@@ -67,8 +65,7 @@ private:
     std::list<VideoTag*> tagList;
 
     int currentTime = 0;
-    bool mDoubleClicked;
-    bool saveNextFrame = false;
+    bool mDoubleClicked{};
 
     void addTagToList() const;
     void removeTagFromList() const;

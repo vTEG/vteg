@@ -9,6 +9,7 @@
 MainWindow::MainWindow(QWidget *parent)
         : QMainWindow(parent)
         , ui(new Ui::MainWindow)
+        , player(new QMediaPlayer(nullptr, QMediaPlayer::VideoSurface))
 {
     /*
      * Default settings
@@ -22,7 +23,7 @@ MainWindow::MainWindow(QWidget *parent)
     player = new QMediaPlayer(this);
     playerState = QMediaPlayer::StoppedState;
     videoProbe = new QVideoProbe(this);
-    vw = new QVideoWidget(this);
+    vw = new VideoWidget;
     slider = new QSlider(this);
     volume = new QSlider(this);
     timeLabel = new QLabel(this);
@@ -41,7 +42,9 @@ MainWindow::MainWindow(QWidget *parent)
      * Size of the media player Window and output setting
      */
     ui->statusbar->showMessage("Select a video file");
-    player->setVideoOutput(vw);
+
+    player->setVideoOutput(vw->videoSurface());
+
 
     /*
      * Size and flow direction of the tag-list
@@ -69,7 +72,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     mainWidget->layout()->addWidget(videoWidget);
     mainWidget->layout()->addWidget(tagWidget);
-
+    
     videoWidget->layout()->addWidget(vw);
     videoWidget->layout()->addWidget(videoControlsWidget);
 
@@ -87,52 +90,49 @@ MainWindow::MainWindow(QWidget *parent)
     slider->setOrientation(Qt::Horizontal);
     volume->setOrientation(Qt::Horizontal);
     volume->setValue(50);
-#pragma endregion Parenting and layouting
+    player->volumeChanged(50);
 
+
+#pragma endregion Parenting and layouting
     /*
      * ToDo: Calculate the value out and work with percentage
-     * connects the changing functions with each other so sliders and buttons will actually do something when used
+     * connects the changing functions with each other so sliders will actually do something when used
      */
-    connect(player, &QMediaPlayer::durationChanged, slider, &QSlider::setMaximum);
-    connect(player, &QMediaPlayer::positionChanged, slider, &QSlider::setValue);
-    connect(slider, &QSlider::sliderMoved, player, &QMediaPlayer::setPosition);
+    connect(player, &QMediaPlayer::durationChanged, this, &MainWindow::durationChanged);
+    connect(player, &QMediaPlayer::positionChanged, this, &MainWindow::positionChanged);
+    connect(player, &QMediaPlayer::positionChanged, this, &MainWindow::changeLabelTime);
+
+    connect(slider, &QSlider::sliderMoved, this, &MainWindow::setPosition);
 
     connect(volume, &QSlider::valueChanged, player, &QMediaPlayer::volumeChanged);
     connect(volume, &QSlider::valueChanged, player, &QMediaPlayer::setVolume);
 
+    /*
+     * Button clicked events
+     */
     connect(addTag, &QPushButton::clicked, this, &MainWindow::addTagToList);
     connect(removeTag, &QPushButton::clicked, this, &MainWindow::removeTagFromList);
     connect(jumpToTag, &QPushButton::clicked, this, &MainWindow::jumpToSelectedTag);
 
-    connect(player, &QMediaPlayer::positionChanged, this, &MainWindow::changeLabelTime);
 
     /*
-     * Register Events
+     * Register Events for clicks
      */
     connect(listView, &QListWidget::itemClicked, this, &MainWindow::onTagEntryClicked);
-    //connect(listView, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(onTagEntryClicked(QListWidgetItem * )));
     connect(listView, &QListWidget::itemDoubleClicked, this, &MainWindow::onTagEntryDoubleClicked);
-    //connect(listView, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(onTagEntryDoubleClicked(QListWidgetItem * )));
 
 
     this->installEventFilter(this);
     
-    if (videoProbe->setSource(player)){
-        qDebug() << "Connected QVideoProbe to 'player' instance.";
-        connect(videoProbe, SIGNAL(videoFrameProbed(QVideoFrame)),
-                this, SLOT(processFrame(QVideoFrame)));
-
-    } else {
-        qDebug() << "WARNING: COULD NOT CONNECT QVideoProbe";
-    }
-
-    connect(videoProbe, SIGNAL(videoFrameProbed(QVideoFrame)), this, SLOT(processFrame(QVideoFrame)));
     /**
      * Triggers a resize event so the scaling of everything will be correct on startup
      */
     QCoreApplication::postEvent(this, new QResizeEvent(size(), size()));
 }
 
+/**
+ * Destructor deletes the namespace object
+ */
 MainWindow::~MainWindow()
 {
     delete ui;
@@ -147,7 +147,6 @@ void MainWindow::resizeEvent(QResizeEvent *event) {
     QWidget::resizeEvent(event);
     videoWidget->setMinimumSize(event->size().width() * 70 / 100, event->size().height() * 80 / 100);
     tagWidget->setMinimumSize(event->size().width() * 30 / 100, event->size().height() * 80 / 100);
-
     vw->setMinimumHeight(videoWidget->height() * 85 / 100);
     videoControlsWidget->setMinimumHeight(videoWidget->height() * 10 / 100);
 
@@ -315,6 +314,33 @@ void MainWindow::tagEntryClickTimeout() {
     }
 }
 
+/**
+ * Change the position of the slider based on param position
+ * @param position: the position the slider should change to
+ */
+void MainWindow::positionChanged(quint64 position)
+{
+    slider->setValue(static_cast<int>(position));
+}
+
+/**
+ * Change the duration of the slider based on param duration
+ * @param duration: the duration the slider should end at
+ */
+void MainWindow::durationChanged(quint64 duration)
+{
+    slider->setRange(0, static_cast<int>(duration));
+}
+
+/**
+ * Change the position of the player based on param position
+ * @param position: the position the player should play at
+ */
+void MainWindow::setPosition(int position)
+{
+    player->setPosition(position);
+}
+
 
 bool MainWindow::eventFilter(QObject *object, QEvent *event) {
     if (event->type() == QEvent::KeyPress){
@@ -363,27 +389,5 @@ bool MainWindow::eventFilter(QObject *object, QEvent *event) {
 
     return QMainWindow::eventFilter(object, event);
 }
-
-    void MainWindow::processFrame(const QVideoFrame& frame) {
-        qDebug() << "Processing..";
-        if (saveNextFrame){
-            QImage image(
-                    frame.bits(),
-                    frame.width(),
-                    frame.height(),
-                    frame.bytesPerLine(),
-                    QImage::Format_RGB888
-            );
-
-            if (image.save("something.png")){
-                qDebug("Saved file.");
-            } else {
-                qDebug("Something went wrong.");
-            }
-            saveNextFrame = false;
-        } else {
-            qDebug() << "Nothing to do.";
-        }
-    }
 
 
