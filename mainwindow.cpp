@@ -55,6 +55,8 @@ MainWindow::MainWindow(QWidget *parent)
     removeTag->setFixedSize(30, 30);
     jumpToTag->setFixedSize(30, 30);
 
+
+#pragma region Parenting and layouting
     /*
      * Parenting objects and layouts
      */
@@ -64,7 +66,6 @@ MainWindow::MainWindow(QWidget *parent)
     videoControlsWidget->setLayout(new QHBoxLayout);
     tagWidget->setLayout(new QVBoxLayout);
     tagButtonWidget->setLayout(new QHBoxLayout);
-
 
     mainWidget->layout()->addWidget(videoWidget);
     mainWidget->layout()->addWidget(tagWidget);
@@ -86,9 +87,11 @@ MainWindow::MainWindow(QWidget *parent)
     slider->setOrientation(Qt::Horizontal);
     volume->setOrientation(Qt::Horizontal);
     volume->setValue(50);
+#pragma endregion Parenting and layouting
 
     /*
      * ToDo: Calculate the value out and work with percentage
+     * connects the changing functions with each other so sliders and buttons will actually do something when used
      */
     connect(player, &QMediaPlayer::durationChanged, slider, &QSlider::setMaximum);
     connect(player, &QMediaPlayer::positionChanged, slider, &QSlider::setValue);
@@ -155,7 +158,7 @@ void MainWindow::resizeEvent(QResizeEvent *event) {
 
 
 /**
- * Triggers when the file-open button is Clicked
+ * Triggers when the file-open button is clicked
  * Will open a file dialog selection and open + play the selected video file
  */
 void MainWindow::on_actionOpen_triggered() {
@@ -167,27 +170,48 @@ void MainWindow::on_actionOpen_triggered() {
     currentTime = 0;
     on_actionPlay_triggered();
 }
+
+/**
+ * Triggers when the play button is clicked
+ * Will play the video if there is one active
+ */
 void MainWindow::on_actionPlay_triggered() {
     player->play();
     playerState = QMediaPlayer::PlayingState;
     ui->statusbar->showMessage("Playing");
 }
+
+/**
+ * Triggers when the pausae button is clicked
+ * Will pause the video if there is one active
+ */
 void MainWindow::on_actionPause_triggered() {
     player->pause();
     playerState = QMediaPlayer::PausedState;
     ui->statusbar->showMessage("Paused");
 }
+
+/**
+ * Triggers when the stop button is clicked
+ * Will stop the video if there is one active
+ */
 void MainWindow::on_actionStop_triggered() {
+    removeAllTagsFromList();
     player->stop();
     playerState = QMediaPlayer::StoppedState;
     ui->statusbar->showMessage("Stopped");
     timeLabel->clear();
 }
 
-/*
+/**
+ * Will add a tag to the list, if there is a video playing
  * ToDo: Vorschaubilder an Tags in Liste anzeigen
  */
 void MainWindow::addTagToList() const {
+    if(player->mediaStatus() == QMediaPlayer::MediaStatus::NoMedia)  {
+        qDebug() << "No active Video";
+        return;
+    }
     timestamps->append(currentTime);
     qSort(timestamps->begin(), timestamps->end());
     int secs = currentTime/1000;
@@ -202,6 +226,9 @@ void MainWindow::addTagToList() const {
 
 }
 
+/**
+ * Will remove a tag from the list, if there is a tag selected
+ */
 void MainWindow::removeTagFromList() const {
     auto rml = listView->selectionModel()->selectedIndexes();
     if(rml.isEmpty()) return;
@@ -215,6 +242,17 @@ void MainWindow::removeTagFromList() const {
     qDebug() << "Removed selected Elements from list";
 }
 
+/**
+ * Will remove every tag from the list
+ */
+void MainWindow::removeAllTagsFromList() const {
+    listView->clear();
+    timestamps->clear();
+}
+
+/**
+ * Jump to the currently selected tag, if there is one selected
+ */
 void MainWindow::jumpToSelectedTag() const {
     auto rml = listView->selectionModel()->selectedIndexes();
     if(rml.isEmpty()) return;
@@ -229,6 +267,10 @@ void MainWindow::jumpToSelectedTag() const {
     qDebug() << "Jumped to: " + QString::asprintf("%02d:%02d", mins, secs);
 }
 
+/**
+ * Changes the time of the label next to the videoslider
+ * @param i: the current time of the video player as an qint64 (in milliseconds)
+ */
 void MainWindow::changeLabelTime(qint64 i) {
     int j = static_cast<int>(i);
     currentTime = j;

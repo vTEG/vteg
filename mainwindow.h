@@ -72,6 +72,7 @@ private:
 
     void addTagToList() const;
     void removeTagFromList() const;
+    void removeAllTagsFromList() const;
     void jumpToSelectedTag() const;
     void changeLabelTime(qint64);
 };
