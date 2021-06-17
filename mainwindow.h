@@ -68,6 +68,7 @@ private:
 
     int currentTime = 0;
     bool mDoubleClicked;
+    bool saveNextFrame = false;
 
     void addTagToList() const;
     void removeTagFromList() const;
