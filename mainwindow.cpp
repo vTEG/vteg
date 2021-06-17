@@ -11,7 +11,7 @@ MainWindow::MainWindow(QWidget *parent)
      * Default settings
      */
     ui->setupUi(this);
-    this->setMinimumSize(1024,768);
+    this->setMinimumSize(640,360);
 
     /*
      * Creating objects
@@ -23,6 +23,8 @@ MainWindow::MainWindow(QWidget *parent)
     volume = new QSlider(this);
     timeLabel = new QLabel(this);
     mainWidget = new QWidget(this);
+    videoWidget = new QWidget(mainWidget);
+    videoControlsWidget = new QWidget(videoWidget);
     tagWidget = new QWidget(mainWidget);
     tagButtonWidget = new QWidget(tagWidget);
     addTag = new QPushButton("+", tagButtonWidget);
@@ -34,8 +36,6 @@ MainWindow::MainWindow(QWidget *parent)
     /*
      * Size of the media player Window and output setting
      */
-    vw->setMinimumSize(160, 90);
-    vw->setMaximumSize(1920, 1080);
     ui->statusbar->showMessage("Select a video file");
     player->setVideoOutput(vw);
 
@@ -43,8 +43,6 @@ MainWindow::MainWindow(QWidget *parent)
      * Size and flow direction of the tag-list
      */
     listView->setFlow(QListView::TopToBottom);
-    listView->setMaximumHeight(960);
-    listView->setMaximumWidth(200);
 
     /*
      * Size of the buttons for the tag list
@@ -58,12 +56,21 @@ MainWindow::MainWindow(QWidget *parent)
      */
     this->setCentralWidget(mainWidget);
     mainWidget->setLayout(new QHBoxLayout);
+    videoWidget->setLayout(new QVBoxLayout);
+    videoControlsWidget->setLayout(new QHBoxLayout);
     tagWidget->setLayout(new QVBoxLayout);
     tagButtonWidget->setLayout(new QHBoxLayout);
 
-    vw->setMinimumSize(this->size()*0.75);
-    mainWidget->layout()->addWidget(vw);
+
+    mainWidget->layout()->addWidget(videoWidget);
     mainWidget->layout()->addWidget(tagWidget);
+
+    videoWidget->layout()->addWidget(vw);
+    videoWidget->layout()->addWidget(videoControlsWidget);
+
+    videoControlsWidget->layout()->addWidget(volume);
+    videoControlsWidget->layout()->addWidget(slider);
+    videoControlsWidget->layout()->addWidget(timeLabel);
 
     tagWidget->layout()->addWidget(listView);
     tagWidget->layout()->addWidget(tagButtonWidget);
@@ -75,10 +82,6 @@ MainWindow::MainWindow(QWidget *parent)
     slider->setOrientation(Qt::Horizontal);
     volume->setOrientation(Qt::Horizontal);
     volume->setValue(50);
-
-    ui->statusbar->addPermanentWidget(volume);
-    ui->statusbar->addPermanentWidget(slider);
-    ui->statusbar->addPermanentWidget(timeLabel);
 
     /*
      * ToDo: Calculate the value out and work with percentage
@@ -99,12 +102,18 @@ MainWindow::MainWindow(QWidget *parent)
     /*
      * Register Events
      */
-    connect(listView, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(onTagEntryClicked(QListWidgetItem * )));
-    connect(listView, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(
-            onTagEntryDoubleClicked(QListWidgetItem * )));
+    connect(listView, &QListWidget::itemClicked, this, &MainWindow::onTagEntryClicked);
+    //connect(listView, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(onTagEntryClicked(QListWidgetItem * )));
+    connect(listView, &QListWidget::itemDoubleClicked, this, &MainWindow::onTagEntryDoubleClicked);
+    //connect(listView, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(onTagEntryDoubleClicked(QListWidgetItem * )));
 
 
     this->installEventFilter(this);
+
+    /**
+     * Triggers a resize event so the scaling of everything will be correct on startup
+     */
+    QCoreApplication::postEvent(this, new QResizeEvent(size(), size()));
 }
 
 MainWindow::~MainWindow()
@@ -112,9 +121,32 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+/**
+ * Event being called when the window is resized
+ * It will resize the widgets inside the window so it doesnt matter how big the window/screen is
+ * @param event: The resize event
+ */
+void MainWindow::resizeEvent(QResizeEvent *event) {
+    QWidget::resizeEvent(event);
+    videoWidget->setMinimumSize(event->size().width() * 70 / 100, event->size().height() * 80 / 100);
+    tagWidget->setMinimumSize(event->size().width() * 30 / 100, event->size().height() * 80 / 100);
+
+    vw->setMinimumHeight(videoWidget->height() * 85 / 100);
+    videoControlsWidget->setMinimumHeight(videoWidget->height() * 10 / 100);
+
+    volume->setMinimumWidth(videoControlsWidget->width() * 20 / 100);
+    slider->setMinimumWidth(videoControlsWidget->width() * 70 / 100);
+    timeLabel->setMinimumWidth(videoControlsWidget->width() * 5 / 100);
+}
+
+
+/**
+ * Triggers when the file-open button is Clicked
+ * Will open a file dialog selection and open + play the selected video file
+ */
 void MainWindow::on_actionOpen_triggered() {
     qDebug() << "Opening file..";
-    QString filename = QFileDialog::getOpenFileName(this, "Open a File", "*.*");
+    QString filename = QFileDialog::getOpenFileName(this, "Open a File", "", "Videos file(*.mp4 *.mpeg *.avi *.wmv *.mov)");
     on_actionStop_triggered();
 
     player->setMedia(QUrl::fromLocalFile(filename));

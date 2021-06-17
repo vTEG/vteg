@@ -45,13 +45,14 @@ private slots:
 
 protected:
     bool eventFilter(QObject* object, QEvent* event);
+    void resizeEvent(QResizeEvent*);
 
 private:
     Ui::MainWindow *ui;
     QMediaPlayer *player;
     QMediaPlayer::State playerState;
     QVideoWidget *vw{};
-    QWidget *mainWidget, *tagWidget, *tagButtonWidget;
+    QWidget *mainWidget, *videoWidget, *videoControlsWidget, *tagWidget, *tagButtonWidget;
     QSlider *slider{}, *volume;
     QLabel *timeLabel;
     QPushButton *addTag, *removeTag, *jumpToTag;
