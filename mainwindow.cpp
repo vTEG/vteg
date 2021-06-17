@@ -4,6 +4,8 @@
 #include <QKeyEvent>
 #include <QVideoProbe>
 
+// ToDo: https://stackoverflow.com/questions/30800772/how-to-grab-video-frames-in-qt
+
 MainWindow::MainWindow(QWidget *parent)
         : QMainWindow(parent)
         , ui(new Ui::MainWindow)
@@ -306,9 +308,19 @@ bool MainWindow::eventFilter(QObject *object, QEvent *event) {
 
         //qDebug() << "Ate key press: " << keyEvent->key();
         return true;
-    } else {
-        return QMainWindow::eventFilter(object, event);
     }
+
+    if (event->type() == QEvent::MouseMove){
+        auto *m = dynamic_cast<QMouseEvent*>(event);
+
+        QPoint p = this->mapFromGlobal(QCursor::pos());
+        qDebug() << QString::asprintf("Global-X: %d, Global-Y: %d", p.x(), p.y());
+        qDebug() << QString::asprintf("X: %d, Y: %d", m->pos().x(), m->pos().y());
+        return true;
+    }
+
+    return QMainWindow::eventFilter(object, event);
+}
 
     void MainWindow::processFrame(const QVideoFrame& frame) {
         qDebug() << "Processing..";
@@ -331,6 +343,5 @@ bool MainWindow::eventFilter(QObject *object, QEvent *event) {
             qDebug() << "Nothing to do.";
         }
     }
-}
 
 

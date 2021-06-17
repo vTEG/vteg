@@ -88,3 +88,13 @@
 5	54	0	VTEg_autogen/mocs_compilation.cpp	853285f6171fa92c
 54	1526	6456271013087098	CMakeFiles/VTEg.dir/mainwindow.cpp.obj	27ee9622becd59e9
 1526	1780	6456271015608343	VTEg.exe	80a8c766ae65bfd6
+5	491	0	CMakeFiles/VTEg_autogen	853285f6171fa92c
+5	491	0	VTEg_autogen/mocs_compilation.cpp	853285f6171fa92c
+509	1943	6456275189771761	CMakeFiles/VTEg.dir/main.cpp.obj	31cb1d738b8065c1
+491	1958	6456275189931603	CMakeFiles/VTEg.dir/VTEg_autogen/mocs_compilation.cpp.obj	470df616b23e4094
+4	54	0	CMakeFiles/VTEg_autogen	853285f6171fa92c
+4	54	0	VTEg_autogen/mocs_compilation.cpp	853285f6171fa92c
+4	57	0	CMakeFiles/VTEg_autogen	853285f6171fa92c
+4	57	0	VTEg_autogen/mocs_compilation.cpp	853285f6171fa92c
+57	1795	6456275771413412	CMakeFiles/VTEg.dir/mainwindow.cpp.obj	27ee9622becd59e9
+1796	2063	6456275774055506	VTEg.exe	80a8c766ae65bfd6
