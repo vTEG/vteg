@@ -2,6 +2,7 @@
 #include "./ui_mainwindow.h"
 #include <QTimer>
 #include <QKeyEvent>
+#include <QVideoProbe>
 
 MainWindow::MainWindow(QWidget *parent)
         : QMainWindow(parent)
@@ -18,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent)
      */
     player = new QMediaPlayer(this);
     playerState = QMediaPlayer::StoppedState;
+    videoProbe = new QVideoProbe(this);
     vw = new QVideoWidget(this);
     slider = new QSlider(this);
     volume = new QSlider(this);
@@ -109,7 +111,17 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     this->installEventFilter(this);
+    
+    if (videoProbe->setSource(player)){
+        qDebug() << "Connected QVideoProbe to 'player' instance.";
+        connect(videoProbe, SIGNAL(videoFrameProbed(QVideoFrame)),
+                this, SLOT(processFrame(QVideoFrame)));
 
+    } else {
+        qDebug() << "WARNING: COULD NOT CONNECT QVideoProbe";
+    }
+
+    connect(videoProbe, SIGNAL(videoFrameProbed(QVideoFrame)), this, SLOT(processFrame(QVideoFrame)));
     /**
      * Triggers a resize event so the scaling of everything will be correct on startup
      */
@@ -296,6 +308,28 @@ bool MainWindow::eventFilter(QObject *object, QEvent *event) {
         return true;
     } else {
         return QMainWindow::eventFilter(object, event);
+    }
+
+    void MainWindow::processFrame(const QVideoFrame& frame) {
+        qDebug() << "Processing..";
+        if (saveNextFrame){
+            QImage image(
+                    frame.bits(),
+                    frame.width(),
+                    frame.height(),
+                    frame.bytesPerLine(),
+                    QImage::Format_RGB888
+            );
+
+            if (image.save("something.png")){
+                qDebug("Saved file.");
+            } else {
+                qDebug("Something went wrong.");
+            }
+            saveNextFrame = false;
+        } else {
+            qDebug() << "Nothing to do.";
+        }
     }
 }
 
