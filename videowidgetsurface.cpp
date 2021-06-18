@@ -56,7 +56,6 @@ bool VideoWidgetSurface::start(const QVideoSurfaceFormat &format)
 
     if (imageFormat != QImage::Format_Invalid && !size.isEmpty()) {
         this->imageFormat = imageFormat;
-        imageSize = size;
         sourceRect = format.viewport();
 
         QAbstractVideoSurface::start(format);

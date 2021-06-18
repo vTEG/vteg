@@ -5,7 +5,7 @@ project(VTEg VERSION 0.1 LANGUAGES CXX)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 #Change this path to your local QT cmake path
-#set(CMAKE_PREFIX_PATH "C:/Qt/5.12.11/mingw73_64/lib/cmake")
+set(CMAKE_PREFIX_PATH "C:/Qt/5.12.11/mingw73_64/lib/cmake")
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
@@ -14,10 +14,11 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(CMAKE_PREFIX_PATH "C:\\Qt\\5.12.11\\mingw73_64\\lib\\cmake")
-
 find_package(QT NAMES Qt5 COMPONENTS Widgets Gui Multimedia MultimediaWidgets LinguistTools REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Gui Multimedia MultimediaWidgets LinguistTools REQUIRED)
+
+#copys the images folder into the buildfolder
+file(COPY "images/" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/images")
 
 set(PROJECT_SOURCES
         main.cpp
@@ -44,7 +45,7 @@ else()
             ${PROJECT_SOURCES}
         )
     else()
-        add_executable(VTEg
+        add_executable(VTEg WIN32
             ${PROJECT_SOURCES}
         )
     endif()
