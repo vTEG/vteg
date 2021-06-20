@@ -15,9 +15,7 @@ VideoWidgetSurface::VideoWidgetSurface(QWidget *widget, QObject *parent)
 {
 }
 
-VideoWidgetSurface::~VideoWidgetSurface()  {
-    delete widget;
-}
+VideoWidgetSurface::~VideoWidgetSurface() = default;
 
 //! [0]
 QList<QVideoFrame::PixelFormat> VideoWidgetSurface::supportedPixelFormats(

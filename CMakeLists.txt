@@ -1,11 +1,11 @@
-cmake_minimum_required(VERSION 3.19)
+cmake_minimum_required(VERSION 3.17)
 set(CMAKE_TRY_COMPILE_TARGET_TYPE "STATIC_LIBRARY")
 project(VTEg VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 #Change this path to your local QT cmake path
-set(CMAKE_PREFIX_PATH "C:/Qt/5.12.11/mingw73_64/lib/cmake")
+set(CMAKE_PREFIX_PATH "/Users/tommetz/Qt/5.12.11/clang_64/lib/cmake")
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
@@ -37,12 +37,14 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
     )
-
-    qt_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
 else()
     if(ANDROID)
         add_library(VTEg SHARED
             ${PROJECT_SOURCES}
+        )
+    elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+        add_executable(VTEg MACOSX_BUNDLE
+                ${PROJECT_SOURCES}
         )
     else()
         add_executable(VTEg WIN32
