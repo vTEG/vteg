@@ -1,3 +1,4 @@
 .sync-exclude.lst
 release/
 build/
+CMakeLists.txt.user*
