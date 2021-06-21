@@ -1,4 +1,5 @@
 .sync-exclude.lst
+.idea/
 release/
 build/
 CMakeLists.txt.user*
