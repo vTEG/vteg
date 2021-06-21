@@ -1,2 +1,3 @@
 .sync-exclude.lst
 release/
+build/

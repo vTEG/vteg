@@ -1,4 +1,0 @@
-D:/Nextcloud/BNDSummerOfCode/QtVideoExample/build/CMakeFiles/VTEg.dir
-D:/Nextcloud/BNDSummerOfCode/QtVideoExample/build/CMakeFiles/edit_cache.dir
-D:/Nextcloud/BNDSummerOfCode/QtVideoExample/build/CMakeFiles/rebuild_cache.dir
-D:/Nextcloud/BNDSummerOfCode/QtVideoExample/build/CMakeFiles/VTEg_autogen.dir
