@@ -5,7 +5,7 @@ project(VTEg VERSION 0.1 LANGUAGES CXX)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 #Change this path to your local QT cmake path
-set(CMAKE_PREFIX_PATH "/Users/tommetz/Qt/5.12.11/clang_64/lib/cmake")
+#set(CMAKE_PREFIX_PATH "/Users/tommetz/Qt/5.12.11/clang_64/lib/cmake")
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)

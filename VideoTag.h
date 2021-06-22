@@ -64,6 +64,8 @@ public:
     bool isAutoStopOnJump() const;
 
     void setAutoStopOnJump(bool);
+
+
 };
 
 

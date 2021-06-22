@@ -52,6 +52,7 @@ MainWindow::MainWindow(QWidget *parent)
      * Size and flow direction of the tag-list
      */
     listView->setFlow(QListView::TopToBottom);
+    listView->setLayoutDirection(Qt::RightToLeft);
 
     /*
      * Size of the buttons for the tag list
@@ -149,9 +150,11 @@ MainWindow::~MainWindow()
 void MainWindow::resizeEvent(QResizeEvent *event) {
     QWidget::resizeEvent(event);
     videoWidget->setMinimumSize(event->size().width() * 70 / 100, event->size().height() * 80 / 100);
-    tagWidget->setMinimumSize(event->size().width() * 30 / 100, event->size().height() * 80 / 100);
+    tagWidget->setMinimumSize(event->size().width() * 25 / 100, event->size().height() * 80 / 100);
     vw->setMinimumHeight(videoWidget->height() * 85 / 100);
     videoControlsWidget->setMinimumHeight(videoWidget->height() * 10 / 100);
+
+    listView->setIconSize(QSize(100, 100));
 
     volume->setMinimumWidth(videoControlsWidget->width() * 20 / 100);
     slider->setMinimumWidth(videoControlsWidget->width() * 70 / 100);
@@ -219,8 +222,18 @@ void MainWindow::addTagToList() const {
     int secs = currentTime/1000;
     int mins = secs/60;
     secs = secs%60;
-    listView->insertItem(timestamps->indexOf(currentTime), QString::asprintf("%02d:%02d", mins, secs));
-    qDebug() << "Appended Element to list";
+
+    // prepare preview text
+    // ToDo: Better format, pull info from VideoTag
+    auto *tag = new VideoTag();
+    tag->setTitle(QString::asprintf("%02d:%02d", mins, secs));
+    QString previewText = QString::asprintf("%02d:%02d\nTest", mins, secs);
+
+    // Fetch and copy preview image
+    auto *itm = new QListWidgetItem(previewText);
+    itm->setIcon(QPixmap::fromImage(vw->getSurface()->getLastFrame().copy()));
+    listView->insertItem(timestamps->indexOf(currentTime), itm);
+
 
     auto *tag = new VideoTag();
     tag->setTitle(QString::asprintf("%02d:%02d", mins, secs));
