@@ -88,3 +88,12 @@ VideoTag &VideoTag::operator=(const VideoTag &other) {
     autoStopOnJump = other.isAutoStopOnJump();
     return *this;
 }
+bool VideoTag::operator==(const VideoTag &other) {
+    if(title.compare(other.getTitle()))
+        if(description.compare(other.getDescription()))
+            if(image == other.image)
+                if(timestamp == other.timestamp)
+                    return true;
+   return false;
+
+}

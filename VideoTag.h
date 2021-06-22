@@ -27,7 +27,7 @@ private:
     bool autoStopOnJump{};
 
 public:
-    VideoTag() = default;;
+    VideoTag() = default;
     VideoTag(const VideoTag &other);
     VideoTag &operator=(const VideoTag &other);
 

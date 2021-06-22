@@ -47,7 +47,7 @@ else()
                 ${PROJECT_SOURCES}
         )
     else()
-        add_executable(VTEg WIN32
+        add_executable(VTEg
             ${PROJECT_SOURCES}
         )
     endif()

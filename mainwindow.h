@@ -65,7 +65,7 @@ private:
     QSlider *slider{}, *volume;
     QLabel *timeLabel;
     QPushButton *addTag, *removeTag, *jumpToTag;
-    QList<int> *timestamps;
+    QList<VideoTag> *videoTags;
     QListWidgetItem* tagListClickedItem{};
 
 
@@ -78,6 +78,10 @@ private:
     void removeAllTagsFromList() const;
     void jumpToSelectedTag() const;
     void changeLabelTime(qint64);
+    bool sortWithTimestamp(const VideoTag&, const VideoTag&);
+
+    void save(const QString& filePath);
+    void load(const QString& filePath);
 };
 
 #endif //MAINWINDOW_H

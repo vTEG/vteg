@@ -4,8 +4,6 @@
 #include <QTimer>
 #include <QKeyEvent>
 #include <QVideoProbe>
-#include <QCryptographicHash>
-#include <iostream>
 
 
 // ToDo: https://stackoverflow.com/questions/30800772/how-to-grab-video-frames-in-qt
@@ -39,7 +37,7 @@ MainWindow::MainWindow(QWidget *parent)
     removeTag = new QPushButton("-", tagButtonWidget);
     jumpToTag = new QPushButton("->", tagButtonWidget);
     listView = new QListWidget(this);
-    timestamps = new QList<int>;
+    videoTags = new QList<VideoTag>;
 
 
     /*
@@ -151,12 +149,13 @@ MainWindow::~MainWindow()
  */
 void MainWindow::resizeEvent(QResizeEvent *event) {
     QWidget::resizeEvent(event);
-    videoWidget->setMinimumSize(event->size().width() * 70 / 100, event->size().height() * 80 / 100);
-    tagWidget->setMinimumSize(event->size().width() * 25 / 100, event->size().height() * 80 / 100);
+    int w = event->size().width(), h = event->size().height();
+    videoWidget->setMinimumSize(w * 70 / 100, h * 80 / 100);
+    tagWidget->setMinimumSize(w * 25 / 100, h * 80 / 100);
     vw->setMinimumHeight(videoWidget->height() * 85 / 100);
     videoControlsWidget->setMinimumHeight(videoWidget->height() * 10 / 100);
 
-    listView->setIconSize(QSize(100, 100));
+    listView->setIconSize(QSize(16 * w / 100, 9 * h / 100));
 
     volume->setMinimumWidth(videoControlsWidget->width() * 20 / 100);
     slider->setMinimumWidth(videoControlsWidget->width() * 70 / 100);
@@ -178,18 +177,16 @@ void MainWindow::on_actionOpen_triggered() {
     player->setMedia(media);
     currentTime = 0;
     on_actionPlay_triggered();
-    qDebug() << "foo1";
-    QFile *f = new QFile(filename);
-    int fileSize = f->size();
+
+    /*
+     * ToDo: Write used videos into a SQLite DB and save a reference to their CSV file
+     * auto *f = new QFile(filename);
+    int fileSize = static_cast<int>(f->size());
     char* data = new char[fileSize];
-    qDebug() << "foo2";
     QByteArray array ((const char*) data, fileSize);
-    qDebug() << "foo3";
     QByteArray hash = QCryptographicHash::hash(array, QCryptographicHash::Md5);
-    qDebug() << "foo4";
-    std::cout << hash.toStdString();
     qDebug() << QString::fromStdString(hash.toStdString());
-    qDebug() << "foo5";
+     */
 }
 
 /**
@@ -229,30 +226,38 @@ void MainWindow::on_actionStop_triggered() {
  * ToDo: Vorschaubilder an Tags in Liste anzeigen
  */
 void MainWindow::addTagToList() const {
+    int cTime = currentTime;
     if(player->mediaStatus() == QMediaPlayer::MediaStatus::NoMedia)  {
         qDebug() << "No active Video";
         return;
     }
     // Calculate timestamp
-    timestamps->append(currentTime);
-    qSort(timestamps->begin(), timestamps->end());
-    int secs = currentTime/1000;
+    int secs = cTime/1000;
     int mins = secs/60;
     secs = secs%60;
 
     // prepare preview text
     // ToDo: Better format, pull info from VideoTag
-    auto *tag = new VideoTag();
+    auto *tag = new VideoTag;
     tag->setTitle(QString::asprintf("%02d:%02d", mins, secs));
-    QString previewText = QString::asprintf("%02d:%02d\nTest", mins, secs);
+    tag->setDescription("Description");
+    tag->setImage(vw->getSurface()->getLastFrame().copy());
+    tag->setTimestamp(cTime);
 
+    qDebug() << "Test: " << tag->toString();
+
+    videoTags->push_back(*tag);
+    qSort(videoTags->begin(), videoTags->end(), [] (const VideoTag& a, const VideoTag& b) {return a.getTimestamp() > b.getTimestamp();});
+    
     // Fetch and copy preview image
-    auto *itm = new QListWidgetItem(previewText);
+    auto *itm = new QListWidgetItem(tag->getTitle());
     itm->setIcon(QPixmap::fromImage(vw->getSurface()->getLastFrame().copy()));
-    listView->insertItem(timestamps->indexOf(currentTime), itm);
+    listView->insertItem(videoTags->indexOf(*tag), itm);
 
 
-
+    //Debugging purposes
+    for(auto i : *videoTags)
+        qDebug() << i.toString();
 }
 
 /**
@@ -262,11 +267,11 @@ void MainWindow::removeTagFromList() const {
     auto rml = listView->selectionModel()->selectedIndexes();
     if(rml.isEmpty()) return;
     for(auto r : rml)
-        timestamps->removeAt(r.row());
+        videoTags->removeAt(r.row());
     qDeleteAll(listView->selectedItems());
     
-    for(auto i : *timestamps)
-        qDebug() << i;
+    for(const auto& i : *videoTags)
+        qDebug() << i.getTimestamp();
 
     qDebug() << "Removed selected Elements from list";
 }
@@ -276,7 +281,7 @@ void MainWindow::removeTagFromList() const {
  */
 void MainWindow::removeAllTagsFromList() const {
     listView->clear();
-    timestamps->clear();
+    videoTags->clear();
 }
 
 /**
@@ -285,14 +290,13 @@ void MainWindow::removeAllTagsFromList() const {
 void MainWindow::jumpToSelectedTag() const {
     auto rml = listView->selectionModel()->selectedIndexes();
     if(rml.isEmpty()) return;
-    player->setPosition(timestamps->value(rml.first().row()));
-    int cur = static_cast<int>(timestamps->value(rml.first().row()));
+    player->setPosition(videoTags->value(rml.first().row()).getTimestamp());
+    int cur = static_cast<int>(videoTags->value(rml.first().row()).getTimestamp());
     int secs = cur/1000;
     int mins = secs/60;
     secs = secs%60;
 
     timeLabel->setText(QString::asprintf("%02d:%02d", mins, secs));
-
     qDebug() << "Jumped to: " + QString::asprintf("%02d:%02d", mins, secs);
 }
 
