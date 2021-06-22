@@ -4,6 +4,8 @@
 #include <QTimer>
 #include <QKeyEvent>
 #include <QVideoProbe>
+#include <QCryptographicHash>
+#include <iostream>
 
 
 // ToDo: https://stackoverflow.com/questions/30800772/how-to-grab-video-frames-in-qt
@@ -171,9 +173,23 @@ void MainWindow::on_actionOpen_triggered() {
     QString filename = QFileDialog::getOpenFileName(this, "Open a File", "", "Videos file(*.mp4 *.mpeg *.avi *.wmv *.mov)");
     on_actionStop_triggered();
 
-    player->setMedia(QUrl::fromLocalFile(filename));
+    QMediaContent media = QUrl::fromLocalFile(filename);
+
+    player->setMedia(media);
     currentTime = 0;
     on_actionPlay_triggered();
+    qDebug() << "foo1";
+    QFile *f = new QFile(filename);
+    int fileSize = f->size();
+    char* data = new char[fileSize];
+    qDebug() << "foo2";
+    QByteArray array ((const char*) data, fileSize);
+    qDebug() << "foo3";
+    QByteArray hash = QCryptographicHash::hash(array, QCryptographicHash::Md5);
+    qDebug() << "foo4";
+    std::cout << hash.toStdString();
+    qDebug() << QString::fromStdString(hash.toStdString());
+    qDebug() << "foo5";
 }
 
 /**
@@ -217,6 +233,7 @@ void MainWindow::addTagToList() const {
         qDebug() << "No active Video";
         return;
     }
+    // Calculate timestamp
     timestamps->append(currentTime);
     qSort(timestamps->begin(), timestamps->end());
     int secs = currentTime/1000;
@@ -234,9 +251,6 @@ void MainWindow::addTagToList() const {
     itm->setIcon(QPixmap::fromImage(vw->getSurface()->getLastFrame().copy()));
     listView->insertItem(timestamps->indexOf(currentTime), itm);
 
-
-    auto *tag = new VideoTag();
-    tag->setTitle(QString::asprintf("%02d:%02d", mins, secs));
 
 
 }
