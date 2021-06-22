@@ -8,6 +8,7 @@
 
 #include <QString>
 #include <QImage>
+#include <QFile>
 
 class VideoTag {
 
@@ -30,6 +31,8 @@ public:
     VideoTag() = default;
     VideoTag(const VideoTag &other);
     VideoTag &operator=(const VideoTag &other);
+    bool operator==(const VideoTag&);
+
 
     virtual ~VideoTag();
 
@@ -65,7 +68,12 @@ public:
 
     void setAutoStopOnJump(bool);
 
+    // Serialization
+    void serialize(QDataStream &stream);
+    void deserialize(QDataStream &stream);
 
+    // For testing purposes
+    QString toString();
 };
 
 

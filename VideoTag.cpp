@@ -4,6 +4,7 @@
 
 #include "VideoTag.h"
 
+#include <utility>
 
 VideoTag::~VideoTag() = default;
 
@@ -96,4 +97,29 @@ bool VideoTag::operator==(const VideoTag &other) {
                     return true;
    return false;
 
+}
+
+void VideoTag::serialize(QDataStream &stream){
+    stream << title;
+    stream << description;
+    stream << iconPath;
+    stream << colorCode;
+    stream << colorCodeBackground;
+    stream << timestamp;
+    stream << autoStopOnJump;
+}
+
+
+void VideoTag::deserialize(QDataStream &stream){
+    stream >> title >> description >> iconPath >> colorCode;
+    stream >> colorCodeBackground >> timestamp >> autoStopOnJump;
+}
+
+QString VideoTag::toString() {
+    QString retVal;
+    retVal += "Title: ";
+    retVal += title;
+    retVal += " Timestamp: ";
+    retVal += QString::number(timestamp);
+    return retVal;
 }

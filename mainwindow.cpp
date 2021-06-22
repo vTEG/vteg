@@ -442,3 +442,48 @@ bool MainWindow::eventFilter(QObject *object, QEvent *event) {
 }
 
 
+void MainWindow::save(const QString& filePath){
+    QFile file(filePath);
+    file.open(QIODevice::WriteOnly);
+    QDataStream stream(&file);
+
+    stream << videoTags->size();
+    for (int i = 0; i < videoTags->size(); i++){
+        videoTags->value(i).serialize(stream);
+        qDebug()<< "Serialized: " << videoTags->value(i).toString();
+    }
+
+    qDebug() << QString::asprintf("Saved Video-Tags to ") << filePath;
+}
+
+void MainWindow::load(const QString& filePath){
+    QFile file(filePath);
+    file.open(QIODevice::ReadOnly);
+    QDataStream stream(&file);
+
+    int size;
+    stream >> size;
+    for (int i = 0; i < size; i++){
+        auto tag = VideoTag();
+        tag.deserialize(stream);
+        qDebug()<< "Deserialized: " << tag.toString();
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
