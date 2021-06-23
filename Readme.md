@@ -1,6 +1,6 @@
 When using Windows, this project depends on external video codecs such as the K-Lite Codec pack
 
-Download ['here'](https://codecguide.com/download_kl.htm)
+Download [here](https://codecguide.com/download_kl.htm)
 
 To build the application yourself, you need [ninja](https://ninja-build.org/) and Qt 5.12.11 or compatible versions.
 
