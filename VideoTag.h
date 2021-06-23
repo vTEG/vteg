@@ -29,6 +29,7 @@ private:
 
 public:
     VideoTag() = default;
+    VideoTag(QString, QString, QImage, qint64);
     VideoTag(const VideoTag &other);
     VideoTag &operator=(const VideoTag &other);
     bool operator==(const VideoTag&);

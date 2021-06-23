@@ -6,6 +6,20 @@
 
 #include <utility>
 
+/**
+ * Constructor that overrides default constructor and sets the parameters for a VideoTag
+ * @param title: Title of the tag
+ * @param description: Description of whats happening at the tags position
+ * @param image: copy of the frame at the timestamp
+ * @param timestamp: timestamp of when the tag happened in milliseconds
+ */
+VideoTag::VideoTag(QString title, QString description, QImage image, qint64 timestamp) {
+    this->title = std::move(title);
+    this->description = std::move(description);
+    this->image = std::move(image);
+    this->timestamp = timestamp;
+}
+
 VideoTag::~VideoTag() = default;
 
 const QString &VideoTag::getTitle() const {

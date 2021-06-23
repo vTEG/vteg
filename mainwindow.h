@@ -1,3 +1,5 @@
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "-Wclazy-connect-by-name"
 //
 // Created by tomme on 14.06.2021.
 //
@@ -5,7 +7,12 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+//Including header
+#include "VideoTag.h"
+#include "videowidget.h"
+#include "videowidgetsurface.h"
 
+//Including Qt dependencies
 #include <QMainWindow>
 #include <QMediaPlayer>
 #include <QVideoWidget>
@@ -20,10 +27,6 @@
 #include <ctime>
 #include <chrono>
 #include <QVideoProbe>
-
-#include "VideoTag.h"
-#include "videowidget.h"
-#include "videowidgetsurface.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -59,15 +62,13 @@ private:
     Ui::MainWindow *ui;
     QMediaPlayer *player;
     QMediaPlayer::State playerState;
-    QVideoProbe *videoProbe;
     VideoWidget *vw{};
     QWidget *mainWidget, *videoWidget, *videoControlsWidget, *tagWidget, *tagButtonWidget;
     QSlider *slider{}, *volume;
     QLabel *timeLabel;
     QPushButton *addTag, *removeTag, *jumpToTag;
-    QList<VideoTag> *videoTags;
+    QList<VideoTag*> *videoTags;
     QListWidgetItem* tagListClickedItem{};
-
 
 
     int currentTime = 0;
@@ -78,10 +79,10 @@ private:
     void removeAllTagsFromList() const;
     void jumpToSelectedTag() const;
     void changeLabelTime(qint64);
-    bool sortWithTimestamp(const VideoTag&, const VideoTag&);
 
     void save(const QString& filePath);
-    void load(const QString& filePath);
+    static void load(const QString& filePath);
 };
 
 #endif //MAINWINDOW_H
+#pragma clang diagnostic pop

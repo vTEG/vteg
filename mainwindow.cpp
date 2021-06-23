@@ -23,7 +23,6 @@ MainWindow::MainWindow(QWidget *parent)
      * Creating objects
      */
     playerState = QMediaPlayer::StoppedState;
-    videoProbe = new QVideoProbe(this);
     vw = new VideoWidget;
     slider = new QSlider(this);
     volume = new QSlider(this);
@@ -37,7 +36,7 @@ MainWindow::MainWindow(QWidget *parent)
     removeTag = new QPushButton("-", tagButtonWidget);
     jumpToTag = new QPushButton("->", tagButtonWidget);
     listView = new QListWidget(this);
-    videoTags = new QList<VideoTag>;
+    videoTags = new QList<VideoTag*>;
 
 
     /*
@@ -236,28 +235,20 @@ void MainWindow::addTagToList() const {
     int mins = secs/60;
     secs = secs%60;
 
-    // prepare preview text
-    // ToDo: Better format, pull info from VideoTag
-    auto *tag = new VideoTag;
-    tag->setTitle(QString::asprintf("%02d:%02d", mins, secs));
-    tag->setDescription("Description");
-    tag->setImage(vw->getSurface()->getLastFrame().copy());
-    tag->setTimestamp(cTime);
+    // create tag object so we can read info from it and add it to list
+    auto *tag = new VideoTag(QString::asprintf("%02d:%02d", mins, secs), "Description", vw->getSurface()->getLastFrame().copy(), cTime);
 
-    qDebug() << "Test: " << tag->toString();
+    //add tag to list
+    videoTags->push_back(tag);
 
-    videoTags->push_back(*tag);
-    qSort(videoTags->begin(), videoTags->end(), [] (const VideoTag& a, const VideoTag& b) {return a.getTimestamp() > b.getTimestamp();});
+    //sort the list
+    qSort(videoTags->begin(), videoTags->end(), [] (const VideoTag* a, const VideoTag* b) {return a->getTimestamp() < b->getTimestamp();});
     
-    // Fetch and copy preview image
+    // Create a list item and copy preview image from tag object, then add it to list at index of tag in sorted list
     auto *itm = new QListWidgetItem(tag->getTitle());
-    itm->setIcon(QPixmap::fromImage(vw->getSurface()->getLastFrame().copy()));
-    listView->insertItem(videoTags->indexOf(*tag), itm);
-
-
-    //Debugging purposes
-    for(auto i : *videoTags)
-        qDebug() << i.toString();
+    itm->setIcon(QPixmap::fromImage(tag->getImage()));
+    listView->insertItem(videoTags->indexOf(tag), itm);
+    qDebug() << "Added tag to list";
 }
 
 /**
@@ -271,13 +262,13 @@ void MainWindow::removeTagFromList() const {
     qDeleteAll(listView->selectedItems());
     
     for(const auto& i : *videoTags)
-        qDebug() << i.getTimestamp();
+        qDebug() << i->getTimestamp();
 
     qDebug() << "Removed selected Elements from list";
 }
 
 /**
- * Will remove every tag from the list
+ * Will remove every tag from the list and clear the listView
  */
 void MainWindow::removeAllTagsFromList() const {
     listView->clear();
@@ -290,8 +281,8 @@ void MainWindow::removeAllTagsFromList() const {
 void MainWindow::jumpToSelectedTag() const {
     auto rml = listView->selectionModel()->selectedIndexes();
     if(rml.isEmpty()) return;
-    player->setPosition(videoTags->value(rml.first().row()).getTimestamp());
-    int cur = static_cast<int>(videoTags->value(rml.first().row()).getTimestamp());
+    player->setPosition(videoTags->value(rml.first().row())->getTimestamp());
+    int cur = static_cast<int>(videoTags->value(rml.first().row())->getTimestamp());
     int secs = cur/1000;
     int mins = secs/60;
     secs = secs%60;
@@ -411,7 +402,7 @@ bool MainWindow::eventFilter(QObject *object, QEvent *event) {
                 if (frame.isNull()){
                     qDebug() << "Unable to load last frame.";
                 } else {
-                    if (frame.save("screenshot.png", 0, -1)){
+                    if (frame.save("screenshot.png", nullptr, -1)){
                         qDebug() << "Saved!";
                     } else {
                         qDebug() << "Error while saving img.";
@@ -441,7 +432,10 @@ bool MainWindow::eventFilter(QObject *object, QEvent *event) {
     return QMainWindow::eventFilter(object, event);
 }
 
-
+/**
+ * Serialize tagList to a filePath
+ * @param filePath: The path where the file should be stored
+ */
 void MainWindow::save(const QString& filePath){
     QFile file(filePath);
     file.open(QIODevice::WriteOnly);
@@ -449,13 +443,17 @@ void MainWindow::save(const QString& filePath){
 
     stream << videoTags->size();
     for (int i = 0; i < videoTags->size(); i++){
-        videoTags->value(i).serialize(stream);
-        qDebug()<< "Serialized: " << videoTags->value(i).toString();
+        videoTags->value(i)->serialize(stream);
+        qDebug()<< "Serialized: " << videoTags->value(i)->toString();
     }
 
     qDebug() << QString::asprintf("Saved Video-Tags to ") << filePath;
 }
 
+/**
+ * Load serialized tagList from a filePath
+ * @param filePath: The path where the file is stored
+ */
 void MainWindow::load(const QString& filePath){
     QFile file(filePath);
     file.open(QIODevice::ReadOnly);
