@@ -178,7 +178,7 @@ void MainWindow::on_actionOpen_triggered() {
     on_actionPlay_triggered();
 
     /*
-     * ToDo: Write used videos into a SQLite DB and save a reference to their CSV file
+     * ToDo: Write used videos into a SQLite DB and save a reference to their CSV file, alternatively, just write into CSV files
      * auto *f = new QFile(filename);
     int fileSize = static_cast<int>(f->size());
     char* data = new char[fileSize];
