@@ -371,8 +371,6 @@ void MainWindow::onTagEntryClicked(QListWidgetItem *item) {
  */
 void MainWindow::onTagEntryDoubleClicked(QListWidgetItem *item) {
     mDoubleClicked = true;
-
-    qDebug() << "Double click." << item->text();
     jumpToSelectedTag();
 }
 
@@ -381,7 +379,7 @@ void MainWindow::onTagEntryDoubleClicked(QListWidgetItem *item) {
  */
 void MainWindow::tagEntryClickTimeout() {
     if (!mDoubleClicked){
-        qDebug() << "Single Click." << tagListClickedItem->text();
+        //qDebug() << "Single Click." << tagListClickedItem->text();
     } else {
         mDoubleClicked = false;
     }
