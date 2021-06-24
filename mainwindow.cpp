@@ -87,7 +87,7 @@ MainWindow::MainWindow(QWidget *parent)
     videoWidget->setLayout(new QVBoxLayout);
     videoControlsWidget->setLayout(new QVBoxLayout);
     videoTimeWidget->setLayout(new QHBoxLayout);
-    auto buttonsHbox = new QHBoxLayout;
+    auto buttonsHbox = new QHBoxLayout; //cache the hbox of the videocontrolbutton layout, so we can add alignments later
     videoButtonsWidget->setLayout(buttonsHbox);
     tagWidget->setLayout(new QVBoxLayout);
     tagButtonWidget->setLayout(new QHBoxLayout);
@@ -102,6 +102,7 @@ MainWindow::MainWindow(QWidget *parent)
     videoControlsWidget->layout()->addWidget(videoButtonsWidget);
     videoTimeWidget->layout()->addWidget(slider);
     videoTimeWidget->layout()->addWidget(timeLabel);
+    //add hbox alignments for videocontrolbutton
     buttonsHbox->addWidget(playButton, 0, Qt::AlignLeft);
     buttonsHbox->addWidget(pauseButton, 0, Qt::AlignLeft);
     buttonsHbox->addWidget(stopButton, 0, Qt::AlignLeft);
