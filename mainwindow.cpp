@@ -4,6 +4,7 @@
 #include <QTimer>
 #include <QKeyEvent>
 #include <QVideoProbe>
+#include <QMessageBox>
 
 
 // ToDo: https://stackoverflow.com/questions/30800772/how-to-grab-video-frames-in-qt
@@ -145,6 +146,22 @@ MainWindow::MainWindow(QWidget *parent)
     connect(removeTag, &QPushButton::clicked, this, &MainWindow::removeTagFromList);
     connect(jumpToTag, &QPushButton::clicked, this, &MainWindow::jumpToSelectedTag);
 
+    // Actions
+    /*
+    QAction *actionSaveTags = new QAction(this);
+    QAction *actionLoadTags = new QAction(this);
+    actionSaveTags->setText("Save Tags");
+    actionLoadTags->setText("Load Tags");
+    menuBar()->addAction(actionSaveTags);
+    menuBar()->addAction(actionLoadTags);
+    */
+    QAction *actionSaveTags, *actionLoadTags;
+    for (auto action : menuBar()->actions()){
+        if (action->objectName() == QString::fromUtf8("actionLoadTags")){
+
+        }
+    }
+
 
     /*
      * Register Events for clicks
@@ -268,6 +285,40 @@ void MainWindow::on_actionStop_triggered() {
     maxDuration = "/00:00";
     timeLabel->setText("00:00" + maxDuration);
 }
+
+void MainWindow::on_actionSaveTags_triggered(){
+    qDebug() << "Saving tags..";
+    QString filePath = QFileDialog::getSaveFileName(this, "Save Tags", "", "VTeg files(*.vteg)");
+    QMessageBox box;
+
+    // FilePath valid?
+    if (filePath == nullptr || filePath == ""){
+        QMessageBox::information(this, "Warning", "Cannot save at this path.");
+        box.show();
+        return;
+    }
+
+    // Any video loaded and tags exist?
+    if (player->state() == QMediaPlayer::StoppedState){
+        QMessageBox::information(this, "Info", "There are no tags.");
+        box.show();
+        return;
+    }
+
+    save(filePath);
+}
+
+void MainWindow::on_actionLoadTags_triggered(){
+    qDebug() << "Loading tags..";
+    QString filePath = QFileDialog::getOpenFileName(this, "Load Tags", "", "VTeg files(*.vteg)");
+    if (filePath == nullptr || filePath == "")
+        return;
+
+    load(filePath);
+}
+
+
+
 
 /**
  * Will add a tag to the list, if there is a video playing
@@ -486,6 +537,10 @@ bool MainWindow::eventFilter(QObject *object, QEvent *event) {
 
 /**
  * Serialize tagList to a filePath
+ *
+ * File format:
+ *  1)      videoTags->size()
+ *  2..n)   videoTag::serialize()
  * @param filePath: The path where the file should be stored
  */
 void MainWindow::save(const QString& filePath){

@@ -36,8 +36,8 @@
     <property name="title">
      <string>Tags</string>
     </property>
-    <addaction name="actionLoad_Tagfile"/>
-    <addaction name="actionSave_Tagfile"/>
+    <addaction name="actionLoadTags"/>
+    <addaction name="actionSaveTags"/>
    </widget>
    <addaction name="menuFiles"/>
    <addaction name="menuTags"/>
@@ -68,12 +68,12 @@
     <string>Pause</string>
    </property>
   </action>
-  <action name="actionLoad_Tagfile">
+  <action name="actionLoadTags">
    <property name="text">
     <string>Load Tagfile</string>
    </property>
   </action>
-  <action name="actionSave_Tagfile">
+  <action name="actionSaveTags">
    <property name="text">
     <string>Save Tagfile</string>
    </property>

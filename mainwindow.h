@@ -46,6 +46,8 @@ private slots:
     void on_actionPlay_triggered();
     void on_actionPause_triggered();
     void on_actionStop_triggered();
+    void on_actionSaveTags_triggered();
+    void on_actionLoadTags_triggered();
     
 
     void tagEntryClickTimeout();
@@ -86,7 +88,7 @@ private:
     void changeLabelTime(qint64);
 
     void save(const QString& filePath);
-    static void load(const QString& filePath);
+    void load(const QString& filePath);
 };
 
 #endif //MAINWINDOW_H
