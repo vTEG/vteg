@@ -17,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
      * Default settings
      */
     ui->setupUi(this);
-    this->setMinimumSize(640,360);
+    this->setMinimumSize(896,504);
 
     /*
      * Creating objects
@@ -30,13 +30,21 @@ MainWindow::MainWindow(QWidget *parent)
     mainWidget = new QWidget(this);
     videoWidget = new QWidget(mainWidget);
     videoControlsWidget = new QWidget(videoWidget);
+    videoTimeWidget = new QWidget(videoControlsWidget);
+    videoButtonsWidget = new QWidget(videoControlsWidget);
     tagWidget = new QWidget(mainWidget);
     tagButtonWidget = new QWidget(tagWidget);
     addTag = new QPushButton("+", tagButtonWidget);
+    QPixmap start("images/button_black_play.png"); QPixmap pause("images/button_black_pause.png"); QPixmap stop("images/button_black_stop.png");
+    playButton = new QPushButton(start, nullptr, videoButtonsWidget);
+    pauseButton = new QPushButton(pause, nullptr, videoButtonsWidget);
+    stopButton = new QPushButton(stop, nullptr, videoButtonsWidget);
     removeTag = new QPushButton("-", tagButtonWidget);
     jumpToTag = new QPushButton("->", tagButtonWidget);
     listView = new QListWidget(this);
     videoTags = new QList<VideoTag*>;
+
+    maxDuration = "/00:00";
 
 
     /*
@@ -54,8 +62,17 @@ MainWindow::MainWindow(QWidget *parent)
     listView->setLayoutDirection(Qt::RightToLeft);
 
     /*
+     * Setting the font-size of the timelabel and its default state to 00:00
+     */
+    timeLabel->setStyleSheet("QWidget{font-size:12px;}");
+    timeLabel->setText("00:00" + maxDuration);
+
+    /*
      * Size of the buttons for the tag list
      */
+    playButton->setFixedSize(30, 30);
+    pauseButton->setFixedSize(30, 30);
+    stopButton->setFixedSize(30, 30);
     addTag->setFixedSize(30, 30);
     removeTag->setFixedSize(30, 30);
     jumpToTag->setFixedSize(30, 30);
@@ -68,7 +85,10 @@ MainWindow::MainWindow(QWidget *parent)
     this->setCentralWidget(mainWidget);
     mainWidget->setLayout(new QHBoxLayout);
     videoWidget->setLayout(new QVBoxLayout);
-    videoControlsWidget->setLayout(new QHBoxLayout);
+    videoControlsWidget->setLayout(new QVBoxLayout);
+    videoTimeWidget->setLayout(new QHBoxLayout);
+    auto buttonsHbox = new QHBoxLayout;
+    videoButtonsWidget->setLayout(buttonsHbox);
     tagWidget->setLayout(new QVBoxLayout);
     tagButtonWidget->setLayout(new QHBoxLayout);
 
@@ -78,9 +98,14 @@ MainWindow::MainWindow(QWidget *parent)
     videoWidget->layout()->addWidget(vw);
     videoWidget->layout()->addWidget(videoControlsWidget);
 
-    videoControlsWidget->layout()->addWidget(volume);
-    videoControlsWidget->layout()->addWidget(slider);
-    videoControlsWidget->layout()->addWidget(timeLabel);
+    videoControlsWidget->layout()->addWidget(videoTimeWidget);
+    videoControlsWidget->layout()->addWidget(videoButtonsWidget);
+    videoTimeWidget->layout()->addWidget(slider);
+    videoTimeWidget->layout()->addWidget(timeLabel);
+    buttonsHbox->addWidget(playButton, 0, Qt::AlignLeft);
+    buttonsHbox->addWidget(pauseButton, 0, Qt::AlignLeft);
+    buttonsHbox->addWidget(stopButton, 0, Qt::AlignLeft);
+    buttonsHbox->addWidget(volume, 1, Qt::AlignRight);
 
     tagWidget->layout()->addWidget(listView);
     tagWidget->layout()->addWidget(tagButtonWidget);
@@ -112,6 +137,9 @@ MainWindow::MainWindow(QWidget *parent)
     /*
      * Button clicked events
      */
+    connect(playButton, &QPushButton::clicked, this, &MainWindow::on_actionPlay_triggered);
+    connect(pauseButton, &QPushButton::clicked, this, &MainWindow::on_actionPause_triggered);
+    connect(stopButton, &QPushButton::clicked, this, &MainWindow::on_actionStop_triggered);
     connect(addTag, &QPushButton::clicked, this, &MainWindow::addTagToList);
     connect(removeTag, &QPushButton::clicked, this, &MainWindow::removeTagFromList);
     connect(jumpToTag, &QPushButton::clicked, this, &MainWindow::jumpToSelectedTag);
@@ -129,7 +157,7 @@ MainWindow::MainWindow(QWidget *parent)
     /**
      * Triggers a resize event so the scaling of everything will be correct on startup
      */
-    QCoreApplication::postEvent(this, new QResizeEvent(size(), size()));
+    fireResizeEvent();
 }
 
 /**
@@ -149,16 +177,22 @@ MainWindow::~MainWindow()
 void MainWindow::resizeEvent(QResizeEvent *event) {
     QWidget::resizeEvent(event);
     int w = event->size().width(), h = event->size().height();
-    videoWidget->setMinimumSize(w * 70 / 100, h * 80 / 100);
-    tagWidget->setMinimumSize(w * 25 / 100, h * 80 / 100);
-    vw->setMinimumHeight(videoWidget->height() * 85 / 100);
-    videoControlsWidget->setMinimumHeight(videoWidget->height() * 10 / 100);
+    videoWidget->setFixedSize(w * 70 / 100, h * 95 / 100);
+    tagWidget->setFixedSize(w * 25 / 100, h * 90 / 100);
+    vw->setFixedHeight(videoWidget->height() * 75 / 100);
+    videoControlsWidget->setFixedHeight(videoWidget->height() * 20 / 100);
 
+    //set tag-list property sizes based on the width/height of the application, so its always readable and looks fine
+    listView->setStyleSheet("QWidget{font-size:" + QString::number(w / 100 > 12 ? w / 100 : 12) + "px;}");
     listView->setIconSize(QSize(16 * w / 100, 9 * h / 100));
 
-    volume->setMinimumWidth(videoControlsWidget->width() * 20 / 100);
-    slider->setMinimumWidth(videoControlsWidget->width() * 70 / 100);
-    timeLabel->setMinimumWidth(videoControlsWidget->width() * 5 / 100);
+    slider->setMinimumWidth(videoTimeWidget->width() * 80 / 100);
+    timeLabel->setMinimumWidth(videoTimeWidget->width() * 15 / 100);
+    volume->setFixedWidth(videoControlsWidget->width() * 20 / 100);
+}
+
+void MainWindow::fireResizeEvent() {
+    QCoreApplication::postEvent(this, new QResizeEvent(size(), size()));
 }
 
 
@@ -175,6 +209,7 @@ void MainWindow::on_actionOpen_triggered() {
 
     player->setMedia(media);
     currentTime = 0;
+    playerState = QMediaPlayer::PlayingState;
     on_actionPlay_triggered();
 
     /*
@@ -193,6 +228,10 @@ void MainWindow::on_actionOpen_triggered() {
  * Will play the video if there is one active
  */
 void MainWindow::on_actionPlay_triggered() {
+    if(playerState == QMediaPlayer::StoppedState) {
+        qDebug() << "No Video";
+        return;
+    }
     player->play();
     playerState = QMediaPlayer::PlayingState;
     ui->statusbar->showMessage("Playing");
@@ -203,6 +242,10 @@ void MainWindow::on_actionPlay_triggered() {
  * Will pause the video if there is one active
  */
 void MainWindow::on_actionPause_triggered() {
+    if(playerState == QMediaPlayer::StoppedState) {
+        qDebug() << "No Video";
+        return;
+    }
     player->pause();
     playerState = QMediaPlayer::PausedState;
     ui->statusbar->showMessage("Paused");
@@ -213,11 +256,16 @@ void MainWindow::on_actionPause_triggered() {
  * Will stop the video if there is one active
  */
 void MainWindow::on_actionStop_triggered() {
+    if(playerState == QMediaPlayer::StoppedState) {
+        qDebug() << "No Video";
+        return;
+    }
     removeAllTagsFromList();
     player->stop();
     playerState = QMediaPlayer::StoppedState;
     ui->statusbar->showMessage("Stopped");
-    timeLabel->clear();
+    maxDuration = "/00:00";
+    timeLabel->setText("00:00" + maxDuration);
 }
 
 /**
@@ -243,9 +291,8 @@ void MainWindow::addTagToList() const {
 
     //sort the list
     qSort(videoTags->begin(), videoTags->end(), [] (const VideoTag* a, const VideoTag* b) {return a->getTimestamp() < b->getTimestamp();});
-    
     // Create a list item and copy preview image from tag object, then add it to list at index of tag in sorted list
-    auto *itm = new QListWidgetItem(tag->getTitle());
+    auto *itm = new QListWidgetItem(tag->getTitle() + "\n" + tag->getDescription());
     itm->setIcon(QPixmap::fromImage(tag->getImage()));
     listView->insertItem(videoTags->indexOf(tag), itm);
     qDebug() << "Added tag to list";
@@ -302,7 +349,7 @@ void MainWindow::changeLabelTime(qint64 i) {
     int mins = secs/60;
     secs = secs%60;
 
-    timeLabel->setText(QString::asprintf("%02d:%02d", mins, secs));
+    timeLabel->setText(QString::asprintf("%02d:%02d", mins, secs) + maxDuration);
 }
 
 /**
@@ -355,6 +402,12 @@ void MainWindow::positionChanged(quint64 position)
 void MainWindow::durationChanged(quint64 duration)
 {
     slider->setRange(0, static_cast<int>(duration));
+
+    //calculate maxDuration for the playerLabel just after the duration actually changed cause player-setMedia is asynchronous
+    int secs = static_cast<int>(player->duration())/1000;
+    int mins = secs/60;
+    secs = secs%60;
+    maxDuration = QString::asprintf("/%02d:%02d", mins, secs);
 }
 
 /**
@@ -467,21 +520,3 @@ void MainWindow::load(const QString& filePath){
         qDebug()<< "Deserialized: " << tag.toString();
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

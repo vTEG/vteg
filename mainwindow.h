@@ -14,6 +14,7 @@
 
 //Including Qt dependencies
 #include <QMainWindow>
+#include <QWindow>
 #include <QMediaPlayer>
 #include <QVideoWidget>
 #include <QFileDialog>
@@ -45,6 +46,7 @@ private slots:
     void on_actionPlay_triggered();
     void on_actionPause_triggered();
     void on_actionStop_triggered();
+    
 
     void tagEntryClickTimeout();
     void onTagEntryClicked(QListWidgetItem *item);
@@ -57,18 +59,21 @@ private slots:
 protected:
     bool eventFilter(QObject* object, QEvent* event) override;
     void resizeEvent(QResizeEvent*) override;
+    void fireResizeEvent();
 
 private:
     Ui::MainWindow *ui;
     QMediaPlayer *player;
     QMediaPlayer::State playerState;
     VideoWidget *vw{};
-    QWidget *mainWidget, *videoWidget, *videoControlsWidget, *tagWidget, *tagButtonWidget;
+    QWidget *mainWidget, *videoWidget, *videoControlsWidget, *videoTimeWidget,*videoButtonsWidget, *tagWidget, *tagButtonWidget;
     QSlider *slider{}, *volume;
     QLabel *timeLabel;
-    QPushButton *addTag, *removeTag, *jumpToTag;
+    QPushButton *addTag, *removeTag, *jumpToTag, *playButton, *pauseButton, *stopButton;
     QList<VideoTag*> *videoTags;
     QListWidgetItem* tagListClickedItem{};
+
+    QString maxDuration;
 
 
     int currentTime = 0;
@@ -85,4 +90,3 @@ private:
 };
 
 #endif //MAINWINDOW_H
-#pragma clang diagnostic pop
