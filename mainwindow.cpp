@@ -479,6 +479,7 @@ bool MainWindow::eventFilter(QObject *object, QEvent *event) {
     QImage frame;
     if (event->type() == QEvent::KeyPress){
         auto *keyEvent = dynamic_cast<QKeyEvent*>(event);
+        auto *widget = new TagManager(this);
 
         switch (keyEvent->key()){
             case Qt::Key_Space:
@@ -517,6 +518,12 @@ bool MainWindow::eventFilter(QObject *object, QEvent *event) {
                     }
                 }
                 break;
+
+            case Qt::Key_W:
+                widget->show();
+
+                break;
+
             default:
                 /*
                  * ignored

@@ -30,7 +30,7 @@ set(PROJECT_SOURCES
         videowidget.cpp
         videowidget.h
         videowidgetsurface.cpp
-        videowidgetsurface.h)
+        videowidgetsurface.h ui/TagManager.cpp ui/TagManager.h)
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(VTEg

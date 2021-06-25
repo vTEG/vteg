@@ -11,6 +11,7 @@
 #include "VideoTag.h"
 #include "videowidget.h"
 #include "videowidgetsurface.h"
+#include "ui/TagManager.h"
 
 //Including Qt dependencies
 #include <QMainWindow>
