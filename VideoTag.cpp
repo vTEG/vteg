@@ -18,6 +18,7 @@ VideoTag::VideoTag(QString title, QString description, QImage image, qint64 time
     this->description = std::move(description);
     this->image = std::move(image);
     this->timestamp = timestamp;
+    this->imageIsStatic = false;
 }
 
 VideoTag::~VideoTag() = default;
@@ -47,11 +48,11 @@ void VideoTag::setDescription(const QString &setDescription) {
 }
 
 const QString &VideoTag::getIconPath() const {
-    return iconPath;
+    return imagePath;
 }
 
 void VideoTag::setIconPath(const QString &setIconPath) {
-    VideoTag::iconPath = setIconPath;
+    VideoTag::imagePath = setIconPath;
 }
 
 const QString &VideoTag::getColorCode() const {
@@ -86,6 +87,12 @@ void VideoTag::setAutoStopOnJump(bool setAutoStop) {
     VideoTag::autoStopOnJump = setAutoStop;
 }
 
+
+bool VideoTag::isImageIsStatic() const {
+    return imageIsStatic;
+}
+
+
 VideoTag::VideoTag(const VideoTag &other) {
 
 }
@@ -96,7 +103,7 @@ VideoTag &VideoTag::operator=(const VideoTag &other) {
 
     title = other.getTitle();
     description = other.getDescription();
-    iconPath = other.getIconPath();
+    imagePath = other.getIconPath();
     colorCode = other.getColorCode();
     colorCodeBackground = other.getColorCodeBackground();
     timestamp = other.getTimestamp();
@@ -116,7 +123,7 @@ bool VideoTag::operator==(const VideoTag &other) {
 void VideoTag::serialize(QDataStream &stream){
     stream << title;
     stream << description;
-    stream << iconPath;
+    stream << imagePath;
     stream << colorCode;
     stream << colorCodeBackground;
     stream << timestamp;
@@ -125,7 +132,7 @@ void VideoTag::serialize(QDataStream &stream){
 
 
 void VideoTag::deserialize(QDataStream &stream){
-    stream >> title >> description >> iconPath >> colorCode;
+    stream >> title >> description >> imagePath >> colorCode;
     stream >> colorCodeBackground >> timestamp >> autoStopOnJump;
 }
 
@@ -138,4 +145,8 @@ QString VideoTag::toString() {
     retVal += " Description: ";
     retVal += description;
     return retVal;
+}
+
+void VideoTag::setImageIsStatic(bool imageIsStatic) {
+    this->imageIsStatic = imageIsStatic;
 }

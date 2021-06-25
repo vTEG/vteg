@@ -17,9 +17,10 @@ private:
     QString title;
     QString description;
     QImage image;
+    bool imageIsStatic{};
 
     // Coloring and icon
-    QString iconPath;
+    QString imagePath;
     QString colorCode;
     QString colorCodeBackground;
 
@@ -44,6 +45,10 @@ public:
     const QString &getDescription() const;
 
     void setDescription(const QString &description);
+
+    bool isImageIsStatic() const;
+
+    void setImageIsStatic(bool imageIsStatic);
 
     const QImage &getImage() const;
 

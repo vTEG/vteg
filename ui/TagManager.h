@@ -12,8 +12,12 @@
 #include <QStatusBar>
 #include <QDialog>
 #include <QDialogButtonBox>
+#include <QLabel>
+#include <QFile>
 #include <QVBoxLayout>
 #include <QDebug>
+#include <QComboBox>
+
 
 class TagManager : public QDialog {
 
@@ -25,6 +29,8 @@ private slots:
 private:
     QWidget *parentWindow;
     QDialogButtonBox *buttonBox;
+    QComboBox *categoryComboBox;
+
 
 
 public:

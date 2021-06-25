@@ -17,6 +17,8 @@ MainWindow::MainWindow(QWidget *parent)
     this->setWindowTitle("VTEg");
     this->setWindowIcon(QIcon(QPixmap("images/speaker.png")));
     this->setMinimumSize(896,504);
+    // Disable '?' Button in window titles
+    QApplication::setAttribute(Qt::AA_DisableWindowContextHelpButton);
 
     /*
      * Creating objects
@@ -143,23 +145,6 @@ MainWindow::MainWindow(QWidget *parent)
     connect(addTag, &QPushButton::clicked, this, &MainWindow::addTagToList);
     connect(removeTag, &QPushButton::clicked, this, &MainWindow::removeTagFromList);
     connect(jumpToTag, &QPushButton::clicked, this, &MainWindow::jumpToSelectedTag);
-
-    // Actions
-    /*
-    QAction *actionSaveTags = new QAction(this);
-    QAction *actionLoadTags = new QAction(this);
-    actionSaveTags->setText("Save Tags");
-    actionLoadTags->setText("Load Tags");
-    menuBar()->addAction(actionSaveTags);
-    menuBar()->addAction(actionLoadTags);
-    */
-    QAction *actionSaveTags, *actionLoadTags;
-    for (auto action : menuBar()->actions()){
-        if (action->objectName() == QString::fromUtf8("actionLoadTags")){
-
-        }
-    }
-
 
     /*
      * Register Events for clicks
@@ -297,7 +282,7 @@ void MainWindow::on_actionSaveTags_triggered(){
     }
 
     // Any video loaded and tags exist?
-    if (player->state() == QMediaPlayer::StoppedState){
+    if (videoTags->empty()){
         QMessageBox::information(this, "Info", "There are no tags.");
         box.show();
         return;
@@ -342,7 +327,7 @@ void MainWindow::addTagToList() const {
 
     // create tag object so we can read info from it and add it to list
     auto *tag = new VideoTag(QString::asprintf("%02d:%02d", mins, secs), description, vw->getSurface()->getLastFrame().copy(), cTime);
-    addTagToList(tag);
+    addExistingTagToList(tag);
 }
 
 /**
@@ -350,15 +335,16 @@ void MainWindow::addTagToList() const {
  * or when a template is being used.
  * @param tag   predefined VideoTag
  */
-void MainWindow::addTagToList(VideoTag *tag) const {
+void MainWindow::addExistingTagToList(VideoTag *tag) const {
     videoTags->push_back(tag);
+
     qSort(videoTags->begin(), videoTags->end(),
           [] (const VideoTag* a, const VideoTag* b) {return a->getTimestamp() < b->getTimestamp();});
 
     auto *item = new QListWidgetItem(tag->getTitle() + "\n" + tag->getDescription());
+
     item->setIcon(QPixmap::fromImage(tag->getImage()));
     listView->insertItem(videoTags->indexOf(tag), item);
-    qDebug() << "Added tag to list";
 }
 
 /**
@@ -485,7 +471,8 @@ bool MainWindow::eventFilter(QObject *object, QEvent *event) {
     QImage frame;
     if (event->type() == QEvent::KeyPress){
         auto *keyEvent = dynamic_cast<QKeyEvent*>(event);
-        auto *widget = new TagManager(this);
+        auto *pTagManager = new TagManager(this);
+        int returnValue = -1;
 
         switch (keyEvent->key()){
             case Qt::Key_Space:
@@ -526,8 +513,9 @@ bool MainWindow::eventFilter(QObject *object, QEvent *event) {
                 break;
 
             case Qt::Key_W:
-                widget->show();
 
+                returnValue = pTagManager->exec();
+                qDebug() << "TagManager finished with code " << returnValue;
                 break;
 
             default:
@@ -569,7 +557,6 @@ void MainWindow::save(const QString& filePath){
     stream << videoTags->size();
     for (int i = 0; i < videoTags->size(); i++){
         videoTags->value(i)->serialize(stream);
-        qDebug()<< "Serialized: " << videoTags->value(i)->toString();
     }
 
     qDebug() << QString::asprintf("Saved Video-Tags to ") << filePath;
@@ -582,16 +569,19 @@ void MainWindow::save(const QString& filePath){
 void MainWindow::load(const QString& filePath){
 
     // Plausibility checks
-    bool append;
+    bool append = false;
+    player->pause();
 
-    if (player->state() != QMediaPlayer::StoppedState || !videoTags->empty()){
-        QMessageBox msgBox;
+    if (!videoTags->empty()){
+        QMessageBox msgBox(this);
+        msgBox.setModal(true);
         msgBox.setText("Video Tags already exist");
         msgBox.setInformativeText("Would you like to append loaded tags?");
         msgBox.setStandardButtons(
                 QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel
                 );
         msgBox.setDefaultButton(QMessageBox::Cancel);
+        msgBox.setMinimumSize(200, 200);
 
         int retValue = msgBox.exec();
 
@@ -607,7 +597,7 @@ void MainWindow::load(const QString& filePath){
         }
     }
 
-
+    // Open file and load data
     QFile file(filePath);
     file.open(QIODevice::ReadOnly);
     QDataStream stream(&file);
@@ -617,25 +607,65 @@ void MainWindow::load(const QString& filePath){
 
     auto *list = new QList<VideoTag*>;
 
+    qint64 previousPosition = player->position();
+    quint16 failedEntries = 0;
+    player->setMuted(true);
+
     for (int i = 0; i < size; i++){
-        auto tag = VideoTag();
+        auto tag = new VideoTag();
         // Deserialize from stream
-        tag.deserialize(stream);
+        tag->deserialize(stream);
+
+        // plausibility check
+        if (tag->getTimestamp() > player->duration()){
+            qDebug() << "Invalid Timestamp for tag: " << tag->getTimestamp() << " > " << player->duration();
+            failedEntries++;
+            continue;
+        }
+
+        // Try to load preview at given timestamp
+        player->setPosition(tag->getTimestamp());
+        player->play();
+        tag->setImage(vw->getSurface()->getLastFrame().copy());
+        player->pause();
 
         // Add to temporary list
-        list->push_back(&tag);
-        qDebug()<< "Deserialized: " << tag.toString();
+        list->push_back(tag);
     }
 
-    // If
+    // Check if there have been any errors. If so, ask user to continue or not
+    if (failedEntries > 0){
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("Warning");
+        QString t = QString::asprintf("There %s %d %s with out-of-scope timestamps.\nWould you like to continue anyways?",
+                                      failedEntries == 1 ? "is" : "are",
+                                      failedEntries,
+                                      failedEntries == 1 ? "issue" : "issues");
+
+        msgBox.setText(t);
+        msgBox.setModal(true);
+        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+        msgBox.setMinimumSize(300, 200);
+
+        if (msgBox.exec() == QMessageBox::No)
+            return;
+    }
+
+    // Clear previous existing tags if needed
     if (!append){
-        videoTags->clear();
-        listView->clear();
-
-        for (auto *tag : *list){
-
-        }
+        removeAllTagsFromList();
     }
 
+    // Add tags to view
+    for (auto i : *list){
+        addExistingTagToList(i);
+    }
 
+    // Restore player state
+    player->setPosition(previousPosition);
+    player->play();
+    player->setMuted(false);
+
+    // Debug: feedback
+    qDebug() << list->size() << " Tags loaded from file at " << filePath;
 }
