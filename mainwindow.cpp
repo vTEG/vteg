@@ -15,6 +15,7 @@ MainWindow::MainWindow(QWidget *parent)
      */
     ui->setupUi(this);
     this->setWindowTitle("VTEg");
+    this->setWindowIcon(QIcon(QPixmap("images/speaker.png")));
     this->setMinimumSize(896,504);
 
     /*
@@ -330,7 +331,8 @@ void MainWindow::addTagToList() const {
 
     //Get Description via QInputDialog and add it to the list
     player->pause();
-    auto description = QInputDialog::getText(this->parentWidget(), "VTEg", "Input Text:");
+    auto description = QInputDialog::getText(this->window(), "Title", "Input Text:", QLineEdit::Normal, "",
+                                             nullptr, Qt::MSWindowsFixedSizeDialogHint);
     player->play();
 
     // Calculate timestamp
