@@ -84,6 +84,7 @@ private:
     bool mDoubleClicked{};
 
     void addTagToList() const;
+    void addTagToList(VideoTag *tag) const;
     void removeTagFromList() const;
     void removeAllTagsFromList() const;
     void jumpToSelectedTag() const;

@@ -342,16 +342,22 @@ void MainWindow::addTagToList() const {
 
     // create tag object so we can read info from it and add it to list
     auto *tag = new VideoTag(QString::asprintf("%02d:%02d", mins, secs), description, vw->getSurface()->getLastFrame().copy(), cTime);
+    addTagToList(tag);
+}
 
-    //add tag to list
+/**
+ * Will add an existing Tag to the list when one is loaded from file
+ * or when a template is being used.
+ * @param tag   predefined VideoTag
+ */
+void MainWindow::addTagToList(VideoTag *tag) const {
     videoTags->push_back(tag);
+    qSort(videoTags->begin(), videoTags->end(),
+          [] (const VideoTag* a, const VideoTag* b) {return a->getTimestamp() < b->getTimestamp();});
 
-    //sort the list
-    qSort(videoTags->begin(), videoTags->end(), [] (const VideoTag* a, const VideoTag* b) {return a->getTimestamp() < b->getTimestamp();});
-    // Create a list item and copy preview image from tag object, then add it to list at index of tag in sorted list
-    auto *itm = new QListWidgetItem(tag->getTitle() + "\n" + tag->getDescription());
-    itm->setIcon(QPixmap::fromImage(tag->getImage()));
-    listView->insertItem(videoTags->indexOf(tag), itm);
+    auto *item = new QListWidgetItem(tag->getTitle() + "\n" + tag->getDescription());
+    item->setIcon(QPixmap::fromImage(tag->getImage()));
+    listView->insertItem(videoTags->indexOf(tag), item);
     qDebug() << "Added tag to list";
 }
 
@@ -574,15 +580,62 @@ void MainWindow::save(const QString& filePath){
  * @param filePath: The path where the file is stored
  */
 void MainWindow::load(const QString& filePath){
+
+    // Plausibility checks
+    bool append;
+
+    if (player->state() != QMediaPlayer::StoppedState || !videoTags->empty()){
+        QMessageBox msgBox;
+        msgBox.setText("Video Tags already exist");
+        msgBox.setInformativeText("Would you like to append loaded tags?");
+        msgBox.setStandardButtons(
+                QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel
+                );
+        msgBox.setDefaultButton(QMessageBox::Cancel);
+
+        int retValue = msgBox.exec();
+
+        switch (retValue){
+            case QMessageBox::Yes:
+                append = true;
+                break;
+            case QMessageBox::No:
+                append = false;
+                break;
+            default:
+                return;
+        }
+    }
+
+
     QFile file(filePath);
     file.open(QIODevice::ReadOnly);
     QDataStream stream(&file);
 
     int size;
     stream >> size;
+
+    auto *list = new QList<VideoTag*>;
+
     for (int i = 0; i < size; i++){
         auto tag = VideoTag();
+        // Deserialize from stream
         tag.deserialize(stream);
+
+        // Add to temporary list
+        list->push_back(&tag);
         qDebug()<< "Deserialized: " << tag.toString();
     }
+
+    // If
+    if (!append){
+        videoTags->clear();
+        listView->clear();
+
+        for (auto *tag : *list){
+
+        }
+    }
+
+
 }
