@@ -23,6 +23,7 @@
 #include <QListWidget>
 #include <QHBoxLayout>
 #include <QPushButton>
+#include <QInputDialog>
 
 // Includes for time. (Detection of single- vs double-click on ListItems)
 #include <ctime>

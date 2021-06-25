@@ -3,11 +3,7 @@
 
 #include <QTimer>
 #include <QKeyEvent>
-#include <QVideoProbe>
 #include <QMessageBox>
-
-
-// ToDo: https://stackoverflow.com/questions/30800772/how-to-grab-video-frames-in-qt
 
 MainWindow::MainWindow(QWidget *parent)
         : QMainWindow(parent)
@@ -18,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent)
      * Default settings
      */
     ui->setupUi(this);
+    this->setWindowTitle("VTEg");
     this->setMinimumSize(896,504);
 
     /*
@@ -330,13 +327,19 @@ void MainWindow::addTagToList() const {
         qDebug() << "No active Video";
         return;
     }
+
+    //Get Description via QInputDialog and add it to the list
+    player->pause();
+    auto description = QInputDialog::getText(this->parentWidget(), "VTEg", "Input Text:");
+    player->play();
+
     // Calculate timestamp
     int secs = cTime/1000;
     int mins = secs/60;
     secs = secs%60;
 
     // create tag object so we can read info from it and add it to list
-    auto *tag = new VideoTag(QString::asprintf("%02d:%02d", mins, secs), "Description", vw->getSurface()->getLastFrame().copy(), cTime);
+    auto *tag = new VideoTag(QString::asprintf("%02d:%02d", mins, secs), description, vw->getSurface()->getLastFrame().copy(), cTime);
 
     //add tag to list
     videoTags->push_back(tag);

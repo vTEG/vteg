@@ -135,5 +135,7 @@ QString VideoTag::toString() {
     retVal += title;
     retVal += " Timestamp: ";
     retVal += QString::number(timestamp);
+    retVal += " Description: ";
+    retVal += description;
     return retVal;
 }
