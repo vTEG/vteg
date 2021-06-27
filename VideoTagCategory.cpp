@@ -4,6 +4,8 @@
 
 #include "VideoTagCategory.h"
 
+#include <utility>
+
 /**
  *
  */
@@ -53,6 +55,14 @@ QList<VideoTag*>* VideoTagCategory::getTagsByKey(Qt::Key key) {
             list->append(it.key());
     }
     return list;
+}
+
+void VideoTagCategory::setCategoryName(QString name) {
+    this->categoryName = std::move(name);
+}
+
+QString VideoTagCategory::getCategoryName() {
+    return categoryName;
 }
 
 

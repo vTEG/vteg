@@ -6,7 +6,6 @@
 #define VTEG_VIDEOTAGCATEGORY_H
 
 #include "VideoTag.h"
-#include "mainwindow.h"
 #include <QList>
 #include <QHash>
 #include <QDataStream>
@@ -30,6 +29,8 @@ public:
     void removeTag(VideoTag *tag);
 
     QList<VideoTag*>* getTagsByKey(Qt::Key key);
+    void setCategoryName(QString name);
+    QString getCategoryName();
 
     void save(QDataStream &stream);
     void load(QDataStream &stream);
