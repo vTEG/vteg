@@ -7,8 +7,8 @@
 /**
  *
  */
-VideoTagCategory::VideoTagCategory(MainWindow *mw) {
-    this->mainWindow = mw;
+VideoTagCategory::VideoTagCategory() {
+
 }
 
 /*
@@ -87,23 +87,11 @@ void VideoTagCategory::load(QDataStream &stream) {
         tag->deserialize(stream);
         qint64 key;
         stream >> key;
-        this->hotkeys.insert(tag, (Qt::Key) key);
+        this->hotkeys->insert(tag, (Qt::Key) key);
     }
 }
 
 
-bool VideoTagCategory::fireHotKey(Qt::Key key){
-    // Hotkey setHotkey?
-    QHashIterator<VideoTag*, Qt::Key> it(*this->hotkeys);
-    while (it.hasNext()){
-        it.next();
-        if (it.value() == key){
-            this->mainWindow->addExistingTagToList(it.key());
-            return true;
-        }
-    }
-    return false;
-}
 
 
 

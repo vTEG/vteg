@@ -14,14 +14,13 @@
 class VideoTagCategory {
 
 private:
-    MainWindow *mainWindow;
     QString categoryName;
     QList<VideoTag *> *tagList;
     QHash<VideoTag *, Qt::Key> *hotkeys;
 
 
 public:
-    explicit VideoTagCategory(MainWindow *mw);
+    explicit VideoTagCategory();
     ~VideoTagCategory() = default;
 
     void setHotkey(VideoTag *tag, Qt::Key key);
@@ -35,7 +34,6 @@ public:
     void save(QDataStream &stream);
     void load(QDataStream &stream);
 
-    bool fireHotKey(Qt::Key key);
 
 };
 
