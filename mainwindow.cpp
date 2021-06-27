@@ -183,7 +183,7 @@ void MainWindow::resizeEvent(QResizeEvent *event) {
     vw->setFixedHeight(videoWidget->height() * 75 / 100);
     videoControlsWidget->setFixedHeight(videoWidget->height() * 20 / 100);
 
-    //set tag-list property sizes based on the width/height of the application, so its always readable and looks fine
+    //setHotkey tag-list property sizes based on the width/height of the application, so its always readable and looks fine
     listView->setStyleSheet("QWidget{font-size:" + QString::number(w / 100 > 12 ? w / 100 : 12) + "px;}");
     listView->setIconSize(QSize(16 * w / 100, 9 * h / 100));
 

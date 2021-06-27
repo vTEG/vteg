@@ -43,6 +43,8 @@ public:
     ~MainWindow() override;
     QListWidget *listView;
 
+    void addExistingTagToList(VideoTag *tag) const;
+
 private slots:
     void on_actionOpen_triggered();
     void on_actionPlay_triggered();
@@ -84,7 +86,6 @@ private:
     bool mDoubleClicked{};
 
     void addTagToList() const;
-    void addExistingTagToList(VideoTag *tag) const;
     void removeTagFromList() const;
     void removeAllTagsFromList() const;
     void jumpToSelectedTag() const;
