@@ -10,6 +10,8 @@
  *
  */
 VideoTagCategory::VideoTagCategory() {
+    this->tagList = new QList<VideoTag*>;
+    this->hotkeys = new QHash<VideoTag*, Qt::Key>;
 
 }
 
