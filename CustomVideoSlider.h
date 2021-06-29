@@ -35,6 +35,12 @@ public:
     }
 
     ~CustomVideoSlider() override = default;
+
+    Q_SIGNALS:
+    void mouseMoved(int step);
+
+public slots:
+    void onMouseHover();
 };
 
 

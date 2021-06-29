@@ -547,6 +547,10 @@ bool MainWindow::eventFilter(QObject *object, QEvent *event) {
         QPoint p = this->mapFromGlobal(QCursor::pos());
         qDebug() << QString::asprintf("Global-X: %d, Global-Y: %d", p.x(), p.y());
         qDebug() << QString::asprintf("X: %d, Y: %d", m->pos().x(), m->pos().y());
+
+
+
+
         return true;
     }
 

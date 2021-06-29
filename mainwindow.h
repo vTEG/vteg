@@ -98,6 +98,8 @@ private:
 
     void save(const QString& filePath);
     void load(const QString& filePath);
+
+
 };
 
 #endif //MAINWINDOW_H

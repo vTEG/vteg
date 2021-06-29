@@ -28,6 +28,7 @@ void CustomVideoSlider::mouseMoveEvent(QMouseEvent *event){
     }
 
     // ToDo: somehow display a preview
+
 }
 
 void CustomVideoSlider::mousePressEvent(QMouseEvent *event) {
@@ -37,9 +38,16 @@ void CustomVideoSlider::mousePressEvent(QMouseEvent *event) {
     float p = static_cast<float>(mouseLeft) / static_cast<float>(width());
     int pos = static_cast<float>(maximum()) * p;
     setSliderPosition(pos);
+
+    // Important: Emit Signal so that MainWindow can set values to QMediaPlayer and Timestamp label
+    emit QSlider::sliderMoved(pos);
 }
 
 void CustomVideoSlider::mouseReleaseEvent(QMouseEvent *ev) {
     mousePressEvent(ev);
     mouseDown = false;
+}
+
+void CustomVideoSlider::onMouseHover() {
+    qDebug() << "Called.";
 }
