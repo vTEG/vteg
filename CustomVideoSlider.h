@@ -12,6 +12,9 @@
 #include <QRectF>
 #include <QPaintEvent>
 #include <QLabel>
+#include <QList>
+
+#include "VideoTag.h"
 
 
 class CustomVideoSlider : public QSlider {
@@ -19,6 +22,7 @@ class CustomVideoSlider : public QSlider {
 
 private:
     bool mouseDown;
+    QList<VideoTag*> *tags;
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -32,15 +36,22 @@ public:
         setFixedHeight(5);
         setMouseTracking(true);
         mouseDown = false;
+        tags = nullptr;
+    }
+
+    explicit CustomVideoSlider(QWidget *parent, QList<VideoTag*> *tags) {
+        this->setParent(parent);
+        setFixedHeight(10);
+        setMouseTracking(true);
+        mouseDown = false;
+        this->tags = tags;
     }
 
     ~CustomVideoSlider() override = default;
 
-    Q_SIGNALS:
-    void mouseMoved(int step);
+Q_SIGNALS:
+    void mouseHover(int position);
 
-public slots:
-    void onMouseHover();
 };
 
 

@@ -1,5 +1,4 @@
 #include "CustomVideoSlider.h"
-#include <iostream>
 
 void CustomVideoSlider::paintEvent(QPaintEvent *event) {
     QPainter painter(this);
@@ -17,7 +16,21 @@ void CustomVideoSlider::paintEvent(QPaintEvent *event) {
 
     painter.fillPath(pathBackground, Qt::gray);
     painter.fillPath(pathAlreadyPlayed, Qt::red);
-    painter.drawPath(pathAlreadyPlayed);
+
+    QPainterPath tagPaths;
+
+    if (tags != nullptr){
+        for (auto t : *tags){
+            p = static_cast<float>(t->getTimestamp()) / static_cast<float>(maximum());
+            border = static_cast<int>(static_cast<float>(width()) * p);
+            if (p != 0){
+                tagPaths.addRect(QRect(border-2, 0, 4, height()));
+            } else {
+                tagPaths.addRect(QRect(0, 0, 2, height()));
+            }
+        }
+    }
+    painter.fillPath(tagPaths, Qt::blue);
 }
 
 void CustomVideoSlider::mouseMoveEvent(QMouseEvent *event){
@@ -25,10 +38,9 @@ void CustomVideoSlider::mouseMoveEvent(QMouseEvent *event){
     // Handle dragging of progress bar
     if (mouseDown){
         mousePressEvent(event);
+    } else {
+        emit CustomVideoSlider::mouseHover(event->x());
     }
-
-    // ToDo: somehow display a preview
-
 }
 
 void CustomVideoSlider::mousePressEvent(QMouseEvent *event) {
@@ -46,8 +58,4 @@ void CustomVideoSlider::mousePressEvent(QMouseEvent *event) {
 void CustomVideoSlider::mouseReleaseEvent(QMouseEvent *ev) {
     mousePressEvent(ev);
     mouseDown = false;
-}
-
-void CustomVideoSlider::onMouseHover() {
-    qDebug() << "Called.";
 }

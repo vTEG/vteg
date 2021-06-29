@@ -25,12 +25,12 @@ MainWindow::MainWindow(QWidget *parent)
      */
     playerState = QMediaPlayer::StoppedState;
     vw = new VideoWidget;
-    slider = new QSlider(this);
-    customSlider = new CustomVideoSlider(this);
+    videoTags = new QList<VideoTag*>;
+
+    mainWidget = new QWidget(this);
     volume = new QSlider(this);
     timeLabel = new QLabel(this);
     previewLabel = new QLabel(this);
-    mainWidget = new QWidget(this);
     videoWidget = new QWidget(mainWidget);
     videoControlsWidget = new QWidget(videoWidget);
     videoTimeWidget = new QWidget(videoControlsWidget);
@@ -45,9 +45,9 @@ MainWindow::MainWindow(QWidget *parent)
     removeTag = new QPushButton("-", tagButtonWidget);
     jumpToTag = new QPushButton("->", tagButtonWidget);
     listView = new QListWidget(this);
-    videoTags = new QList<VideoTag*>;
     maxDuration = "/00:00";
 
+    customSlider = new CustomVideoSlider(this, videoTags);
 
     /*
      * Size of the media player Window and output setting
@@ -102,7 +102,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     videoControlsWidget->layout()->addWidget(videoTimeWidget);
     videoControlsWidget->layout()->addWidget(videoButtonsWidget);
-    videoTimeWidget->layout()->addWidget(slider);
+    videoTimeWidget->layout()->addWidget(customSlider);
     videoTimeWidget->layout()->addWidget(previewLabel);
     videoTimeWidget->layout()->addWidget(timeLabel);
     //add hbox alignments for videocontrolbutton
@@ -111,8 +111,6 @@ MainWindow::MainWindow(QWidget *parent)
     buttonsHbox->addWidget(stopButton, 0, Qt::AlignLeft);
     buttonsHbox->addWidget(volume, 1, Qt::AlignRight);
 
-    buttonsHbox->addWidget(customSlider, 1, Qt::AlignRight);
-
     tagWidget->layout()->addWidget(listView);
     tagWidget->layout()->addWidget(tagButtonWidget);
 
@@ -120,7 +118,6 @@ MainWindow::MainWindow(QWidget *parent)
     tagButtonWidget->layout()->addWidget(removeTag);
     tagButtonWidget->layout()->addWidget(jumpToTag);
 
-    slider->setOrientation(Qt::Horizontal);
     customSlider->setOrientation(Qt::Horizontal);
     volume->setOrientation(Qt::Horizontal);
     volume->setValue(50);
@@ -136,8 +133,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(player, &QMediaPlayer::positionChanged, this, &MainWindow::positionChanged);
     connect(player, &QMediaPlayer::positionChanged, this, &MainWindow::changeLabelTime);
 
-    connect(slider, &QSlider::sliderMoved, this, &MainWindow::setPosition);
     connect(customSlider, &QSlider::sliderMoved, this, &MainWindow::setPosition);
+    connect(customSlider, &CustomVideoSlider::mouseHover, this, &MainWindow::handleMouseHover);
 
     connect(volume, &QSlider::valueChanged, player, &QMediaPlayer::volumeChanged);
     connect(volume, &QSlider::valueChanged, player, &QMediaPlayer::setVolume);
@@ -159,8 +156,11 @@ MainWindow::MainWindow(QWidget *parent)
     connect(listView, &QListWidget::itemDoubleClicked, this, &MainWindow::onTagEntryDoubleClicked);
 
 
-    this->installEventFilter(this);
-    
+
+    //this->installEventFilter(this);
+
+    QCoreApplication::instance()->installEventFilter(this);
+
     /**
      * Triggers a resize event so the scaling of everything will be correct on startup
      */
@@ -193,8 +193,7 @@ void MainWindow::resizeEvent(QResizeEvent *event) {
     listView->setStyleSheet("QWidget{font-size:" + QString::number(w / 100 > 12 ? w / 100 : 12) + "px;}");
     listView->setIconSize(QSize(16 * w / 100, 9 * h / 100));
 
-    slider->setMinimumWidth(videoTimeWidget->width() * 80 / 100);
-    customSlider->setFixedWidth(videoTimeWidget->width() * 60 / 100);
+    customSlider->setMinimumWidth(videoTimeWidget->width() * 80 / 100);
 
     timeLabel->setMinimumWidth(videoTimeWidget->width() * 15 / 100);
     volume->setFixedWidth(videoControlsWidget->width() * 20 / 100);
@@ -447,10 +446,7 @@ void MainWindow::tagEntryClickTimeout() {
  */
 void MainWindow::positionChanged(quint64 position)
 {
-    slider->setValue(static_cast<int>(position));
     customSlider->setValue(static_cast<int>(position));
-
-    qDebug() << "Position" << position;
 }
 
 /**
@@ -459,7 +455,6 @@ void MainWindow::positionChanged(quint64 position)
  */
 void MainWindow::durationChanged(quint64 duration)
 {
-    slider->setRange(0, static_cast<int>(duration));
     customSlider->setRange(0, static_cast<int>(duration));
     qDebug() << "Duration: " << duration;
 
@@ -482,6 +477,23 @@ void MainWindow::setPosition(int position)
 
 bool MainWindow::eventFilter(QObject *object, QEvent *event) {
     QImage frame;
+    bool handled = false;
+
+    // Test:
+    try {
+        if (qobject_cast<QPushButton*>(object) != nullptr && event->type() == QEvent::MouseButtonPress){
+            qDebug() << ">>>>>>>>>>>>>>>>>>>>>QPushButton";
+        }
+
+        if (qobject_cast<QSlider*>(object) != nullptr && event->type() == QEvent::MouseButtonPress){
+            qDebug() << ">>>>>>>>>>>>>>>>>>>>>QSlider";
+        }
+        return QMainWindow::eventFilter(object, event);
+
+    } catch (...){
+        qDebug() << "fail";
+    }
+
     if (event->type() == QEvent::KeyPress){
         auto *keyEvent = dynamic_cast<QKeyEvent*>(event);
         auto *pTagManager = new TagManager(this);
@@ -499,6 +511,7 @@ bool MainWindow::eventFilter(QObject *object, QEvent *event) {
                         on_actionPlay_triggered();
                         break;
                 }
+                handled = true;
                 break;
             case Qt::Key_S:
                 if (keyEvent->modifiers().testFlag(Qt::ControlModifier) && keyEvent->modifiers().testFlag(Qt::AltModifier)) {
@@ -510,6 +523,7 @@ bool MainWindow::eventFilter(QObject *object, QEvent *event) {
                 } else {
                     qDebug("'S'");
                 }
+                handled = true;
                 break;
 
             case Qt::Key_L:
@@ -523,35 +537,37 @@ bool MainWindow::eventFilter(QObject *object, QEvent *event) {
                         qDebug() << "Error while saving img.";
                     }
                 }
+                handled = true;
                 break;
 
             case Qt::Key_W:
 
                 returnValue = pTagManager->exec();
                 qDebug() << "TagManager finished with code " << returnValue;
+                handled = true;
+                break;
+
+            case Qt::Key_Left:
+                if (playerState != QMediaPlayer::StoppedState){
+                    setPosition(std::max(0, static_cast<int>(player->position()) - 5000));
+                }
+                handled = true;
+                break;
+
+            case Qt::Key_Right:
+                if (playerState != QMediaPlayer::StoppedState){
+                    setPosition(std::min(static_cast<int>(player->duration()), static_cast<int>(player->position()) + 5000));
+                }
+                handled = true;
                 break;
 
             default:
                 /*
                  * ignored
                  */
+                handled = true;
                 break;
         }
-
-        //qDebug() << "Ate key press: " << keyEvent->key();
-        return true;
-    }
-
-    if (event->type() == QEvent::MouseMove){
-        auto *m = dynamic_cast<QMouseEvent*>(event);
-        QPoint p = this->mapFromGlobal(QCursor::pos());
-        qDebug() << QString::asprintf("Global-X: %d, Global-Y: %d", p.x(), p.y());
-        qDebug() << QString::asprintf("X: %d, Y: %d", m->pos().x(), m->pos().y());
-
-
-
-
-        return true;
     }
 
     return QMainWindow::eventFilter(object, event);
@@ -684,4 +700,9 @@ void MainWindow::load(const QString& filePath){
 
     // Debug: feedback
     qDebug() << list->size() << " Tags loaded from file at " << filePath;
+}
+
+
+void MainWindow::handleMouseHover(int position) {
+    //qDebug() << "Hovering over: " << position;
 }

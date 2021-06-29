@@ -64,6 +64,7 @@ private slots:
 
 public slots:
     void setPosition(int);
+    void handleMouseHover(int);
 
 protected:
     bool eventFilter(QObject* object, QEvent* event) override;
@@ -76,7 +77,7 @@ private:
     QMediaPlayer::State playerState;
     VideoWidget *vw{};
     QWidget *mainWidget, *videoWidget, *videoControlsWidget, *videoTimeWidget,*videoButtonsWidget, *tagWidget, *tagButtonWidget;
-    QSlider *slider{}, *volume;
+    QSlider *volume;
     CustomVideoSlider *customSlider;
     QLabel *previewLabel;
     QLabel *timeLabel;
