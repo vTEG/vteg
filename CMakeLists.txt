@@ -22,15 +22,14 @@ file(COPY "images/" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/images")
 
 set(PROJECT_SOURCES
         main.cpp
-        mainwindow.cpp
-        mainwindow.h
-        mainwindow.ui
-        VideoTag.cpp
-        VideoTag.h
-        videowidget.cpp
-        videowidget.h
-        videowidgetsurface.cpp
-        videowidgetsurface.h TagManager.cpp TagManager.h VideoTagCategory.cpp VideoTagCategory.h librarys/csv.h)
+        mainwindow.cpp mainwindow.h mainwindow.ui ui/ui_mainwindow.h
+        VideoTag.cpp VideoTag.h
+        videowidget.cpp videowidget.h
+        videowidgetsurface.cpp videowidgetsurface.h
+        TagManager.cpp TagManager.h
+        VideoTagCategory.cpp VideoTagCategory.h
+        libraries/csv.h
+        CustomVideoSlider.h CustomVideoSlider.cpp)
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(VTEg

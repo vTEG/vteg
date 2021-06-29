@@ -6,6 +6,7 @@
 #define VTEG_VIDEOTAGCATEGORY_H
 
 #include "VideoTag.h"
+#include <QDebug>
 #include <QList>
 #include <QHash>
 #include <QDataStream>

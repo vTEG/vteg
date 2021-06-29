@@ -1,5 +1,5 @@
 #include "mainwindow.h"
-#include "./ui_mainwindow.h"
+#include "ui/ui_mainwindow.h"
 
 #include <QTimer>
 #include <QKeyEvent>
@@ -26,8 +26,10 @@ MainWindow::MainWindow(QWidget *parent)
     playerState = QMediaPlayer::StoppedState;
     vw = new VideoWidget;
     slider = new QSlider(this);
+    customSlider = new CustomVideoSlider(this);
     volume = new QSlider(this);
     timeLabel = new QLabel(this);
+    previewLabel = new QLabel(this);
     mainWidget = new QWidget(this);
     videoWidget = new QWidget(mainWidget);
     videoControlsWidget = new QWidget(videoWidget);
@@ -44,7 +46,6 @@ MainWindow::MainWindow(QWidget *parent)
     jumpToTag = new QPushButton("->", tagButtonWidget);
     listView = new QListWidget(this);
     videoTags = new QList<VideoTag*>;
-
     maxDuration = "/00:00";
 
 
@@ -102,12 +103,15 @@ MainWindow::MainWindow(QWidget *parent)
     videoControlsWidget->layout()->addWidget(videoTimeWidget);
     videoControlsWidget->layout()->addWidget(videoButtonsWidget);
     videoTimeWidget->layout()->addWidget(slider);
+    videoTimeWidget->layout()->addWidget(previewLabel);
     videoTimeWidget->layout()->addWidget(timeLabel);
     //add hbox alignments for videocontrolbutton
     buttonsHbox->addWidget(playButton, 0, Qt::AlignLeft);
     buttonsHbox->addWidget(pauseButton, 0, Qt::AlignLeft);
     buttonsHbox->addWidget(stopButton, 0, Qt::AlignLeft);
     buttonsHbox->addWidget(volume, 1, Qt::AlignRight);
+
+    buttonsHbox->addWidget(customSlider, 1, Qt::AlignRight);
 
     tagWidget->layout()->addWidget(listView);
     tagWidget->layout()->addWidget(tagButtonWidget);
@@ -117,6 +121,7 @@ MainWindow::MainWindow(QWidget *parent)
     tagButtonWidget->layout()->addWidget(jumpToTag);
 
     slider->setOrientation(Qt::Horizontal);
+    customSlider->setOrientation(Qt::Horizontal);
     volume->setOrientation(Qt::Horizontal);
     volume->setValue(50);
     player->volumeChanged(50);
@@ -132,6 +137,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(player, &QMediaPlayer::positionChanged, this, &MainWindow::changeLabelTime);
 
     connect(slider, &QSlider::sliderMoved, this, &MainWindow::setPosition);
+    connect(customSlider, &QSlider::sliderMoved, this, &MainWindow::setPosition);
 
     connect(volume, &QSlider::valueChanged, player, &QMediaPlayer::volumeChanged);
     connect(volume, &QSlider::valueChanged, player, &QMediaPlayer::setVolume);
@@ -188,6 +194,8 @@ void MainWindow::resizeEvent(QResizeEvent *event) {
     listView->setIconSize(QSize(16 * w / 100, 9 * h / 100));
 
     slider->setMinimumWidth(videoTimeWidget->width() * 80 / 100);
+    customSlider->setFixedWidth(videoTimeWidget->width() * 60 / 100);
+
     timeLabel->setMinimumWidth(videoTimeWidget->width() * 15 / 100);
     volume->setFixedWidth(videoControlsWidget->width() * 20 / 100);
 }
@@ -440,6 +448,9 @@ void MainWindow::tagEntryClickTimeout() {
 void MainWindow::positionChanged(quint64 position)
 {
     slider->setValue(static_cast<int>(position));
+    customSlider->setValue(static_cast<int>(position));
+
+    qDebug() << "Position" << position;
 }
 
 /**
@@ -449,6 +460,8 @@ void MainWindow::positionChanged(quint64 position)
 void MainWindow::durationChanged(quint64 duration)
 {
     slider->setRange(0, static_cast<int>(duration));
+    customSlider->setRange(0, static_cast<int>(duration));
+    qDebug() << "Duration: " << duration;
 
     //calculate maxDuration for the playerLabel just after the duration actually changed cause player-setMedia is asynchronous
     int secs = static_cast<int>(player->duration())/1000;
@@ -531,7 +544,6 @@ bool MainWindow::eventFilter(QObject *object, QEvent *event) {
 
     if (event->type() == QEvent::MouseMove){
         auto *m = dynamic_cast<QMouseEvent*>(event);
-
         QPoint p = this->mapFromGlobal(QCursor::pos());
         qDebug() << QString::asprintf("Global-X: %d, Global-Y: %d", p.x(), p.y());
         qDebug() << QString::asprintf("X: %d, Y: %d", m->pos().x(), m->pos().y());

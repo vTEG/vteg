@@ -6,6 +6,7 @@
 #define VTEG_TAGMANAGER_H
 
 #include "VideoTagCategory.h"
+#include "CustomVideoSlider.h"
 
 #include <QWindow>
 #include <QWidget>
@@ -22,6 +23,7 @@
 #include <QVBoxLayout>
 #include <QDebug>
 #include <QComboBox>
+#include <QMouseEvent>
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -73,12 +75,13 @@ private:
     QLineEdit *txtCategoryName;
     QLineEdit *txtCategoryImagePath;
 
-    QComboBox *categoryComboBox;
-    QList<VideoTagCategory> *categories;
+    QComboBox *cbCategories;
+    QList<VideoTagCategory*> *categories;
 
     // Building the GUI
     void createMenu();
     void createGridGroupBox();
+    void clearGUI();
 
     // Data handling
     void loadCategories();
@@ -89,7 +92,8 @@ private:
 public:
     explicit TagManager(QWidget *parent);
 
-
+    // Forward of CustomSlider::mouseMoveEvent
+    void onSliderHover(QMouseEvent *event);
 };
 
 

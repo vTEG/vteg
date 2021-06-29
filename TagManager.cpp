@@ -7,69 +7,32 @@
 
 TagManager::TagManager(QWidget *parent) : QDialog(parent){
     this->parentWindow = parent;
-    this->categories = new QList<VideoTagCategory>;
+    this->categories = new QList<VideoTagCategory*>;
     this->mainLayout = new QVBoxLayout;
     setLayout(mainLayout);
-
-    /*
-     * Initialize GUI objects
-     */
-    // Buttons
-    btnAddCategory = new QPushButton;
-    btnRemoveCategory = new QPushButton;
-    btnFindCategoryImage = new QPushButton;
-
-    // Boxes and Layout
-    buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-
-    // Labels
-    lblCategoryName = new QLabel;
-    lblCategoryImage = new QLabel;
-    lblTags = new QLabel;
-
-    // Text fields
-    txtCategoryName = new QLineEdit;
-    txtCategoryImagePath = new QLineEdit;
-
-
-    /*
-     * Assign attributes to GUI objects
-     */
-    setMinimumSize(1250, 300);
-
-    lblCategoryName->setText(tr("Category name:"));
-    lblTags->setText(tr("Video Tags:"));
-    lblCategoryImage->setPixmap(QPixmap("images/icon_unknown").scaled(200, 100, Qt::KeepAspectRatioByExpanding));
-
-    btnAddCategory->setText(tr("+"));
-    btnAddCategory->setFixedSize(30, 30);
-
-    btnRemoveCategory->setText(tr("-"));
-    btnRemoveCategory->setFixedSize(30, 30);
-
-    btnFindCategoryImage->setIcon(QIcon(QPixmap("images/icon_search.png")));
-
-
-
-    /*
-     * Connect Buttons
-     */
-    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
-    connect(this, SIGNAL(finished(int)), this, SLOT(dialogFinished(int)));
-    connect(btnFindCategoryImage, SIGNAL(clicked(bool)), this, SLOT(onBtnFindCategoryImageClicked()));
-
-
-
-    // Create layout
-    createMenu();
-    createGridGroupBox();
+    setMinimumSize(700, 500);
 
     // Modal := Window is forced to be focused window
     setModal(true);
     setWindowTitle(tr("Vteg - Tag Manager"));
 
     // Load categories if any exist
+    //loadCategories();
+
+    auto c = new VideoTagCategory();
+    c->setCategoryName("Test Category");
+
+    auto t = new VideoTag();
+    t->setTitle("Test Tag");
+    c->addTag(t);
+
+    categories->append(c);
+
+
+    // Create layout
+    createMenu();
+    createGridGroupBox();
+
     loadCategories();
 }
 
@@ -84,11 +47,8 @@ TagManager::TagManager(QWidget *parent) : QDialog(parent){
 
 
 void TagManager::dialogFinished(int) {
-    if (result() == QDialog::Accepted){
-        qDebug() << "Clicked okay";
-    } else {
-        qDebug() << "Clicked cancel.";
-    }
+    if (result() == QDialog::Accepted)
+        saveCategories();
 }
 
 
@@ -193,7 +153,7 @@ void TagManager::createMenu() {
 }
 void TagManager::createGridGroupBox() {
     groupBox = new QGroupBox(tr("Grid Layout"));
-    categoryComboBox = new QComboBox();
+    cbCategories = new QComboBox();
     auto *layout = new QGridLayout();
 
     // Labels and preview image
@@ -202,20 +162,68 @@ void TagManager::createGridGroupBox() {
     lblCategoryImage->setPixmap(QPixmap("images/icon_unknown").scaled(100, 100, Qt::KeepAspectRatioByExpanding));
     lblTags = new QLabel(tr("Video Tags: "));
 
-    // Buttons
+    // Text fields
+    txtCategoryName = new QLineEdit();
+    txtCategoryImagePath = new QLineEdit();
+    txtCategoryName->setPlaceholderText("The name of your category");
+    txtCategoryImagePath->setPlaceholderText("/path/to/your/image");
+
+    // Create buttons
     btnAddCategory = new QPushButton();
     btnFindCategoryImage = new QPushButton();
     btnRemoveCategory = new QPushButton();
+    buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+
+    btnAddCategory->setText("+");
+    btnRemoveCategory->setText("-");
+    btnAddCategory->setFixedSize(30, 30);
+    btnRemoveCategory->setFixedSize(30, 30);
+    btnFindCategoryImage->setIcon(QIcon(QPixmap("images/icon_search.png")));
+    btnFindCategoryImage->setFixedSize(30, 30);
+
+    // ToDo: Remove slider test
+    auto *slider = new CustomVideoSlider(this);
+
+    slider->setOrientation(Qt::Horizontal);
+    layout->addWidget(slider, 5, 0);
+
+    // Connect buttons
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+
+    connect(btnAddCategory, SIGNAL(clicked(bool)), this, SLOT(onBtnAddCategoryClicked()));
+    connect(btnRemoveCategory, SIGNAL(clicked(bool)), this, SLOT(onBtnRemoveCategoryClicked()));
+    connect(btnFindCategoryImage, SIGNAL(clicked(bool)), this, SLOT(onBtnFindCategoryImageClicked()));
+
+    // Connect dialog handler
+    connect(this, SIGNAL(finished(int)), this, SLOT(dialogFinished(int)));
 
     // Add gui objects to the layout
     layout->addWidget(lblCategoryName, 0, 0);
-    layout->addWidget(lblCategoryImage, 1, 0, 1, 2);
+    layout->addWidget(txtCategoryName, 0, 1);
+
+    layout->addWidget(txtCategoryImagePath, 1, 1);
+    layout->addWidget(btnFindCategoryImage, 1, 2);
+
+    layout->addWidget(lblCategoryImage, 2, 0);
+    layout->addWidget(cbCategories, 3, 0);
+
+    layout->addWidget(btnAddCategory, 4, 0);
+    layout->addWidget(btnRemoveCategory, 4, 1);
+
+    layout->addWidget(buttonBox, 6, 0);
 
     // Assign layout to window
     groupBox->setLayout(layout);
     mainLayout->addWidget(groupBox);
 }
+void TagManager::clearGUI(){
+    menuBar->clear();
+    createMenu();
 
+    txtCategoryName->setText("");
+    txtCategoryImagePath->setText("");
+}
 
 #pragma endregion GENERATE_UI
 
@@ -240,17 +248,30 @@ void TagManager::loadCategories() {
         for (int i = 0; i < categorySize; i++){
             auto category = new VideoTagCategory();
             category->load(stream);
-
-            categories->append(*category);
-            cbEntries->append(category->getCategoryName());
+            categories->append(category);
         }
     }
 
-    categoryComboBox->addItems(*cbEntries);
+    for (auto category : *categories){
+        cbEntries->append(category->getCategoryName());
+    }
+
+    cbCategories->addItems(*cbEntries);
 }
 
 void TagManager::saveCategories() {
 
+    auto filePath = "data/categories.vtc";
+
+    QFile file(filePath);
+    if (file.open(QIODevice::WriteOnly)){
+        QDataStream stream(&file);
+
+        stream << categories->size();
+        for (VideoTagCategory *c : *categories){
+            c->save(stream);
+        }
+    }
 }
 
 
@@ -260,7 +281,9 @@ void TagManager::saveCategories() {
 #pragma endregion PRIVATE_METHODS
 
 
-
+void TagManager::onSliderHover(QMouseEvent *event) {
+    qDebug() << "X: " << event->x() << " Y: " << event->y();
+}
 
 
 

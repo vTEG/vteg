@@ -12,6 +12,7 @@
 #include "videowidget.h"
 #include "videowidgetsurface.h"
 #include "TagManager.h"
+#include "CustomVideoSlider.h"
 
 //Including Qt dependencies
 #include <QMainWindow>
@@ -60,6 +61,8 @@ private slots:
 
     void positionChanged(quint64);
     void durationChanged(quint64);
+
+public slots:
     void setPosition(int);
 
 protected:
@@ -74,6 +77,8 @@ private:
     VideoWidget *vw{};
     QWidget *mainWidget, *videoWidget, *videoControlsWidget, *videoTimeWidget,*videoButtonsWidget, *tagWidget, *tagButtonWidget;
     QSlider *slider{}, *volume;
+    CustomVideoSlider *customSlider;
+    QLabel *previewLabel;
     QLabel *timeLabel;
     QPushButton *addTag, *removeTag, *jumpToTag, *playButton, *pauseButton, *stopButton;
     QList<VideoTag*> *videoTags;
