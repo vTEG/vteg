@@ -480,6 +480,7 @@ bool MainWindow::eventFilter(QObject *object, QEvent *event) {
     bool handled = false;
 
     // Test:
+    /*
     try {
         if (qobject_cast<QPushButton*>(object) != nullptr && event->type() == QEvent::MouseButtonPress){
             qDebug() << ">>>>>>>>>>>>>>>>>>>>>QPushButton";
@@ -493,6 +494,7 @@ bool MainWindow::eventFilter(QObject *object, QEvent *event) {
     } catch (...){
         qDebug() << "fail";
     }
+     */
 
     if (event->type() == QEvent::KeyPress){
         auto *keyEvent = dynamic_cast<QKeyEvent*>(event);
@@ -704,5 +706,5 @@ void MainWindow::load(const QString& filePath){
 
 
 void MainWindow::handleMouseHover(int position) {
-    //qDebug() << "Hovering over: " << position;
+    qDebug() << "Hovering over: " << position;
 }
