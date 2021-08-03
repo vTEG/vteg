@@ -226,7 +226,7 @@ void MainWindow::on_actionOpen_triggered() {
     currentTime = 0;
     playerState = QMediaPlayer::PlayingState;
     on_actionPlay_triggered();
-    //Test
+    //Test 2
 
     /*
      * ToDo: Write used videos into a SQLite DB and save a reference to their CSV file, alternatively, just write into CSV files
