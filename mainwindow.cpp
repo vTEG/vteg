@@ -31,7 +31,6 @@ MainWindow::MainWindow(QWidget *parent)
     volume = new QSlider(this);
     timeLabel = new QLabel(this);
     previewLabel = new QLabel(this);
-    //preview = new VideoPreview(this);
     videoWidget = new QWidget(mainWidget);
     videoControlsWidget = new QWidget(videoWidget);
     videoTimeWidget = new QWidget(videoControlsWidget);
@@ -102,7 +101,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     mainWidget->layout()->addWidget(videoWidget);
     mainWidget->layout()->addWidget(tagWidget);
-    
+
     videoWidget->layout()->addWidget(vw);
     videoWidget->layout()->addWidget(videoControlsWidget);
 
@@ -110,7 +109,7 @@ MainWindow::MainWindow(QWidget *parent)
     videoControlsWidget->layout()->addWidget(videoButtonsWidget);
 
     videoTimeWidget->layout()->addWidget(customSlider);
-    //videoTimeWidget->layout()->addWidget(preview);
+    videoTimeWidget->layout()->addWidget(previewLabel);
     videoTimeWidget->layout()->addWidget(timeLabel);
     //add hbox alignments for videocontrolbutton
     buttonsHbox->addWidget(playButton, 0, Qt::AlignLeft);
@@ -164,9 +163,9 @@ MainWindow::MainWindow(QWidget *parent)
 
 
 
-    this->installEventFilter(this);
+    //this->installEventFilter(this);
 
-    //QCoreApplication::instance()->installEventFilter(this);
+    QCoreApplication::instance()->installEventFilter(this);
 
     /**
      * Triggers a resize event so the scaling of everything will be correct on startup
@@ -371,7 +370,7 @@ void MainWindow::removeTagFromList() const {
     for(auto r : rml)
         videoTags->removeAt(r.row());
     qDeleteAll(listView->selectedItems());
-    
+
     for(const auto& i : *videoTags)
         qDebug() << i->getTimestamp();
 
@@ -482,27 +481,10 @@ void MainWindow::setPosition(int position)
     player->setPosition(position);
 }
 
-
 bool MainWindow::eventFilter(QObject *object, QEvent *event) {
     QImage frame;
     bool handled = false;
 
-    // Test:
-    /*
-    try {
-        if (qobject_cast<QPushButton*>(object) != nullptr && event->type() == QEvent::MouseButtonPress){
-            qDebug() << ">>>>>>>>>>>>>>>>>>>>>QPushButton";
-        }
-
-        if (qobject_cast<QSlider*>(object) != nullptr && event->type() == QEvent::MouseButtonPress){
-            qDebug() << ">>>>>>>>>>>>>>>>>>>>>QSlider";
-        }
-        return QMainWindow::eventFilter(object, event);
-
-    } catch (...){
-        qDebug() << "fail";
-    }
-     */
     if (event->type() == QEvent::MouseButtonPress){
         qDebug() << "Mouse";
         return QMainWindow::eventFilter(object, event);
@@ -720,13 +702,8 @@ void MainWindow::load(const QString& filePath){
 void MainWindow::handleMouseHover(int position) {
 
     if (previewLabel != nullptr){
-
-
         previewLabel->updateGeometry();
         qDebug() << "Hovering over: " << position;
     }
-
-
-
 }
 

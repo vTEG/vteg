@@ -83,7 +83,6 @@ private:
     QSlider *volume;
     CustomVideoSlider *customSlider;
     QLabel *previewLabel;
-    VideoPreview *preview;
     QLabel *timeLabel;
     QPushButton *addTag, *removeTag, *jumpToTag, *playButton, *pauseButton, *stopButton;
     QList<VideoTag*> *videoTags;
