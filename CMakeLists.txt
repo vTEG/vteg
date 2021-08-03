@@ -29,7 +29,7 @@ set(PROJECT_SOURCES
         TagManager.cpp TagManager.h
         VideoTagCategory.cpp VideoTagCategory.h
         libraries/csv.h
-        CustomVideoSlider.h CustomVideoSlider.cpp)
+        CustomVideoSlider.h CustomVideoSlider.cpp VideoPreview.cpp VideoPreview.h)
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(VTEg

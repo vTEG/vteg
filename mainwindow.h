@@ -13,6 +13,7 @@
 #include "videowidgetsurface.h"
 #include "TagManager.h"
 #include "CustomVideoSlider.h"
+#include "VideoPreview.h"
 
 //Including Qt dependencies
 #include <QMainWindow>
@@ -21,6 +22,8 @@
 #include <QVideoWidget>
 #include <QFileDialog>
 #include <QLabel>
+#include <QGraphicsView>
+#include <QRect>
 #include <QSlider>
 #include <QListWidget>
 #include <QHBoxLayout>
@@ -80,6 +83,7 @@ private:
     QSlider *volume;
     CustomVideoSlider *customSlider;
     QLabel *previewLabel;
+    VideoPreview *preview;
     QLabel *timeLabel;
     QPushButton *addTag, *removeTag, *jumpToTag, *playButton, *pauseButton, *stopButton;
     QList<VideoTag*> *videoTags;
