@@ -31,6 +31,7 @@
     <addaction name="actionStop"/>
     <addaction name="actionPlay"/>
     <addaction name="actionPause"/>
+    <addaction name="actionSettings"/>
    </widget>
    <widget class="QMenu" name="menuTags">
     <property name="title">
@@ -70,12 +71,17 @@
   </action>
   <action name="actionLoadTags">
    <property name="text">
-    <string>Load Tagfile</string>
+    <string>load Tagfile</string>
    </property>
   </action>
   <action name="actionSaveTags">
    <property name="text">
-    <string>Save Tagfile</string>
+    <string>save Tagfile</string>
+   </property>
+  </action>
+  <action name="actionSettings">
+   <property name="text">
+    <string>Settings</string>
    </property>
   </action>
  </widget>

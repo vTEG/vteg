@@ -92,8 +92,8 @@ public:
         actionStop->setText(QApplication::translate("MainWindow", "Close Video", nullptr));
         actionPlay->setText(QApplication::translate("MainWindow", "Play", nullptr));
         actionPause->setText(QApplication::translate("MainWindow", "Pause", nullptr));
-        actionLoadTags->setText(QApplication::translate("MainWindow", "Load Tagfile", nullptr));
-        actionSaveTags->setText(QApplication::translate("MainWindow", "Save Tagfile", nullptr));
+        actionLoadTags->setText(QApplication::translate("MainWindow", "load Tagfile", nullptr));
+        actionSaveTags->setText(QApplication::translate("MainWindow", "save Tagfile", nullptr));
         menuFiles->setTitle(QApplication::translate("MainWindow", "Video", nullptr));
         menuTags->setTitle(QApplication::translate("MainWindow", "Tags", nullptr));
     } // retranslateUi

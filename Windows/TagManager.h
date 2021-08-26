@@ -5,8 +5,8 @@
 #ifndef VTEG_TAGMANAGER_H
 #define VTEG_TAGMANAGER_H
 
-#include "VideoTagCategory.h"
-#include "CustomVideoSlider.h"
+#include "Utilities/VideoTagCategory.h"
+#include "Utilities/CustomVideoSlider.h"
 
 #include <QWindow>
 #include <QWidget>

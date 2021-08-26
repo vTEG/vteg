@@ -16,7 +16,7 @@ TagManager::TagManager(QWidget *parent) : QDialog(parent){
     setModal(true);
     setWindowTitle(tr("Vteg - Tag Manager"));
 
-    // Load categories if any exist
+    // load categories if any exist
     //loadCategories();
 
     auto c = new VideoTagCategory();
@@ -63,11 +63,11 @@ void TagManager::onOpenActionClicked() {
 }
 
 void TagManager::onSaveActionClicked() {
-    qDebug() << "Clicked 'File/Save'";
+    qDebug() << "Clicked 'File/save'";
 }
 
 void TagManager::onSaveAsActionClicked() {
-    qDebug() << "Clicked 'File/Save as'";
+    qDebug() << "Clicked 'File/save as'";
 }
 
 void TagManager::onExitClicked() {
@@ -128,14 +128,14 @@ void TagManager::createMenu() {
 
     // Assign texts
     openAction = fileMenu->addAction(tr("&Open"));
-    saveAction = fileMenu->addAction(tr("&Save"));
-    saveAsAction = fileMenu->addAction(tr("Save &as.."));
+    saveAction = fileMenu->addAction(tr("&save"));
+    saveAsAction = fileMenu->addAction(tr("save &as.."));
     exitAction = fileMenu->addAction(tr("E&xit"));
 
     // Set hotkeys
     openAction->setShortcut(QKeySequence(tr("ctrl+o","Open")));
-    saveAction->setShortcut(QKeySequence(tr("ctrl+s", "Save")));
-    saveAsAction->setShortcut(QKeySequence(tr("ctrl+shift+s", "Save As")));
+    saveAction->setShortcut(QKeySequence(tr("ctrl+s", "save")));
+    saveAsAction->setShortcut(QKeySequence(tr("ctrl+shift+s", "save As")));
     exitAction->setShortcut(QKeySequence(tr("ctrl+w", "Exit")));
 
     // Add to layout

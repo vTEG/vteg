@@ -14,7 +14,7 @@
 #include <QLabel>
 #include <QList>
 
-#include "VideoTag.h"
+#include "Utilities/VideoTag.h"
 
 
 class CustomVideoSlider : public QSlider {

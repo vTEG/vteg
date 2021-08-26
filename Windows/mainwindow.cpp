@@ -1,8 +1,6 @@
 #include "mainwindow.h"
-#include "ui/ui_mainwindow.h"
 
 #include <QTimer>
-#include <QKeyEvent>
 #include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -19,7 +17,6 @@ MainWindow::MainWindow(QWidget *parent)
     this->setMinimumSize(896,504);
     // Disable '?' Button in window titles
     QApplication::setAttribute(Qt::AA_DisableWindowContextHelpButton);
-
     /*
      * Creating objects
      */
@@ -285,7 +282,7 @@ void MainWindow::on_actionStop_triggered() {
 
 void MainWindow::on_actionSaveTags_triggered(){
     qDebug() << "Saving tags..";
-    QString filePath = QFileDialog::getSaveFileName(this, "Save Tags", "", "VTeg files(*.vteg)");
+    QString filePath = QFileDialog::getSaveFileName(this, "save Tags", "", "VTeg files(*.vteg)");
     QMessageBox box;
 
     // FilePath valid?
@@ -307,11 +304,17 @@ void MainWindow::on_actionSaveTags_triggered(){
 
 void MainWindow::on_actionLoadTags_triggered(){
     qDebug() << "Loading tags..";
-    QString filePath = QFileDialog::getOpenFileName(this, "Load Tags", "", "VTeg files(*.vteg)");
+    QString filePath = QFileDialog::getOpenFileName(this, "load Tags", "", "VTeg files(*.vteg)");
     if (filePath == nullptr || filePath == "")
         return;
 
     load(filePath);
+}
+
+void MainWindow::on_actionSettings_triggered() {
+    auto settingsWindow = new SettingsWidget(this);
+    qDebug() << "Addition" << Settings::getInstance()->getAddition();
+    settingsWindow->show();
 }
 
 
@@ -391,8 +394,13 @@ void MainWindow::removeAllTagsFromList() const {
 void MainWindow::jumpToSelectedTag() const {
     auto rml = listView->selectionModel()->selectedIndexes();
     if(rml.isEmpty()) return;
-    player->setPosition(videoTags->value(rml.first().row())->getTimestamp());
-    int cur = static_cast<int>(videoTags->value(rml.first().row())->getTimestamp());
+    qint64 timestamp = videoTags->value(rml.first().row())->getTimestamp() + (Settings::getInstance()->getAddition() * 1000);
+    if(timestamp < 0)
+        timestamp = 0;
+    else if(timestamp > player->duration())
+        timestamp = player->duration();
+    player->setPosition(timestamp);
+    int cur = static_cast<int>(timestamp);
     int secs = cur/1000;
     int mins = secs/60;
     secs = secs%60;
@@ -591,7 +599,7 @@ void MainWindow::save(const QString& filePath){
 }
 
 /**
- * Load serialized tagList from a filePath
+ * load serialized tagList from a filePath
  * @param filePath: The path where the file is stored
  */
 void MainWindow::load(const QString& filePath){

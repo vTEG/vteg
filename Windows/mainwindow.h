@@ -8,12 +8,15 @@
 #define MAINWINDOW_H
 
 //Including header
-#include "VideoTag.h"
+#include "Utilities/VideoTag.h"
 #include "videowidget.h"
 #include "videowidgetsurface.h"
 #include "TagManager.h"
-#include "CustomVideoSlider.h"
-#include "VideoPreview.h"
+#include "Utilities/CustomVideoSlider.h"
+#include "Utilities/VideoPreview.h"
+#include "SettingsWidget.h"
+#include "Utilities/Settings.h"
+#include "../build/VTEg_autogen/include/ui/ui_mainwindow.h"
 
 //Including Qt dependencies
 #include <QMainWindow>
@@ -56,6 +59,7 @@ private slots:
     void on_actionStop_triggered();
     void on_actionSaveTags_triggered();
     void on_actionLoadTags_triggered();
+    void on_actionSettings_triggered();
     
 
     void tagEntryClickTimeout();
