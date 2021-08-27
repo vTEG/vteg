@@ -31,6 +31,7 @@ protected:
 
 private:
     VideoWidgetSurface *surface;
+
 };
 //! [0]
 

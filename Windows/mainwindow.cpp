@@ -502,6 +502,53 @@ bool MainWindow::eventFilter(QObject *object, QEvent *event) {
         auto *keyEvent = dynamic_cast<QKeyEvent*>(event);
         auto *pTagManager = new TagManager(this);
         int returnValue = -1;
+        int eventButton = keyEvent->key();
+
+        // Load hotkeys from settings
+        QMap<QString, qint64> keyMap = Settings::getInstance()->getKeyMap();
+        QMap<QString, qint64>::iterator iterator;
+
+        keyMap.value("yeeet", -1);
+
+        for(iterator = keyMap.begin(); iterator != keyMap.end(); iterator++) {
+            if (iterator.value() == eventButton){
+
+            }
+        }
+
+        HotKeyEntry *entry = new HotKeyEntry(eventButton,
+                                             keyEvent->modifiers().testFlag(Qt::AltModifier),
+                                             keyEvent->modifiers().testFlag(Qt::ControlModifier),
+                                             keyEvent->modifiers().testFlag(Qt::ShiftModifier));
+
+        HotKeyAction action = HotkeyManager::getInstance()->getAction(entry);
+
+        switch (action){
+            case OPEN_FILE:
+                // ToDo..
+                break;
+            case NO_ACTION:
+                break;
+            case CLOSE_FILE:
+                break;
+            case SAVE_FILE:
+                break;
+            case SAVE_FILE_AS:
+                break;
+            case ADD_TAG:
+                break;
+            case REMOVE_TAG:
+                break;
+            case EDIT_TAG:
+                break;
+            default:
+                break;
+        }
+
+
+
+
+
 
         switch (eventButton){
             case Qt::Key_Space:
@@ -560,10 +607,7 @@ bool MainWindow::eventFilter(QObject *object, QEvent *event) {
                 break;
 
             default:
-                /*
-                 * ignored
-                 */
-                handled = true;
+                // ignored
                 break;
         }
     }
