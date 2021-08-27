@@ -5,7 +5,7 @@ project(VTEg VERSION 0.1 LANGUAGES CXX)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 #Change this path to your local QT cmake path
-#setHotkey(CMAKE_PREFIX_PATH "/Path/To/Your/Qt/Folder")
+#set(CMAKE_PREFIX_PATH "/Path/To/Your/Qt/Folder")
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
