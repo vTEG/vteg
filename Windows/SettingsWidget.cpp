@@ -18,6 +18,7 @@ SettingsWidget::SettingsWidget(QWidget *parent): QDialog(parent) {
     additionText = new QLineEdit;
     additionText->setValidator(new QRegExpValidator(QRegExp("[0-9]*"), additionText));
     styleSelect = new QComboBox;
+    showFrames = new QCheckBox;
     gridLayout = new QGridLayout;
     save = new QPushButton("Save");
     cancel = new QPushButton("Cancel");
@@ -29,8 +30,11 @@ SettingsWidget::SettingsWidget(QWidget *parent): QDialog(parent) {
     styleSelect->addItem("light");
     styleSelect->addItem("dark");
     styleSelect->setCurrentIndex(styleSelect->findText(Settings::getInstance()->getStyle()));
+    
+    showFrames->setTristate(Settings::getInstance()->getShowFrames());
 
     gridLayout->addWidget(additionText);
+    gridLayout->addWidget(showFrames);
     gridLayout->addWidget(styleSelect);
     gridLayout->addWidget(save);
     gridLayout->addWidget(cancel);

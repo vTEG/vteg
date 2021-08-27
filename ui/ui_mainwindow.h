@@ -30,6 +30,7 @@ public:
     QAction *actionPause;
     QAction *actionLoadTags;
     QAction *actionSaveTags;
+    QAction *actionSettings;
     QWidget *centralwidget;
     QMenuBar *menubar;
     QMenu *menuFiles;
@@ -55,6 +56,8 @@ public:
         actionLoadTags->setObjectName(QString::fromUtf8("actionLoadTags"));
         actionSaveTags = new QAction(MainWindow);
         actionSaveTags->setObjectName(QString::fromUtf8("actionSaveTags"));
+        actionSettings = new QAction(MainWindow);
+        actionSettings->setObjectName(QString::fromUtf8("actionSettings"));
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         MainWindow->setCentralWidget(centralwidget);
@@ -76,6 +79,7 @@ public:
         menuFiles->addAction(actionStop);
         menuFiles->addAction(actionPlay);
         menuFiles->addAction(actionPause);
+        menuFiles->addAction(actionSettings);
         menuTags->addAction(actionLoadTags);
         menuTags->addAction(actionSaveTags);
 
@@ -94,6 +98,7 @@ public:
         actionPause->setText(QApplication::translate("MainWindow", "Pause", nullptr));
         actionLoadTags->setText(QApplication::translate("MainWindow", "load Tagfile", nullptr));
         actionSaveTags->setText(QApplication::translate("MainWindow", "save Tagfile", nullptr));
+        actionSettings->setText(QApplication::translate("MainWindow", "Settings", nullptr));
         menuFiles->setTitle(QApplication::translate("MainWindow", "Video", nullptr));
         menuTags->setTitle(QApplication::translate("MainWindow", "Tags", nullptr));
     } // retranslateUi

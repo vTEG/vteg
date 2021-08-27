@@ -37,6 +37,12 @@ public:
     bool save();
     bool load();
 
+    /**
+     * Overwrites the outstream operator for QDataStreams when writing Settings objects
+     * @param out outstream
+     * @param s settings object
+     * @return outstream
+     */
     friend QDataStream& operator<<(QDataStream &out, const Settings &s) {
         Settings *ptr = Settings::getInstance();
         out << ptr->additionToTag << ptr->showFrames << ptr->style;
