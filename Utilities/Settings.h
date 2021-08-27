@@ -35,12 +35,12 @@ public:
 
     friend QDataStream& operator<<(QDataStream &out, const Settings &s) {
         Settings *ptr = Settings::getInstance();
-        out << ptr->additionToTag << ptr->showFrames;
+        out << ptr->additionToTag << ptr->showFrames << ptr->style;
         return out;
     }
     friend QDataStream& operator>>(QDataStream &in, const Settings &s){
         Settings *ptr = Settings::getInstance();
-        in >> ptr->additionToTag >> ptr->showFrames;
+        in >> ptr->additionToTag >> ptr->showFrames >> ptr->style;
         return in;
     }
 
@@ -52,6 +52,22 @@ public:
         additionToTag = add;
     }
 
+    bool getShowFrames() {
+        return showFrames;
+    }
+
+    void setShowFrames(bool s) {
+        showFrames = s;
+    }
+
+    QString getStyle() {
+        return style;
+    }
+
+    void setStyle(QString s) {
+        style = s;
+    }
+
 private:
     Settings();
     ~Settings();
@@ -60,6 +76,7 @@ private:
 
     qint64 additionToTag;
     bool showFrames;
+    QString style;
 
     static Settings* instance;
     QString fileName = "settings.dat";

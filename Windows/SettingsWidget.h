@@ -11,6 +11,7 @@
 #include <QWidget>
 #include <QDialog>
 #include <QLineEdit>
+#include <QComboBox>
 #include <QGridLayout>
 
 class SettingsWidget : public QDialog {
@@ -23,6 +24,7 @@ public:
 private:
     QWidget *parentWindow;
     QLineEdit *additionText;
+    QComboBox *styleSelect;
     QGridLayout *gridLayout;
 };
 

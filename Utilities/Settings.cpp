@@ -8,7 +8,7 @@ Settings* Settings::instance = nullptr;
 /**
  * Deserializing our settings file in case there is one
  */
-Settings::Settings() : additionToTag(8), showFrames(false) {}
+Settings::Settings() : additionToTag(8), showFrames(false), style("dark") {}
 
 /**
  * Deleting the Settings object
