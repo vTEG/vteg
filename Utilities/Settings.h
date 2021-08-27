@@ -9,6 +9,7 @@
 #include <QDebug>
 #include <QDataStream>
 #include <QFileInfo>
+#include <utility>
 
 class Settings {
 public:
@@ -32,6 +33,9 @@ public:
      */
     Settings(const Settings&) = delete;
     Settings(Settings&) = delete;
+
+    bool save();
+    bool load();
 
     friend QDataStream& operator<<(QDataStream &out, const Settings &s) {
         Settings *ptr = Settings::getInstance();
@@ -64,15 +68,13 @@ public:
         return style;
     }
 
-    void setStyle(QString s) {
-        style = s;
+    void setStyle(QString st) {
+        style = std::move(st);
     }
 
 private:
     Settings();
     ~Settings();
-    bool save();
-    bool load();
 
     qint64 additionToTag;
     bool showFrames;

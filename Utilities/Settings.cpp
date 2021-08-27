@@ -8,7 +8,7 @@ Settings* Settings::instance = nullptr;
 /**
  * Deserializing our settings file in case there is one
  */
-Settings::Settings() : additionToTag(8), showFrames(false), style("dark") {}
+Settings::Settings() : additionToTag(0), showFrames(false), style("dark") {}
 
 /**
  * Deleting the Settings object
@@ -19,7 +19,6 @@ Settings::~Settings() {
 
 /**
  * Serializing the settings object into a file for persistence
- * @param file the file we should save to
  * @return if saving was successful
  */
 bool Settings::save() {

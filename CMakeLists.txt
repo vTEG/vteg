@@ -31,7 +31,10 @@ set(PROJECT_SOURCES
         Windows/TagManager.cpp Windows/TagManager.h
         Utilities/VideoTagCategory.cpp Utilities/VideoTagCategory.h
         libraries/csv.h
-        Utilities/CustomVideoSlider.h Utilities/CustomVideoSlider.cpp Utilities/VideoPreview.cpp Utilities/VideoPreview.h Windows/SettingsWidget.cpp Windows/SettingsWidget.h Utilities/Settings.cpp Utilities/Settings.h)
+        Utilities/CustomVideoSlider.h Utilities/CustomVideoSlider.cpp
+        Utilities/VideoPreview.cpp Utilities/VideoPreview.h
+        Windows/SettingsWidget.cpp Windows/SettingsWidget.h
+        Utilities/Settings.cpp Utilities/Settings.h)
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(VTEg

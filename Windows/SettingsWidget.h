@@ -13,6 +13,7 @@
 #include <QLineEdit>
 #include <QComboBox>
 #include <QGridLayout>
+#include <QPushButton>
 
 class SettingsWidget : public QDialog {
 Q_OBJECT
@@ -25,7 +26,11 @@ private:
     QWidget *parentWindow;
     QLineEdit *additionText;
     QComboBox *styleSelect;
+    QPushButton *save, *cancel;
     QGridLayout *gridLayout;
+
+    void saveSettings();
+    void closeSettings();
 };
 
 
