@@ -34,7 +34,8 @@ set(PROJECT_SOURCES
         Utilities/CustomVideoSlider.h Utilities/CustomVideoSlider.cpp
         Utilities/VideoPreview.cpp Utilities/VideoPreview.h
         Windows/SettingsWidget.cpp Windows/SettingsWidget.h
-        Utilities/Settings.cpp Utilities/Settings.h)
+        Utilities/Settings.cpp Utilities/Settings.h
+        Utilities/HotkeyManager.h)
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(VTEg

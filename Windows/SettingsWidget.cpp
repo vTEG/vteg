@@ -15,29 +15,35 @@ SettingsWidget::SettingsWidget(QWidget *parent): QDialog(parent) {
     /**
      * Creating the objects necessary for displaying the settings widget
      */
+    additionLabel = new QLabel("Added time when jumping");
     additionText = new QLineEdit;
-    additionText->setValidator(new QRegExpValidator(QRegExp("[0-9]*"), additionText));
-    styleSelect = new QComboBox;
+    additionText->setValidator(new QRegExpValidator(QRegExp("-?[0-9]*"), additionText));
+    themeLabel = new QLabel("Theme");
+    themeSelect = new QComboBox;
+    showFramesLabel = new QLabel("Display frames");
     showFrames = new QCheckBox;
-    gridLayout = new QGridLayout;
     save = new QPushButton("Save");
     cancel = new QPushButton("Cancel");
-
+    
+    gridLayout = new QGridLayout(this);
     setLayout(gridLayout);
 
     additionText->setText(QString::number(Settings::getInstance()->getAddition()));
 
-    styleSelect->addItem("light");
-    styleSelect->addItem("dark");
-    styleSelect->setCurrentIndex(styleSelect->findText(Settings::getInstance()->getStyle()));
+    themeSelect->addItem("light");
+    themeSelect->addItem("dark");
+    themeSelect->setCurrentIndex(themeSelect->findText(Settings::getInstance()->getTheme()));
     
-    showFrames->setTristate(Settings::getInstance()->getShowFrames());
+    showFrames->setChecked(Settings::getInstance()->getShowFrames());
 
-    gridLayout->addWidget(additionText);
-    gridLayout->addWidget(showFrames);
-    gridLayout->addWidget(styleSelect);
-    gridLayout->addWidget(save);
-    gridLayout->addWidget(cancel);
+    gridLayout->addWidget(additionLabel, 0, 0);
+    gridLayout->addWidget(additionText, 0, 1);
+    gridLayout->addWidget(showFramesLabel, 1,0);
+    gridLayout->addWidget(showFrames, 1, 1);
+    gridLayout->addWidget(themeLabel, 2, 0);
+    gridLayout->addWidget(themeSelect, 2, 1);
+    gridLayout->addWidget(save, 3, 0);
+    gridLayout->addWidget(cancel, 3, 1);
 
     connect(save, &QPushButton::clicked, this, &SettingsWidget::saveSettings);
     connect(cancel, &QPushButton::clicked, this, &SettingsWidget::closeSettings);
@@ -46,7 +52,8 @@ SettingsWidget::SettingsWidget(QWidget *parent): QDialog(parent) {
 void SettingsWidget::saveSettings() {
     Settings *ptr = Settings::getInstance();
     ptr->setAddition(additionText->displayText().toInt());
-    ptr->setStyle(styleSelect->currentText().toLower());
+    ptr->setTheme(themeSelect->currentText().toLower());
+    ptr->setShowFrames(showFrames->isChecked());
     ptr->save();
     this->close();
 }

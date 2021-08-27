@@ -15,6 +15,7 @@
 #include <QGridLayout>
 #include <QPushButton>
 #include <QCheckBox>
+#include <QLabel>
 
 class SettingsWidget : public QDialog {
 Q_OBJECT
@@ -25,8 +26,9 @@ public:
 
 private:
     QWidget *parentWindow;
+    QLabel *additionLabel, *showFramesLabel, *themeLabel;
     QLineEdit *additionText;
-    QComboBox *styleSelect;
+    QComboBox *themeSelect;
     QCheckBox *showFrames;
     QPushButton *save, *cancel;
     QGridLayout *gridLayout;

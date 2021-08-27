@@ -4,11 +4,12 @@
 
 #include "Settings.h"
 Settings* Settings::instance = nullptr;
+QMap<QString, qint64> Settings::keyMap;
 
 /**
  * Deserializing our settings file in case there is one
  */
-Settings::Settings() : additionToTag(0), showFrames(false), style("dark") {}
+Settings::Settings() : additionToTag(0), showFrames(false), theme("dark") {}
 
 /**
  * Deleting the Settings object

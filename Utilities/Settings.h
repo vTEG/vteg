@@ -5,6 +5,8 @@
 #ifndef VTEG_SETTINGS_H
 #define VTEG_SETTINGS_H
 
+#include "HotkeyManager.h"
+
 #include <QFile>
 #include <QDebug>
 #include <QDataStream>
@@ -38,19 +40,26 @@ public:
     bool load();
 
     /**
-     * Overwrites the outstream operator for QDataStreams when writing Settings objects
+     * Outstream operator for QDataStreams when writing Settings objects
      * @param out outstream
      * @param s settings object
      * @return outstream
      */
     friend QDataStream& operator<<(QDataStream &out, const Settings &s) {
         Settings *ptr = Settings::getInstance();
-        out << ptr->additionToTag << ptr->showFrames << ptr->style;
+        out << ptr->additionToTag << ptr->showFrames << ptr->theme ;
         return out;
     }
+
+    /**
+     * Instream operator for QDataStream when reading from a file into a settings object
+     * @param in instream
+     * @param s settings object
+     * @return instream
+     */
     friend QDataStream& operator>>(QDataStream &in, const Settings &s){
         Settings *ptr = Settings::getInstance();
-        in >> ptr->additionToTag >> ptr->showFrames >> ptr->style;
+        in >> ptr->additionToTag >> ptr->showFrames >> ptr->theme;
         return in;
     }
 
@@ -70,12 +79,12 @@ public:
         showFrames = s;
     }
 
-    QString getStyle() {
-        return style;
+    QString getTheme() {
+        return theme;
     }
 
-    void setStyle(QString st) {
-        style = std::move(st);
+    void setTheme(QString st) {
+        theme = std::move(st);
     }
 
 private:
@@ -84,7 +93,15 @@ private:
 
     qint64 additionToTag;
     bool showFrames;
-    QString style;
+    QString theme;
+
+    QString defaultTagCategory; // Fußball/Handball/etc.
+    // letztes Projekt automatisch beim Starten laden?
+    /*
+     * <"Key_CreateTag", 64>
+     */
+
+
 
     static Settings* instance;
     QString fileName = "settings.dat";

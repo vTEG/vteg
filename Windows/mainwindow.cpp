@@ -42,6 +42,7 @@ MainWindow::MainWindow(QWidget *parent)
     removeTag = new QPushButton("-", tagButtonWidget);
     jumpToTag = new QPushButton("->", tagButtonWidget);
     listView = new QListWidget(this);
+    hotkeyManager = new HotkeyManager;
     maxDuration = "/00:00";
 
     customSlider = new CustomVideoSlider(this, videoTags);
@@ -491,7 +492,6 @@ void MainWindow::setPosition(int position)
 
 bool MainWindow::eventFilter(QObject *object, QEvent *event) {
     QImage frame;
-    bool handled = false;
 
     if (event->type() == QEvent::MouseButtonPress){
         qDebug() << "Mouse";
@@ -503,7 +503,7 @@ bool MainWindow::eventFilter(QObject *object, QEvent *event) {
         auto *pTagManager = new TagManager(this);
         int returnValue = -1;
 
-        switch (keyEvent->key()){
+        switch (eventButton){
             case Qt::Key_Space:
                 switch (playerState){
                     case QMediaPlayer::StoppedState:
@@ -515,7 +515,6 @@ bool MainWindow::eventFilter(QObject *object, QEvent *event) {
                         on_actionPlay_triggered();
                         break;
                 }
-                handled = true;
                 break;
             case Qt::Key_S:
                 if (keyEvent->modifiers().testFlag(Qt::ControlModifier) && keyEvent->modifiers().testFlag(Qt::AltModifier)) {
@@ -527,7 +526,6 @@ bool MainWindow::eventFilter(QObject *object, QEvent *event) {
                 } else {
                     qDebug("'S'");
                 }
-                handled = true;
                 break;
 
             case Qt::Key_L:
@@ -541,28 +539,24 @@ bool MainWindow::eventFilter(QObject *object, QEvent *event) {
                         qDebug() << "Error while saving img.";
                     }
                 }
-                handled = true;
                 break;
 
             case Qt::Key_W:
 
                 returnValue = pTagManager->exec();
                 qDebug() << "TagManager finished with code " << returnValue;
-                handled = true;
                 break;
 
             case Qt::Key_Left:
                 if (playerState != QMediaPlayer::StoppedState){
                     setPosition(std::max(0, static_cast<int>(player->position()) - 5000));
                 }
-                handled = true;
                 break;
 
             case Qt::Key_Right:
                 if (playerState != QMediaPlayer::StoppedState){
                     setPosition(std::min(static_cast<int>(player->duration()), static_cast<int>(player->position()) + 5000));
                 }
-                handled = true;
                 break;
 
             default:
@@ -574,7 +568,7 @@ bool MainWindow::eventFilter(QObject *object, QEvent *event) {
         }
     }
 
-    return handled || QMainWindow::eventFilter(object, event);
+    return QMainWindow::eventFilter(object, event);
 }
 
 /**

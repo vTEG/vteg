@@ -32,6 +32,7 @@
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QInputDialog>
+#include <iterator>
 
 // Includes for time. (Detection of single- vs double-click on ListItems)
 #include <ctime>
@@ -94,6 +95,7 @@ private:
 
     QString maxDuration;
 
+    HotkeyManager *hotkeyManager;
 
     int currentTime = 0;
     bool mDoubleClicked{};
