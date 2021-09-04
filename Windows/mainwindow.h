@@ -113,6 +113,13 @@ private:
     void save(const QString& filePath);
     void load(const QString& filePath);
 
+    //  Decoder tests
+    QTimer *decoderTimer;
+    QVideoDecoder *decoder;
+
+    void initDecoder();
+    void displayFrame();
+    void image2Pixmap(QImage&, QPixmap&);
 };
 
 #endif //MAINWINDOW_H

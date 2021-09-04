@@ -92,6 +92,14 @@ bool VideoWidgetSurface::present(const QVideoFrame &frame)
     } else {
         currentFrame = frame;
 
+        QImage image(
+                currentFrame.bits(),
+                currentFrame.width(),
+                currentFrame.height(),
+                currentFrame.bytesPerLine(),
+                imageFormat);
+        lastSavedImage = image;
+
         widget->repaint(targetRect);
 
         return true;

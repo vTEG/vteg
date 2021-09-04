@@ -32,6 +32,7 @@ SettingsWidget::SettingsWidget(QWidget *parent): QDialog(parent) {
 
     additionText->setText(QString::number(Settings::getInstance()->getAddition()));
 
+    themeSelect->addItem("classic");
     themeSelect->addItem("light");
     themeSelect->addItem("dark");
     themeSelect->setCurrentIndex(themeSelect->findText(Settings::getInstance()->getTheme()));

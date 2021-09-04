@@ -44,6 +44,7 @@ MainWindow::MainWindow(QWidget *parent)
     listView = new QListWidget(this);
     hotkeyManager = new HotkeyManager;
     maxDuration = "/00:00";
+    decoder = new QVideoDecoder;
 
     customSlider = new CustomVideoSlider(this, videoTags);
 
@@ -341,17 +342,19 @@ void MainWindow::on_action_load_from_CSV_triggered() {
 
     if(filePath.isEmpty()) return;
 
-    auto readTitle = QInputDialog::getText(this->window(), "Title Row", "Input Text:", QLineEdit::Normal, "Header of the title row",
-                                    &ok, Qt::MSWindowsFixedSizeDialogHint);
+    auto readTitle = QInputDialog::getText(this->window(), "Title Row", "Input Text:", QLineEdit::Normal, "description",
+                                           &ok, Qt::MSWindowsFixedSizeDialogHint);
     if(!ok || readTitle.isEmpty()) return;
 
-    auto readTime = QInputDialog::getText(this->window(), "Timestamp Row", "Input Text:", QLineEdit::Normal, "Header of the timestamp row",
-                                     &ok, Qt::MSWindowsFixedSizeDialogHint);
+    auto readTime = QInputDialog::getText(this->window(), "Timestamp Row", "Input Text:", QLineEdit::Normal, "timestamp",
+                                          &ok, Qt::MSWindowsFixedSizeDialogHint);
     if(!ok || readTime.isEmpty()) return;
 
+    decoder->openFile(filePath);
+
     /**
-     * Exclaimer: This code below looks kinda dumb and indeed is duplicated
-     * but I couldnt get the constexpr for io::no_quote_escape<';' working otherwise
+     * Exclaimer: This code below looks kinda dumb and indeed is duplicated code
+     * but I couldn't get the constexpr for io::no_quote_escape<';' working otherwise
      *
      * Todo: find a better solution (maybe put it in its own function with a constexpr char as an argument
      */
@@ -369,15 +372,32 @@ void MainWindow::on_action_load_from_CSV_triggered() {
         }
         std::string title;
         int timestamp;
-        while (in.read_row(title, timestamp)) {
-            int secs = timestamp / 1000;
-            int mins = secs / 60;
-            secs = secs % 60;
-            auto *tag = new VideoTag(QString::asprintf("%02d:%02d", mins, secs), QString::fromStdString(title),
-                                     vw->getSurface()->getLastFrame().copy(), timestamp);
-            addExistingTagToList(tag);
-            qDebug() << QString::fromStdString(title);
+
+        qint64 previousPos = player->position();
+        try {
+            while (in.read_row(title, timestamp)) {
+                if (timestamp <= player->duration()) {
+                    int secs = timestamp / 1000;
+                    int mins = secs / 60;
+                    secs = secs % 60;
+                    auto *tag = new VideoTag();
+                    tag->setTitle(QString::asprintf("%02d:%02d", mins, secs));
+                    tag->setDescription(QString::fromStdString(title));
+                    tag->setTimestamp(timestamp);
+
+                    decoder->seekMs(timestamp);
+                    tag->setImage(decoder->LastFrame);
+                    addExistingTagToList(tag);
+                }
+            }
         }
+        catch (...) {
+            QMessageBox msg;
+            msg.setText("An error occured, most likely one of your columns titles is wrong");
+            msg.exec();
+            return;
+        }
+        player->setPosition(previousPos);
     }
     else if(Settings::getInstance()->getCsvPolicy() == ",") {
         io::CSVReader<2, io::trim_chars<' ', '\t'>, io::no_quote_escape<','>> in(filePath.toStdString());
@@ -393,15 +413,32 @@ void MainWindow::on_action_load_from_CSV_triggered() {
         }
         std::string title;
         int timestamp;
-        while (in.read_row(title, timestamp)) {
-            int secs = timestamp / 1000;
-            int mins = secs / 60;
-            secs = secs % 60;
-            auto *tag = new VideoTag(QString::asprintf("%02d:%02d", mins, secs), QString::fromStdString(title),
-                                     vw->getSurface()->getLastFrame().copy(), timestamp);
-            addExistingTagToList(tag);
-            qDebug() << QString::fromStdString(title);
+        qint64 previousPos = player->position();
+        try {
+            while (in.read_row(title, timestamp)) {
+                if (timestamp <= player->duration()) {
+                    int secs = timestamp / 1000;
+                    int mins = secs / 60;
+                    secs = secs % 60;
+                    auto *tag = new VideoTag();
+                    tag->setTitle(QString::asprintf("%02d:%02d", mins, secs));
+                    tag->setDescription(QString::fromStdString(title));
+                    tag->setTimestamp(timestamp);
+
+                    decoder->seekMs(timestamp);
+                    tag->setImage(decoder->LastFrame);
+
+                    addExistingTagToList(tag);
+                }
+            }
         }
+        catch (...) {
+            QMessageBox msg;
+            msg.setText("An error occured, most likely one of your columns titles is wrong");
+            msg.exec();
+            return;
+        }
+        player->setPosition(previousPos);
     }
 }
 
@@ -451,11 +488,11 @@ void MainWindow::on_action_write_to_CSV_triggered() {
     QTextStream stream(&file);
 
     // save header
-    stream << "timestamp" << delimiter << "title" << delimiter << "description" <<endl;
+    stream << "timestamp" << delimiter << "description" << endl;
 
     for (int i = 0; i < videoTags->size(); i++){
         t = videoTags->value(i);
-        stream << t->getTimestamp() << delimiter << t->getTitle() << delimiter << t->getDescription() << endl;
+        stream << t->getTimestamp() << delimiter << t->getDescription() << endl;
     }
 
     // Flush and close stream
