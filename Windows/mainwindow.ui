@@ -46,11 +46,6 @@
    <addaction name="menuTags"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <action name="actionaaa">
-   <property name="text">
-    <string>aaa</string>
-   </property>
-  </action>
   <action name="actionOpen">
    <property name="text">
     <string>Open Video</string>

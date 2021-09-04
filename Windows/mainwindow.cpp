@@ -405,13 +405,87 @@ void MainWindow::on_action_load_from_CSV_triggered() {
     }
 }
 
+void MainWindow::loadCSV(const QString& filePath, const char *delimiter) {
+    auto v1 = io::no_quote_escape<';'>();
+    auto v2 = io::no_quote_escape<','>();
+
+    io::CSVReader<> test;
+
+    if (strcmp(delimiter, ";") == 0){
+        io::CSVReader<2, io::trim_chars<' ', '\t'>, io::no_quote_escape<';'>> in(filePath.toStdString());
+    } else {
+        io::CSVReader<2, io::trim_chars<' ', '\t'>, io::no_quote_escape<','>> in(filePath.toStdString());
+    }
+
+    try {
+
+        in.read_header(io::ignore_extra_column, "timestamp", "title", "description");
+
+
+
+    } catch (std::exception &e){
+        qDebug() << "Exception: " << e.what();
+    }
+}
+
+
 /**
  * Write the current active taglist into a CSV file
+ * Todo: move to static class for readability
  */
 void MainWindow::on_action_write_to_CSV_triggered() {
-    qDebug() << "Writing to CSV is not supported yet";
+
     QMessageBox msg;
-    msg.setText("Writing to CSV is not supported yet");
+    if (playerState == QMediaPlayer::StoppedState || videoTags->empty()){
+        msg.setText("No video loaded or tag list empty.");
+        msg.exec();
+        return;
+    }
+
+    auto filePath = QFileDialog::getSaveFileName(this,
+                                                 "Save tags to *.csv",
+                                                 "/",
+                                                 "CSV (*.csv)");
+
+    auto delimiter = Settings::getInstance()->getCsvPolicy();
+    VideoTag *t;
+    bool forceSkip = false;
+
+    // Iterate over all video tags to check their validity.
+    for (int i = 0; i < videoTags->size(); i++){
+        t = videoTags->value(i);
+        if (!forceSkip && (t->getTitle().contains(delimiter) || t->getDescription().contains(delimiter))){
+            msg.setText(QString::asprintf("The title/description of a tag contains the delimiter '%s'\n"
+                                          "this <b>will</b> corrupt a later re-import.\n Continue?",
+                                          delimiter.toStdString().c_str()));
+            msg.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+            msg.setIcon(QMessageBox::Warning);
+
+            if (msg.exec() == QMessageBox::Yes){
+                forceSkip = true;
+            } else {
+                return;
+            }
+        }
+    }
+
+    // Iterate again and actually save valid data this time.
+    QFile file(filePath);
+    file.open(QIODevice::WriteOnly);
+    QTextStream stream(&file);
+
+    for (int i = 0; i < videoTags->size(); i++){
+        t = videoTags->value(i);
+        stream << t->getTimestamp() << delimiter << t->getTitle() << delimiter << t->getDescription() << endl;
+    }
+
+    // Flush and close stream
+    stream.flush();
+    file.close();
+
+    // Feedback
+    msg.setText(QString::asprintf("Saved Data to '%s'", filePath.toStdString().c_str()));
+    msg.setIcon(QMessageBox::Information);
     msg.exec();
 }
 
