@@ -22,6 +22,8 @@ SettingsWidget::SettingsWidget(QWidget *parent): QDialog(parent) {
     themeSelect = new QComboBox;
     showFramesLabel = new QLabel("Display frames");
     showFrames = new QCheckBox;
+    csvSelect = new QComboBox;
+    csvpolicyLabel = new QLabel("Policy for CSV");
     save = new QPushButton("Save");
     cancel = new QPushButton("Cancel");
     
@@ -33,6 +35,10 @@ SettingsWidget::SettingsWidget(QWidget *parent): QDialog(parent) {
     themeSelect->addItem("light");
     themeSelect->addItem("dark");
     themeSelect->setCurrentIndex(themeSelect->findText(Settings::getInstance()->getTheme()));
+
+    csvSelect->addItem(",");
+    csvSelect->addItem(";");
+    csvSelect->setCurrentIndex(csvSelect->findText(Settings::getInstance()->getCsvPolicy()));
     
     showFrames->setChecked(Settings::getInstance()->getShowFrames());
 
@@ -42,8 +48,10 @@ SettingsWidget::SettingsWidget(QWidget *parent): QDialog(parent) {
     gridLayout->addWidget(showFrames, 1, 1);
     gridLayout->addWidget(themeLabel, 2, 0);
     gridLayout->addWidget(themeSelect, 2, 1);
-    gridLayout->addWidget(save, 3, 0);
-    gridLayout->addWidget(cancel, 3, 1);
+    gridLayout->addWidget(csvpolicyLabel, 3, 0);
+    gridLayout->addWidget(csvSelect, 3, 1);
+    gridLayout->addWidget(save, 4, 0);
+    gridLayout->addWidget(cancel, 4, 1);
 
     connect(save, &QPushButton::clicked, this, &SettingsWidget::saveSettings);
     connect(cancel, &QPushButton::clicked, this, &SettingsWidget::closeSettings);
@@ -54,6 +62,7 @@ void SettingsWidget::saveSettings() {
     ptr->setAddition(additionText->displayText().toInt());
     ptr->setTheme(themeSelect->currentText().toLower());
     ptr->setShowFrames(showFrames->isChecked());
+    ptr->setCsvPolicy(csvSelect->currentText());
     ptr->save();
     this->close();
 }

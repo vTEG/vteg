@@ -16,6 +16,7 @@
 #include "Utilities/VideoPreview.h"
 #include "SettingsWidget.h"
 #include "Utilities/Settings.h"
+#include "libraries/csv.h"
 #include "../build/VTEg_autogen/include/ui/ui_mainwindow.h"
 #include "../Utilities/HotkeyManager.h"
 
@@ -62,6 +63,8 @@ private slots:
     void on_actionSaveTags_triggered();
     void on_actionLoadTags_triggered();
     void on_actionSettings_triggered();
+    void on_action_load_from_CSV_triggered();
+    void on_action_write_to_CSV_triggered();
     
 
     void tagEntryClickTimeout();

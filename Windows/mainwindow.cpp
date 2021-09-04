@@ -282,6 +282,10 @@ void MainWindow::on_actionStop_triggered() {
 }
 
 void MainWindow::on_actionSaveTags_triggered(){
+    if(playerState == QMediaPlayer::StoppedState) {
+        qDebug() << "No Video";
+        return;
+    }
     qDebug() << "Saving tags..";
     QString filePath = QFileDialog::getSaveFileName(this, "save Tags", "", "VTeg files(*.vteg)");
     QMessageBox box;
@@ -304,6 +308,10 @@ void MainWindow::on_actionSaveTags_triggered(){
 }
 
 void MainWindow::on_actionLoadTags_triggered(){
+    if(playerState == QMediaPlayer::StoppedState) {
+        qDebug() << "No Video";
+        return;
+    }
     qDebug() << "Loading tags..";
     QString filePath = QFileDialog::getOpenFileName(this, "load Tags", "", "VTeg files(*.vteg)");
     if (filePath == nullptr || filePath == "")
@@ -318,7 +326,94 @@ void MainWindow::on_actionSettings_triggered() {
     settingsWindow->show();
 }
 
+/**
+ * Read in a taglist from a CSV file
+ */
+void MainWindow::on_action_load_from_CSV_triggered() {
+    if(playerState == QMediaPlayer::StoppedState) {
+        qDebug() << "No Video";
+        return;
+    }
+    qDebug() << "Loading from CSV";
+    QString filePath;
+    bool ok;
+    filePath = QFileDialog::getOpenFileName(this, "Load from CSV", "", "CSV files(*.csv)");
 
+    if(filePath.isEmpty()) return;
+
+    auto readTitle = QInputDialog::getText(this->window(), "Title Row", "Input Text:", QLineEdit::Normal, "Header of the title row",
+                                    &ok, Qt::MSWindowsFixedSizeDialogHint);
+    if(!ok || readTitle.isEmpty()) return;
+
+    auto readTime = QInputDialog::getText(this->window(), "Timestamp Row", "Input Text:", QLineEdit::Normal, "Header of the timestamp row",
+                                     &ok, Qt::MSWindowsFixedSizeDialogHint);
+    if(!ok || readTime.isEmpty()) return;
+
+    /**
+     * Exclaimer: This code below looks kinda dumb and indeed is duplicated
+     * but I couldnt get the constexpr for io::no_quote_escape<';' working otherwise
+     *
+     * Todo: find a better solution (maybe put it in its own function with a constexpr char as an argument
+     */
+    if(Settings::getInstance()->getCsvPolicy() == ";") {
+        io::CSVReader<2, io::trim_chars<' ', '\t'>, io::no_quote_escape<';'>> in(filePath.toStdString());
+        try {
+            in.read_header(io::ignore_extra_column, readTitle.toStdString(), readTime.toStdString());
+        }
+        catch (std::exception &e) {
+            qDebug() << "Exception: " << e.what();
+            QMessageBox msg;
+            msg.setText("Columns dont exist or CSV Policy is wrong(Settings)");
+            msg.exec();
+            return;
+        }
+        std::string title;
+        int timestamp;
+        while (in.read_row(title, timestamp)) {
+            int secs = timestamp / 1000;
+            int mins = secs / 60;
+            secs = secs % 60;
+            auto *tag = new VideoTag(QString::asprintf("%02d:%02d", mins, secs), QString::fromStdString(title),
+                                     vw->getSurface()->getLastFrame().copy(), timestamp);
+            addExistingTagToList(tag);
+            qDebug() << QString::fromStdString(title);
+        }
+    }
+    else if(Settings::getInstance()->getCsvPolicy() == ",") {
+        io::CSVReader<2, io::trim_chars<' ', '\t'>, io::no_quote_escape<','>> in(filePath.toStdString());
+        try {
+            in.read_header(io::ignore_extra_column, readTitle.toStdString(), readTime.toStdString());
+        }
+        catch (std::exception &e) {
+            qDebug() << "Exception: " << e.what();
+            QMessageBox msg;
+            msg.setText("An error occured while reading from CSV (Could be columns not existing)");
+            msg.exec();
+            return;
+        }
+        std::string title;
+        int timestamp;
+        while (in.read_row(title, timestamp)) {
+            int secs = timestamp / 1000;
+            int mins = secs / 60;
+            secs = secs % 60;
+            auto *tag = new VideoTag(QString::asprintf("%02d:%02d", mins, secs), QString::fromStdString(title),
+                                     vw->getSurface()->getLastFrame().copy(), timestamp);
+            addExistingTagToList(tag);
+            qDebug() << QString::fromStdString(title);
+        }
+    }
+}
+
+/**
+ * Write the current active taglist into a CSV file
+ */
+void MainWindow::on_action_write_to_CSV_triggered() {
+    qDebug() << "Writing to CSV is not supported yet";
+    QMessageBox msg;
+    msg.setText("Writing to CSV is not supported yet");
+    msg.exec();
+}
 
 
 /**
@@ -504,19 +599,8 @@ bool MainWindow::eventFilter(QObject *object, QEvent *event) {
         int returnValue = -1;
         int eventButton = keyEvent->key();
 
-        // Load hotkeys from settings
-        QMap<QString, qint64> keyMap = Settings::getInstance()->getKeyMap();
-        QMap<QString, qint64>::iterator iterator;
-
-        keyMap.value("yeeet", -1);
-
-        for(iterator = keyMap.begin(); iterator != keyMap.end(); iterator++) {
-            if (iterator.value() == eventButton){
-
-            }
-        }
-
-        HotKeyEntry *entry = new HotKeyEntry(eventButton,
+        /* Todo: correctly implement the hotkeymanager, cause its causing a nullptr crash rn
+        auto *entry = new HotKeyEntry(eventButton,
                                              keyEvent->modifiers().testFlag(Qt::AltModifier),
                                              keyEvent->modifiers().testFlag(Qt::ControlModifier),
                                              keyEvent->modifiers().testFlag(Qt::ShiftModifier));
@@ -543,7 +627,7 @@ bool MainWindow::eventFilter(QObject *object, QEvent *event) {
                 break;
             default:
                 break;
-        }
+        }*/
 
 
 

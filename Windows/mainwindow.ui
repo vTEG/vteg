@@ -39,6 +39,8 @@
     </property>
     <addaction name="actionLoadTags"/>
     <addaction name="actionSaveTags"/>
+    <addaction name="action_load_from_CSV"/>
+    <addaction name="action_write_to_CSV"/>
    </widget>
    <addaction name="menuFiles"/>
    <addaction name="menuTags"/>
@@ -82,6 +84,19 @@
   <action name="actionSettings">
    <property name="text">
     <string>Settings</string>
+   </property>
+  </action>
+  <action name="action_load_from_CSV">
+   <property name="text">
+    <string>load from CSV</string>
+   </property>
+  </action>
+  <action name="action_write_to_CSV">
+   <property name="text">
+    <string>write to CSV</string>
+   </property>
+   <property name="toolTip">
+    <string>write to CSV</string>
    </property>
   </action>
  </widget>

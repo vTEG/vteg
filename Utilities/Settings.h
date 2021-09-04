@@ -47,7 +47,7 @@ public:
      */
     friend QDataStream& operator<<(QDataStream &out, const Settings &s) {
         Settings *ptr = Settings::getInstance();
-        out << ptr->additionToTag << ptr->showFrames << ptr->theme ;
+        out << ptr->additionToTag << ptr->showFrames << ptr->csvPolicy << ptr->theme;
         return out;
     }
 
@@ -59,7 +59,7 @@ public:
      */
     friend QDataStream& operator>>(QDataStream &in, const Settings &s){
         Settings *ptr = Settings::getInstance();
-        in >> ptr->additionToTag >> ptr->showFrames >> ptr->theme;
+        in >> ptr->additionToTag >> ptr->showFrames >> ptr->csvPolicy >> ptr->theme;
         return in;
     }
 
@@ -87,13 +87,20 @@ public:
         theme = std::move(st);
     }
 
+    QString getCsvPolicy() const {
+        return csvPolicy;
+    }
+    void setCsvPolicy(QString q) {
+        csvPolicy = q;
+    }
+
 private:
     Settings();
     ~Settings();
 
     qint64 additionToTag;
     bool showFrames;
-    QString theme;
+    QString theme, csvPolicy;
 
     QString defaultTagCategory; // Fußball/Handball/etc.
     // letztes Projekt automatisch beim Starten laden?

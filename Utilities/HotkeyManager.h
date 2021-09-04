@@ -6,6 +6,7 @@
 #define VTEG_HOTKEYMANAGER_H
 
 #include <QtGlobal>
+#include <QMap>
 
 enum HotKeyAction {
     NO_ACTION,
@@ -50,11 +51,9 @@ public:
     }
 
     HotKeyAction getAction(HotKeyEntry *entry){
-        QMap<HotKeyEntry, HotKeyAction>::iterator iterator;
-
-        for(iterator = actionMap->begin(); iterator != actionMap->end(); iterator++) {
-            if (iterator.key().equals(*entry)){
-                return iterator.value();
+        for(auto it = actionMap->constBegin(); it != actionMap->constEnd(); it++) {
+            if (it.key().equals(*entry)){
+                return it.value();
             }
         }
         return HotKeyAction::NO_ACTION;
