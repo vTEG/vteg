@@ -47,7 +47,7 @@ public:
      */
     friend QDataStream& operator<<(QDataStream &out, const Settings &s) {
         Settings *ptr = Settings::getInstance();
-        out << ptr->additionToTag << ptr->showFrames << ptr->csvPolicy << ptr->theme << ptr->csvAllowCustomColumns;
+        out << ptr->additionToTag << ptr->showFrames << ptr->csvPolicy << ptr->theme;
         return out;
     }
 
@@ -59,7 +59,7 @@ public:
      */
     friend QDataStream& operator>>(QDataStream &in, const Settings &s){
         Settings *ptr = Settings::getInstance();
-        in >> ptr->additionToTag >> ptr->showFrames >> ptr->csvPolicy >> ptr->theme >> ptr->csvAllowCustomColumns;
+        in >> ptr->additionToTag >> ptr->showFrames >> ptr->csvPolicy >> ptr->theme;
         return in;
     }
 
@@ -92,9 +92,6 @@ public:
     }
     void setCsvPolicy(QString q) {
         csvPolicy = q;
-    }
-    bool setCustomColumnsAllowed(bool b){
-        csvAllowCustomColumns = b;
     }
 
 private:
