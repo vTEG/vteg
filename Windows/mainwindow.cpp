@@ -457,7 +457,7 @@ void MainWindow::on_action_write_to_CSV_triggered() {
 
     auto filePath = QFileDialog::getSaveFileName(this,
                                                  "Save tags to *.csv",
-                                                 "/",
+                                                 QDir::currentPath(),
                                                  "CSV (*.csv)");
 
     auto delimiter = Settings::getInstance()->getCsvPolicy();
@@ -927,3 +927,22 @@ void MainWindow::handleMouseHover(int position) {
     }
 }
 
+void MainWindow::initDecoder() {
+
+}
+void MainWindow::displayFrame() {
+    if(player->mediaStatus() == QMediaPlayer::MediaStatus::NoMedia)  {
+        return;
+    }
+
+    QImage img;
+
+    int et, en;
+    if (!decoder.getFrame(img, &en, &et)){
+        QDebug() << "Error decoding the frame";
+        return;
+    }
+}
+void MainWindow::image2Pixmap(QImage &img, QPixmap &pixmap) {
+
+}

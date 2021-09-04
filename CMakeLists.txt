@@ -22,6 +22,8 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Gui Multimedia MultimediaW
 #copys the images folder into the buildfolder
 file(COPY "images/" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/images")
 
+include_directories(libraries)
+
 set(PROJECT_SOURCES
         main.cpp
         Windows/mainwindow.cpp Windows/mainwindow.h Windows/mainwindow.ui ui/ui_mainwindow.h
@@ -35,7 +37,8 @@ set(PROJECT_SOURCES
         Utilities/VideoPreview.cpp Utilities/VideoPreview.h
         Windows/SettingsWidget.cpp Windows/SettingsWidget.h
         Utilities/Settings.cpp Utilities/Settings.h
-        Utilities/HotkeyManager.h)
+        Utilities/HotkeyManager.h
+        libraries/QtFFmpegWrapper/QVideoDecoder.h libraries/QtFFmpegWrapper/QVideoDecoder.cpp)
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(VTEg

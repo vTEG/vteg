@@ -136,7 +136,7 @@ void VideoWidgetSurface::paint(QPainter *painter)
                 currentFrame.bytesPerLine(),
                 imageFormat);
 
-        lastSavedImage = image;
+        //lastSavedImage = image;
 
 
         painter->drawImage(targetRect, image, sourceRect);

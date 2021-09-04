@@ -30,6 +30,7 @@
 #include <QGraphicsView>
 #include <QRect>
 #include <QSlider>
+#include <QTimer>
 #include <QListWidget>
 #include <QHBoxLayout>
 #include <QPushButton>
@@ -40,6 +41,7 @@
 #include <ctime>
 #include <chrono>
 #include <QVideoProbe>
+#include <libraries/QtFFmpegWrapper/QVideoDecoder.cpp>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -98,7 +100,6 @@ private:
     QListWidgetItem* tagListClickedItem{};
 
     QString maxDuration;
-
     HotkeyManager *hotkeyManager;
 
     int currentTime = 0;
