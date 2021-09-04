@@ -1,0 +1,4 @@
+C:\Qt\Tools\CMake_64\bin\cmake.exe -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=C:/Qt/Tools/mingw730_64/bin/gcc.exe -DCMAKE_CXX_COMPILER=C:/Qt/Tools/mingw730_64/bin/g++.exe -G Ninja P:\Dev\BND\QtVideoExample
+-- Configuring done
+-- Generating done
+-- Build files have been written to: P:/Dev/BND/QtVideoExample/cmake-build-debug

@@ -1,0 +1,4 @@
+P:/Dev/BND/QtVideoExample/cmake-build-debug/CMakeFiles/VTEg.dir
+P:/Dev/BND/QtVideoExample/cmake-build-debug/CMakeFiles/edit_cache.dir
+P:/Dev/BND/QtVideoExample/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+P:/Dev/BND/QtVideoExample/cmake-build-debug/CMakeFiles/VTEg_autogen.dir
