@@ -113,8 +113,6 @@ private:
     void save(const QString& filePath);
     void load(const QString& filePath);
 
-    void loadCSV(const QString& filePath, const char *delimiter);
-
 };
 
 #endif //MAINWINDOW_H

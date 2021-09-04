@@ -405,30 +405,6 @@ void MainWindow::on_action_load_from_CSV_triggered() {
     }
 }
 
-void MainWindow::loadCSV(const QString& filePath, const char *delimiter) {
-    auto v1 = io::no_quote_escape<';'>();
-    auto v2 = io::no_quote_escape<','>();
-
-    io::CSVReader<> test;
-
-    if (strcmp(delimiter, ";") == 0){
-        io::CSVReader<2, io::trim_chars<' ', '\t'>, io::no_quote_escape<';'>> in(filePath.toStdString());
-    } else {
-        io::CSVReader<2, io::trim_chars<' ', '\t'>, io::no_quote_escape<','>> in(filePath.toStdString());
-    }
-
-    try {
-
-        in.read_header(io::ignore_extra_column, "timestamp", "title", "description");
-
-
-
-    } catch (std::exception &e){
-        qDebug() << "Exception: " << e.what();
-    }
-}
-
-
 /**
  * Write the current active taglist into a CSV file
  * Todo: move to static class for readability
@@ -473,6 +449,9 @@ void MainWindow::on_action_write_to_CSV_triggered() {
     QFile file(filePath);
     file.open(QIODevice::WriteOnly);
     QTextStream stream(&file);
+
+    // save header
+    stream << "timestamp" << delimiter << "title" << delimiter << "description" <<endl;
 
     for (int i = 0; i < videoTags->size(); i++){
         t = videoTags->value(i);
