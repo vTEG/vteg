@@ -9,7 +9,7 @@ HotkeyManager* HotkeyManager::instance = nullptr;
 /**
  * Deserializing our settings file in case there is one
  */
-Settings::Settings() : additionToTag(0), showFrames(false), theme("dark"), csvPolicy(";") {}
+Settings::Settings() : additionToTag(0), showFrames(false), theme("dark"), csvPolicy(";"), csvAllowCustomColumns(false) {}
 
 /**
  * Deleting the Settings object
