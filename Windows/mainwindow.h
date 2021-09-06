@@ -19,6 +19,7 @@
 #include "libraries/csv.h"
 #include "../build/VTEg_autogen/include/ui/ui_mainwindow.h"
 #include "../Utilities/HotkeyManager.h"
+#include <libraries/QtFFmpegWrapper/QVideoDecoder.h>
 
 //Including Qt dependencies
 #include <QMainWindow>
@@ -41,7 +42,6 @@
 #include <ctime>
 #include <chrono>
 #include <QVideoProbe>
-#include <libraries/QtFFmpegWrapper/QVideoDecoder.cpp>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }

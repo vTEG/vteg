@@ -16,7 +16,7 @@ MainWindow::MainWindow(QWidget *parent)
     this->setWindowIcon(QIcon(QPixmap("images/speaker.png")));
     this->setMinimumSize(896,504);
     // Disable '?' Button in window titles
-    QApplication::setAttribute(Qt::AA_DisableWindowContextHelpButton);
+    //QApplication::setAttribute(Qt::AA_DisableWindowContextHelpButton);
     /*
      * Creating objects
      */
@@ -925,24 +925,4 @@ void MainWindow::handleMouseHover(int position) {
         previewLabel->updateGeometry();
         qDebug() << "Hovering over: " << position;
     }
-}
-
-void MainWindow::initDecoder() {
-
-}
-void MainWindow::displayFrame() {
-    if(player->mediaStatus() == QMediaPlayer::MediaStatus::NoMedia)  {
-        return;
-    }
-
-    QImage img;
-
-    int et, en;
-    if (!decoder.getFrame(img, &en, &et)){
-        QDebug() << "Error decoding the frame";
-        return;
-    }
-}
-void MainWindow::image2Pixmap(QImage &img, QPixmap &pixmap) {
-
 }
