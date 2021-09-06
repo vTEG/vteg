@@ -9,7 +9,7 @@ Fully compiled binarys will be linked here when available
 
 ## Building
 
-First of all, you need Qt to build vTEG [Qt](https://www.qt.io/download). We're using the open source variant. You should add Qt to your Windows-PATH, otherwise you will always have to spell out the absolute path to Qt wherever it is used while building. You also need to install mingw64 bit. We've build the project with Qt V5.12.11, so having a somewhat similar version installed might be helpful.
+First of all, you need [Qt](https://www.qt.io/download) to build vTEG. We're using the open source version. You also need to install mingw 64bit from the Qt installer with it. We've build the project with Qt V5.12.11, so having a somewhat similar version installed might be helpful.
 
 If you're using windows, you also need an external video codec, because Qt's multimedia library won't work otherwise. In development, we've used [K-Lite Codec Pack Standard](https://codecguide.com/download_k-lite_codec_pack_standard.htm).
 Mac and Linux should be able to handle this natively.
