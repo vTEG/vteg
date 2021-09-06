@@ -38,7 +38,7 @@ SettingsWidget::SettingsWidget(QWidget *parent): QDialog(parent) {
     additionLabel = new QLabel("Added time when jumping");
     additionText = new QLineEdit;
     additionText->setValidator(new QRegExpValidator(QRegExp("-?[0-9]*"), additionText));
-    themeLabel = new QLabel("Theme");
+    themeLabel = new QLabel("Theme (Restart needed)");
     themeSelect = new QComboBox;
     showFramesLabel = new QLabel("Display frames");
     showFrames = new QCheckBox;
