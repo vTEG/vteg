@@ -16,7 +16,7 @@ Mac and Linux should be able to handle this natively.
 
 M1 Macs are currently not supported!
 
-Also, you need [Ninja](https://github.com/ninja-build/ninja/releases) as a build tool for cmake.
+Also, you need [Ninja](https://github.com/ninja-build/ninja/releases) as a build tool for cmake and [CMAKE](https://cmake.org/download/) itself.
 
 ### Build Steps
 
