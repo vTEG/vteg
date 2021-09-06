@@ -38,6 +38,14 @@ cmake .. -G Ninja -DCMAKE_BUILD_TYPE:STRING=Release -DQT_QMAKE_EXECUTABLE:STRING
 cmake --build . --target all
 ```
 
+### Working example build config
+
+```bash
+mkdir build && cd build
+cmake .. -G Ninja -DCMAKE_BUILD_TYPE:STRING=Release -DQT_QMAKE_EXECUTABLE:STRING=C:/Qt/5.12.11/mingw73_64/bin/qmake.exe -DCMAKE_C_COMPILER:STRING=C:/Qt/Tools/mingw730_64/bin/gcc.exe -DCMAKE_CXX_COMPILER:STRING=C:/Qt/Tools/mingw730_64/bin/g++.exe
+cmake --build . --target all
+```
+
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
