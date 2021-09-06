@@ -38,7 +38,6 @@ set(PROJECT_SOURCES
         Windows/SettingsWidget.cpp Windows/SettingsWidget.h
         Utilities/Settings.cpp Utilities/Settings.h
         Utilities/HotkeyManager.h
-        libraries/QtFFmpegWrapper/QVideoDecoder.cpp libraries/QtFFmpegWrapper/QVideoDecoder.h
         )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
