@@ -247,17 +247,6 @@ void MainWindow::on_actionOpen_triggered() {
     currentTime = 0;
     playerState = QMediaPlayer::PlayingState;
     on_actionPlay_triggered();
-    //Test 2
-
-    /*
-     * ToDo: Write used videos into a SQLite DB and save a reference to their CSV file, alternatively, just write into CSV files
-     * auto *f = new QFile(filename);
-    int fileSize = static_cast<int>(f->size());
-    char* data = new char[fileSize];
-    QByteArray array ((const char*) data, fileSize);
-    QByteArray hash = QCryptographicHash::hash(array, QCryptographicHash::Md5);
-    qDebug() << QString::fromStdString(hash.toStdString());
-     */
 }
 
 /**
@@ -379,6 +368,8 @@ void MainWindow::on_action_load_from_CSV_triggered() {
      *
      * Todo: find a better solution (maybe put it in its own function with a constexpr char as an argument
      */
+     qDebug() << "Path to Video: "  << player->currentMedia().canonicalUrl().path().remove(0,1);
+    FrameGrabber frameGrabber(player->currentMedia().canonicalUrl().path().remove(0,1));
     if(Settings::getInstance()->getCsvPolicy() == ";") {
         io::CSVReader<2, io::trim_chars<' ', '\t'>, io::no_quote_escape<';'>> in(filePath.toStdString());
         try {
@@ -406,10 +397,7 @@ void MainWindow::on_action_load_from_CSV_triggered() {
                     tag->setDescription(QString::fromStdString(title));
                     tag->setTimestamp(timestamp);
 
-                    player->setPosition(timestamp);
-                    player->play();
-                    tag->setImage(vw->getSurface()->getLastFrame().copy());
-                    player->pause();
+                    tag->setImage(frameGrabber.grabFrame(timestamp));
 
                     addExistingTagToList(tag);
                 }
@@ -421,7 +409,6 @@ void MainWindow::on_action_load_from_CSV_triggered() {
             msg.exec();
             return;
         }
-        player->setPosition(previousPos);
     }
     else if(Settings::getInstance()->getCsvPolicy() == ",") {
         io::CSVReader<2, io::trim_chars<' ', '\t'>, io::no_quote_escape<','>> in(filePath.toStdString());
@@ -449,10 +436,7 @@ void MainWindow::on_action_load_from_CSV_triggered() {
                     tag->setDescription(QString::fromStdString(title));
                     tag->setTimestamp(timestamp);
 
-                    player->setPosition(timestamp);
-                    player->play();
-                    tag->setImage(vw->getSurface()->getLastFrame().copy());
-                    player->pause();
+                    tag->setImage(frameGrabber.grabFrame(timestamp));
 
                     addExistingTagToList(tag);
                 }

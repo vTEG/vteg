@@ -40,6 +40,7 @@
 #include "libraries/csv.h"
 #include "build/VTEg_autogen/include/ui/ui_mainwindow.h"
 #include "Utilities/HotkeyManager.h"
+#include "Utilities/FrameGrabber.h"
 
 //Including Qt dependencies
 #include <QMainWindow>
