@@ -64,7 +64,7 @@ QList<VideoTag*> ObjectDetector::AnalyzeVideo() {
         cv::Mat img;
         videoCapture >> img;
 
-        videoCapture.set(cv::CAP_PROP_POS_MSEC, skipper += 500);
+        videoCapture.set(cv::CAP_PROP_POS_MSEC, skipper += 250);
 
         qDebug() << "Skipped to ms " << skipper << " on iteration " << iterations++;
 
@@ -96,7 +96,7 @@ QList<VideoTag*> ObjectDetector::AnalyzeVideo() {
 
                     qDebug() << QString::asprintf("Confidence: %.2f", confidence);
 
-                    if (lastDetection == -1 || (skipper - lastDetection) > 5000) {
+                    if (lastDetection == -1 || (skipper - lastDetection) > 2000) {
                         int secs = skipper/1000;
                         int mins = secs/60;
                         secs = secs%60;
