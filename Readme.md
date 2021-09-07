@@ -40,7 +40,7 @@ git clone https://github.com/vTEG/vteg
 mkdir build && cd build
 cmake .. -G Ninja -DCMAKE_BUILD_TYPE:STRING=Release -DQT_QMAKE_EXECUTABLE:STRING=PATH-TO-QT/QT-VERSION/MINGW64-VERSION/bin/qmake.exe -DCMAKE_C_COMPILER:STRING=PATH-TO-QT/Tools/MINGW64-VERSION/bin/gcc.exe -DCMAKE_CXX_COMPILER:STRING=PATH-TO-QT/Tools/MINGW64-VERSION/bin/g++.exe
 cmake --build . --target all
-PATH-TO-QT/Tools/QtDesignStudio/qt5_design_studio_reduced_version/bin/windeployqt.exe VTEg.exe
+PATH-TO-QT/Tools/QtDesignStudio/qt5_design_studio_reduced_version/bin/windeployqt.exe --release VTEg.exe
 ```
 The last step (windeployqt) is just for windows only, on linux you would have to use linuxdeployqt.
 
@@ -50,7 +50,7 @@ The last step (windeployqt) is just for windows only, on linux you would have to
 mkdir build && cd build
 cmake .. -G Ninja -DCMAKE_BUILD_TYPE:STRING=Release -DQT_QMAKE_EXECUTABLE:STRING=C:/Qt/5.12.11/mingw73_64/bin/qmake.exe -DCMAKE_C_COMPILER:STRING=C:/Qt/Tools/mingw730_64/bin/gcc.exe -DCMAKE_CXX_COMPILER:STRING=C:/Qt/Tools/mingw730_64/bin/g++.exe
 cmake --build . --target all
-C:\Qt\Tools\QtDesignStudio\qt5_design_studio_reduced_version\bin\windeployqt.exe VTEg.exe
+C:\Qt\Tools\QtDesignStudio\qt5_design_studio_reduced_version\bin\windeployqt.exe --release VTEg.exe
 ```
 
 ## Contributing
