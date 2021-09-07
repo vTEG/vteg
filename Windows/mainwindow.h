@@ -41,6 +41,7 @@
 #include "build/VTEg_autogen/include/ui/ui_mainwindow.h"
 #include "Utilities/HotkeyManager.h"
 #include "Utilities/FrameGrabber.h"
+#include "Utilities/ObjectDetector.h"
 
 //Including Qt dependencies
 #include <QMainWindow>
@@ -99,6 +100,8 @@ private slots:
     void on_action_load_from_CSV_triggered();
 
     void on_action_write_to_CSV_triggered();
+
+    void on_action_analyzeVideo_triggered();
 
 
     void tagEntryClickTimeout();

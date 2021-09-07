@@ -4,3 +4,4 @@ release/
 build/
 build/*
 CMakeLists.txt.user*
+cmake-build-debug/

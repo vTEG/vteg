@@ -514,6 +514,14 @@ void MainWindow::on_action_write_to_CSV_triggered() {
     msg.exec();
 }
 
+void MainWindow::on_action_analyzeVideo_triggered() {
+    ObjectDetector od(player->currentMedia().canonicalUrl().path().remove(0,1).toStdString());
+    auto list = od.AnalyzeVideo();
+
+    for(auto t : list)
+        addExistingTagToList(&t);
+}
+
 
 /**
  * Will add a tag to the list, if there is a video playing

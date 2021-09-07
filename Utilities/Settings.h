@@ -67,7 +67,7 @@ public:
      */
     friend QDataStream& operator<<(QDataStream &out, const Settings &s) {
         Settings *ptr = Settings::getInstance();
-        out << ptr->additionToTag << ptr->showFrames << ptr->csvPolicy << ptr->theme;
+        out << ptr->additionToTag << ptr->showFrames << ptr->csvPolicy << ptr->theme << ptr->imageRecognitionConfidence;
         return out;
     }
 
@@ -79,7 +79,7 @@ public:
      */
     friend QDataStream& operator>>(QDataStream &in, const Settings &s){
         Settings *ptr = Settings::getInstance();
-        in >> ptr->additionToTag >> ptr->showFrames >> ptr->csvPolicy >> ptr->theme;
+        in >> ptr->additionToTag >> ptr->showFrames >> ptr->csvPolicy >> ptr->theme >> ptr->imageRecognitionConfidence;
         return in;
     }
 
@@ -114,13 +114,21 @@ public:
         csvPolicy = q;
     }
 
+    float getImageRecognitionConfidence() const {
+        return imageRecognitionConfidence;
+    }
+    void setImageRecognitionConfidence(float f) {
+        imageRecognitionConfidence = f;
+    }
+
 private:
     Settings();
     ~Settings();
 
     qint64 additionToTag;
-    bool showFrames, csvAllowCustomColumns;
+    bool showFrames;
     QString theme, csvPolicy;
+    float imageRecognitionConfidence;
 
     QString defaultTagCategory; // Fußball/Handball/etc.
     // letztes Projekt automatisch beim Starten laden?

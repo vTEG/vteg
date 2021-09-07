@@ -46,8 +46,8 @@ public:
 
 private:
     QWidget *parentWindow;
-    QLabel *additionLabel, *showFramesLabel, *themeLabel, *csvpolicyLabel;
-    QLineEdit *additionText;
+    QLabel *additionLabel, *showFramesLabel, *themeLabel, *csvpolicyLabel, *imageRecognitionPolicyLabel;
+    QLineEdit *additionText, *imageRecognitionPolicyText;
     QComboBox *themeSelect, *csvSelect;
     QCheckBox *showFrames;
     QPushButton *save, *cancel;

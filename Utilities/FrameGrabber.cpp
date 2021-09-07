@@ -24,14 +24,22 @@
 
 #include "FrameGrabber.h"
 
-FrameGrabber::FrameGrabber(const QString& path) {
-    this->path = path.toStdString();
+FrameGrabber::FrameGrabber(const QString& p) {
+    this->path = p.toStdString();
+    videoCapture.open(path);
 }
 
+/**
+ * Grabs a frame from the opened video at the given timestamp
+ * @param timestamp the timestamp we wan't to get the frame at
+ * @return returns a QImage of the frame at the timestamp
+ */
 QImage FrameGrabber::grabFrame(qint64 timestamp) {
-    cv::VideoCapture videoCapture(path);
     if(!videoCapture.isOpened())
-        qDebug() << "Not open";
+        if(!videoCapture.open(path)) {
+            qDebug() << "OpenCV couldn't file at: " << QString::fromStdString(path);
+            return {};
+        }
     qDebug() << "VideoCapture set: " << videoCapture.set(cv::CAP_PROP_POS_MSEC, (double) timestamp);
     cv::Mat mat;
     videoCapture >> mat;

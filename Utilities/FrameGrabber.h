@@ -26,7 +26,6 @@
 #define VTEG_FRAMEGRABBER_H
 
 #include "libraries/opencv2/opencv.hpp"
-#include "libraries/opencv2/videoio.hpp"
 #include <iostream>
 #include <QImage>
 #include <QString>
@@ -38,6 +37,7 @@ public:
     QImage grabFrame(qint64 timestamp);
 
 private:
+    cv::VideoCapture videoCapture;
     std::string path;
 };
 

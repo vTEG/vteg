@@ -41,6 +41,8 @@
     <addaction name="actionSaveTags"/>
     <addaction name="action_load_from_CSV"/>
     <addaction name="action_write_to_CSV"/>
+    <addaction name="separator"/>
+    <addaction name="actionAnalyze_Video"/>
    </widget>
    <addaction name="menuFiles"/>
    <addaction name="menuTags"/>
@@ -92,6 +94,11 @@
    </property>
    <property name="toolTip">
     <string>write to CSV</string>
+   </property>
+  </action>
+  <action name="actionAnalyze_Video">
+   <property name="text">
+    <string>Analyze Video</string>
    </property>
   </action>
  </widget>

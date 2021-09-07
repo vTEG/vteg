@@ -44,7 +44,8 @@ set(PROJECT_SOURCES
         Windows/SettingsWidget.cpp Windows/SettingsWidget.h
         Utilities/Settings.cpp Utilities/Settings.h
         Utilities/HotkeyManager.h
-        Utilities/FrameGrabber.cpp Utilities/FrameGrabber.h)
+        Utilities/FrameGrabber.cpp Utilities/FrameGrabber.h
+        Utilities/ObjectDetector.cpp Utilities/ObjectDetector.h)
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     add_executable(VTEg MACOSX_BUNDLE

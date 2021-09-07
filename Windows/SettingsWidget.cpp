@@ -46,11 +46,15 @@ SettingsWidget::SettingsWidget(QWidget *parent): QDialog(parent) {
     csvpolicyLabel = new QLabel("Policy for CSV");
     save = new QPushButton("Save");
     cancel = new QPushButton("Cancel");
+    imageRecognitionPolicyLabel = new QLabel("Percentage of confidence for analyzing video");
+    imageRecognitionPolicyText = new QLineEdit;
+    imageRecognitionPolicyText->setValidator(new QRegExpValidator(QRegExp("-?[0-9]*"), imageRecognitionPolicyText));
     
     gridLayout = new QGridLayout(this);
     setLayout(gridLayout);
 
     additionText->setText(QString::number(Settings::getInstance()->getAddition()));
+    imageRecognitionPolicyText->setText(QString::number(Settings::getInstance()->getImageRecognitionConfidence() * 100));
 
     themeSelect->addItem("classic");
     themeSelect->addItem("light");
@@ -71,8 +75,10 @@ SettingsWidget::SettingsWidget(QWidget *parent): QDialog(parent) {
     gridLayout->addWidget(themeSelect, 2, 1);
     gridLayout->addWidget(csvpolicyLabel, 3, 0);
     gridLayout->addWidget(csvSelect, 3, 1);
-    gridLayout->addWidget(save, 4, 0);
-    gridLayout->addWidget(cancel, 4, 1);
+    gridLayout->addWidget(imageRecognitionPolicyLabel, 4, 0);
+    gridLayout->addWidget(imageRecognitionPolicyText, 4, 1);
+    gridLayout->addWidget(save, 5, 0);
+    gridLayout->addWidget(cancel, 5, 1);
 
     connect(save, &QPushButton::clicked, this, &SettingsWidget::saveSettings);
     connect(cancel, &QPushButton::clicked, this, &SettingsWidget::closeSettings);
@@ -84,6 +90,7 @@ void SettingsWidget::saveSettings() {
     ptr->setTheme(themeSelect->currentText().toLower());
     ptr->setShowFrames(showFrames->isChecked());
     ptr->setCsvPolicy(csvSelect->currentText());
+    ptr->setImageRecognitionConfidence(imageRecognitionPolicyText->displayText().toFloat() / 100);
     ptr->save();
     this->close();
 }
