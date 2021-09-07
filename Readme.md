@@ -15,6 +15,8 @@ First of all, M1 Macs are currently not supported because Qt multimedia isn't wo
 
 You need [Qt](https://www.qt.io/download) to build vTEG. We're using the open source version. You also need to install mingw 64bit from the Qt installer with it. We've build the project with Qt V5.12.11, so having a somewhat similar version installed might be helpful.
 
+A compiled version of OpenCV is necessary. You can build it yourself if you like, we went with [huihut/OpenCV-MinGW-Build](https://github.com/huihut/OpenCV-MinGW-Build).
+
 Usually, Ninja and cmake should be delivered with the Qt installer if u didnt uncheck them. If you did, you need [Ninja](https://github.com/ninja-build/ninja/releases) as a build tool for cmake and [cmake](https://cmake.org/download/) itself.
 
 ### Build Steps
