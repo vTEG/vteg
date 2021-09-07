@@ -4,9 +4,6 @@ project(VTEg VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-#Change this path to your local QT cmake path
-#set(CMAKE_PREFIX_PATH "/Path/To/Your/Qt/Folder")
-
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -16,13 +13,22 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include(BreezeThemes.cmake)
 
-find_package(QT NAMES Qt5 COMPONENTS Widgets Gui Multimedia MultimediaWidgets LinguistTools REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Gui Multimedia MultimediaWidgets LinguistTools REQUIRED)
+#Change this path to your local QT cmake path
+#set(CMAKE_PREFIX_PATH "/Path/To/Your/Qt/Folder")
+
+#Change this path to your local OpenCV path
+set(OpenCV_DIR "C:/OpenCV-MinGW-Build")
+
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Gui Multimedia MultimediaWidgets LinguistTools)
+find_package(OpenCV REQUIRED)
+
+#Change this path to the bin folder of your OpenCV build, if its not in PATH
+file(COPY "${OpenCV_INCLUDE_DIRS}/../x64/mingw/bin/" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/")
 
 #copys the images folder into the buildfolder
 file(COPY "images/" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/images")
 
-include_directories(libraries)
+include_directories(libraries ${OpenCV_INCLUDE_DIRS})
 
 set(PROJECT_SOURCES
         main.cpp
@@ -38,42 +44,32 @@ set(PROJECT_SOURCES
         Windows/SettingsWidget.cpp Windows/SettingsWidget.h
         Utilities/Settings.cpp Utilities/Settings.h
         Utilities/HotkeyManager.h
-        )
+        Utilities/FrameGrabber.cpp Utilities/FrameGrabber.h)
 
-if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(VTEg
-        MANUAL_FINALIZATION
+if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    add_executable(VTEg MACOSX_BUNDLE
+            ${PROJECT_SOURCES}
+    )
+    set_target_properties(VTEg PROPERTIES
+            MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
+            MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
+            MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
+            )
+elseif(WIN32)
+    add_executable(VTEg WIN32
         ${PROJECT_SOURCES}
     )
-else()
-    if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-        add_executable(VTEg MACOSX_BUNDLE
-                ${PROJECT_SOURCES}
-        )
-        set_target_properties(VTEg PROPERTIES
-                MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
-                MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
-                MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
-                )
-    elseif(WIN32)
-        add_executable(VTEg WIN32
-            ${PROJECT_SOURCES}
-        )
-        #this will move the necessary compiler DLL files to the applications path, if this causes any problems, uncomment it and move them yourself
-        if(MINGW)
-            message(STATUS "Installing system-libraries: MinGW DLLs.")
-            get_filename_component(Mingw_Path ${CMAKE_CXX_COMPILER} PATH)
-            file(COPY "${Mingw_Path}/libwinpthread-1.dll" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
-            file(COPY "${Mingw_Path}/libstdc++-6.dll" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
-            file(COPY "${Mingw_Path}/libgcc_s_seh-1.dll" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
-        endif()
-    elseif(LINUX)
-        add_executable(VTEg ${PROJECT_SOURCES})
+    #this will move the necessary compiler DLL files to the applications path, if this causes any problems, uncomment it and move them yourself
+    if(MINGW)
+        message(STATUS "Installing system-libraries: MinGW DLLs.")
+        get_filename_component(Mingw_Path ${CMAKE_CXX_COMPILER} PATH)
+        file(COPY "${Mingw_Path}/libwinpthread-1.dll" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
+        file(COPY "${Mingw_Path}/libstdc++-6.dll" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
+        file(COPY "${Mingw_Path}/libgcc_s_seh-1.dll" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
     endif()
+elseif(LINUX)
+    add_executable(VTEg ${PROJECT_SOURCES})
 endif()
 
-target_link_libraries(VTEg PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Gui Qt${QT_VERSION_MAJOR}::Multimedia Qt${QT_VERSION_MAJOR}::MultimediaWidgets breeze_themes)
+target_link_libraries(VTEg PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Gui Qt${QT_VERSION_MAJOR}::Multimedia Qt${QT_VERSION_MAJOR}::MultimediaWidgets breeze_themes ${OpenCV_LIBS})
 
-if(QT_VERSION_MAJOR EQUAL 6)
-    qt_finalize_executable(VTEg)
-endif()
