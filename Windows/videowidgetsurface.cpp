@@ -118,7 +118,6 @@ bool VideoWidgetSurface::present(const QVideoFrame &frame)
                 currentFrame.height(),
                 currentFrame.bytesPerLine(),
                 imageFormat);
-        lastSavedImage = image;
 
         widget->repaint(targetRect);
 
@@ -156,7 +155,7 @@ void VideoWidgetSurface::paint(QPainter *painter)
                 currentFrame.bytesPerLine(),
                 imageFormat);
 
-        //lastSavedImage = image;
+        lastSavedImage = image;
 
 
         painter->drawImage(targetRect, image, sourceRect);
