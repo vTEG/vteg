@@ -7,13 +7,13 @@ vTEG is a C++ application for watching, analysing and tagging videos, so you cou
 ## Download
 Fully compiled binarys will be linked here when available
 
+If you're using windows, you need an external video codec, because Qt's multimedia library won't work otherwise. In development, we've used [K-Lite Codec Pack Basic](https://codecguide.com/download_k-lite_codec_pack_basic.htm).
+Mac and Linux should be able to handle this natively.
+
 ## Building
 First of all, M1 Macs are currently not supported because Qt multimedia isn't working on the open source version of 5.x yet. We think about moving this project to Qt 6.2 as soon as it releases, but that would need a rewrite of **alot** of things, as they are completely changing the multimedia section.
 
 You need [Qt](https://www.qt.io/download) to build vTEG. We're using the open source version. You also need to install mingw 64bit from the Qt installer with it. We've build the project with Qt V5.12.11, so having a somewhat similar version installed might be helpful.
-
-If you're using windows, you also need an external video codec, because Qt's multimedia library won't work otherwise. In development, we've used [K-Lite Codec Pack Standard](https://codecguide.com/download_k-lite_codec_pack_standard.htm).
-Mac and Linux should be able to handle this natively.
 
 Usually, Ninja and cmake should be delivered with the Qt installer if u didnt uncheck them. If you did, you need [Ninja](https://github.com/ninja-build/ninja/releases) as a build tool for cmake and [cmake](https://cmake.org/download/) itself.
 
@@ -24,12 +24,15 @@ You need to replace these placeholders:
 2. QT-VERSION
 3. MINGW64-VERSION
 
-With your own paths to the installations. Please also ONLY use the compile tools delivered by the Qt installation. Using another g++ compiler for example will just throw tons of errors.
+With your own paths to the installations. If you don't know what you're doing, please **ONLY** use the compile tools delivered by the Qt installation. Using another g++ compiler for example will just throw tons of errors.
 
+Also, read these constructions carefully, if you don't change the lines in the CMakeLists.txt file, compiling will most likely not work.
 ```bash
 git clone https://github.com/vTEG/vteg
 
-# Open CMakeLists.txt and change line 8 to your local Qt installation path
+# Open CMakeLists.txt and uncomment + change line 17 to your local Qt installation path
+# Then change line 20 to your local OpenCV installation path
+# And last but not least, change line 26 so it points to your local OpenCV /bin folder
 # Open folder in terminal
 
 mkdir build && cd build
