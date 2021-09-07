@@ -368,7 +368,6 @@ void MainWindow::on_action_load_from_CSV_triggered() {
      *
      * Todo: find a better solution (maybe put it in its own function with a constexpr char as an argument
      */
-     qDebug() << "Path to Video: "  << player->currentMedia().canonicalUrl().path().remove(0,1);
     FrameGrabber frameGrabber(player->currentMedia().canonicalUrl().path().remove(0,1));
     if(Settings::getInstance()->getCsvPolicy() == ";") {
         io::CSVReader<2, io::trim_chars<' ', '\t'>, io::no_quote_escape<';'>> in(filePath.toStdString());
@@ -869,6 +868,8 @@ void MainWindow::load(const QString& filePath){
     quint16 failedEntries = 0;
     player->setMuted(true);
 
+    FrameGrabber frameGrabber(player->currentMedia().canonicalUrl().path().remove(0,1));
+
     for (int i = 0; i < size; i++){
         auto tag = new VideoTag();
         // Deserialize from stream
@@ -880,12 +881,7 @@ void MainWindow::load(const QString& filePath){
             failedEntries++;
             continue;
         }
-
-        // Try to load preview at given timestamp
-        player->setPosition(tag->getTimestamp());
-        player->play();
-        tag->setImage(vw->getSurface()->getLastFrame().copy());
-        player->pause();
+        tag->setImage(frameGrabber.grabFrame(tag->getTimestamp()));
 
         // Add to temporary list
         list->push_back(tag);
@@ -920,7 +916,6 @@ void MainWindow::load(const QString& filePath){
     }
 
     // Restore player state
-    player->setPosition(previousPosition);
     player->play();
     player->setMuted(false);
 
