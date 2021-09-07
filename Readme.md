@@ -10,7 +10,7 @@ Fully compiled binarys will be linked here when available
 ## Building
 First of all, M1 Macs are currently not supported because Qt multimedia isn't working on the open source version of 5.x yet. We think about moving this project to Qt 6.2 as soon as it releases, but that would need a rewrite of **alot** of things, as they are completely changing the multimedia section.
 
-So, first of all, you need [Qt](https://www.qt.io/download) to build vTEG. We're using the open source version. You also need to install mingw 64bit from the Qt installer with it. We've build the project with Qt V5.12.11, so having a somewhat similar version installed might be helpful.
+You need [Qt](https://www.qt.io/download) to build vTEG. We're using the open source version. You also need to install mingw 64bit from the Qt installer with it. We've build the project with Qt V5.12.11, so having a somewhat similar version installed might be helpful.
 
 If you're using windows, you also need an external video codec, because Qt's multimedia library won't work otherwise. In development, we've used [K-Lite Codec Pack Standard](https://codecguide.com/download_k-lite_codec_pack_standard.htm).
 Mac and Linux should be able to handle this natively.
