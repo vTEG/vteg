@@ -42,7 +42,7 @@
     <addaction name="action_load_from_CSV"/>
     <addaction name="action_write_to_CSV"/>
     <addaction name="separator"/>
-    <addaction name="actionAnalyze_Video"/>
+    <addaction name="action_Analyze_Video"/>
    </widget>
    <addaction name="menuFiles"/>
    <addaction name="menuTags"/>
@@ -96,7 +96,7 @@
     <string>write to CSV</string>
    </property>
   </action>
-  <action name="actionAnalyze_Video">
+  <action name="action_Analyze_Video">
    <property name="text">
     <string>Analyze Video</string>
    </property>

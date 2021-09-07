@@ -33,14 +33,15 @@
 
 class ObjectDetector {
 public:
-    ObjectDetector(const std::string&);
-    QList<VideoTag> AnalyzeVideo();
+    explicit ObjectDetector(const std::string&);
+    QList<VideoTag*> AnalyzeVideo();
+    std::vector<cv::String> getOutputsNames(const cv::dnn::Net& net);
 
 private:
-    cv::dnn::dnn4_v20210301::Net net;
+    cv::dnn::Net net;
     cv::VideoCapture videoCapture;
     float min_confidence;
-    std::string pathToOd = "OD/", pathToVideo;
+    std::string pathToOd = "OD/", pathToVideo, classesFile = pathToOd + "coco.names";
 };
 
 

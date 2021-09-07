@@ -22,10 +22,14 @@
     under certain conditions.
 */
 
+#include <fstream>
 #include "ObjectDetector.h"
 
 ObjectDetector::ObjectDetector(const std::string& p) : min_confidence(Settings::getInstance()->getImageRecognitionConfidence()) {
-    net = cv::dnn::readNet(pathToOd + "frozen_inference_graph.pb", pathToOd + "ssd_mobilenet_v2_coco_2018_03_29.pbtxt.txt", "TensorFlow");
+    net = cv::dnn::readNetFromDarknet(pathToOd + "yolov3-tiny.cfg", pathToOd + "yolov3-tiny.weights");
+    net.setPreferableBackend(cv::dnn::DNN_BACKEND_OPENCV);
+    net.setPreferableTarget(cv::dnn::DNN_TARGET_CPU);
+
     videoCapture.open(p);
     pathToVideo = p;
 }
@@ -33,7 +37,7 @@ ObjectDetector::ObjectDetector(const std::string& p) : min_confidence(Settings::
 /**
  * Analyzes the videofile of the ObjectDetector and writes all recognized objects into a .CSV
  */
-QList<VideoTag> ObjectDetector::AnalyzeVideo() {
+QList<VideoTag*> ObjectDetector::AnalyzeVideo() {
     if (!videoCapture.isOpened())
         if (!videoCapture.open(pathToVideo)) {
             qDebug() << "OpenCV couldn't open video at: " << QString::fromStdString(pathToVideo);
@@ -42,37 +46,76 @@ QList<VideoTag> ObjectDetector::AnalyzeVideo() {
 
     qDebug() << "Analyzing video started";
     // Keep track of which class has been detected in the last x seconds
-    auto *detectionMap = new QMap<int, qint64>(); // <classID, timestamp>
+    auto *detectionMap = new QMap<int, int>(); // <classID, timestamp>
     auto *tagList = new QList<VideoTag*>();
+    int inpWidth = 416;        // Width of network's input image
+    int inpHeight = 416;       // Height of network's input image
 
-    //QList<VideoTag *> *videoTags;
+    int iterations = 1, skipper = 1;
 
-    qint64 timestamp = 1;
+    std::vector<std::string> class_names;
+    std::ifstream ifs(classesFile.c_str());
+    std::string line;
+
+    while(std::getline(ifs, line))
+        class_names.push_back(line);
 
     while (videoCapture.isOpened()) {
         cv::Mat img;
+        videoCapture >> img;
 
-        bool isSuccess = videoCapture.read(img);
+        videoCapture.set(cv::CAP_PROP_POS_MSEC, skipper += 500);
 
-        if (!isSuccess) {
-            qDebug() << "Couldn't load frame";
+        qDebug() << "Skipped to ms " << skipper << " on iteration " << iterations++;
+
+        if (img.empty()) {
+            qDebug() << "Couldn't load frame, we're probably done";
             break;
         }
 
-        int imgHeight = img.cols;
-        int imgWidth = img.rows;
-
-        auto start = cv::getTickCount();
-
         // create Blob
-        cv::Mat blob = cv::dnn::dnn4_v20210301::blobFromImage(img, 1.0, cv::Size(300, 300),
-                                                              cv::Scalar(127.5, 127.5, 127.5), true, false);
-
+        cv::Mat blob = cv::dnn::blobFromImage(img, 1/255.0, cv::Size(inpWidth, inpHeight), cv::Scalar(0,0,0), true, false);
         //throw Matrix into neural network
         net.setInput(blob);
 
-        cv::Mat output = net.forward();
-        auto end = cv::getTickCount();
+        std::vector<cv::Mat> outs;
+        net.forward(outs, getOutputsNames(net));
+
+        for (size_t i = 0; i < outs.size(); i += 10) {
+            auto* data = (float*)outs[i].data;
+            for(int j = 0; j < outs[i].rows; ++j, data += outs[i].cols) {
+                cv::Mat scores = outs[i].row(j).colRange(5, outs[i].cols);
+                cv::Point classIdPoint;
+                double confidence;
+
+                cv::minMaxLoc(scores, 0, &confidence, 0, &classIdPoint);
+
+                if(confidence > min_confidence) {
+                    // Check if this class has already been detected in the last x seconds
+                    int lastDetection = detectionMap->value(classIdPoint.x, -1);
+
+                    qDebug() << QString::asprintf("Confidence: %.2f", confidence);
+
+                    if (lastDetection == -1 || (skipper - lastDetection) > 5000) {
+                        int secs = skipper/1000;
+                        int mins = secs/60;
+                        secs = secs%60;
+                        tagList->append(new VideoTag(QString::asprintf("%02d:%02d", mins, secs),
+                                                     QString::fromStdString(class_names[classIdPoint.x]),
+                                                     QImage(img.data, img.cols, img.rows, static_cast<int>(img.step),
+                                                            QImage::Format_RGB888).copy(),
+                                                     skipper));
+                    }
+                    detectionMap->insert(classIdPoint.x, skipper);
+                }
+            }
+        }
+
+        std::vector<double> layersTimes;
+        double freq = cv::getTickFrequency() / 1000;
+        double t = (double) net.getPerfProfile(layersTimes) / freq;
+        qDebug() << QString::asprintf("Inference time for a frame : %.2f ms", t);
+        /*
 
         // Matrix with all class detections
         cv::Mat results(output.size[2], output.size[3], CV_32F, output.ptr<float>());
@@ -85,7 +128,7 @@ QList<VideoTag> ObjectDetector::AnalyzeVideo() {
             int classID = int(results.at<float>(i, 1));
             float confidence = results.at<float>(i, 2);
 
-            // If a class was detected, display a border around the object
+            // If a class was detected, create a tag and add it to our list
             if (confidence > min_confidence) {
 
                 // Check if this class has already been detected in the last x seconds
@@ -94,13 +137,13 @@ QList<VideoTag> ObjectDetector::AnalyzeVideo() {
                 timestamp = (end - start) / (qint64) cv::getTickFrequency();
 
                 if (lastDetection == -1 || (timestamp - lastDetection) > 5) {
-
                     // Add new VideoTag to the list
                     tagList->append(new VideoTag(QString::asprintf("ClassID: %d", classID),
                                                  "Description: ",
                                                  QImage(img.data, img.cols, img.rows, static_cast<int>(img.step),
                                                         QImage::Format_RGB888).copy(),
                                                  timestamp));
+                    qDebug() << "Appended a tag to the list";
 
                     // Set last reference
                     detectionMap->insert(classID, timestamp);
@@ -109,6 +152,25 @@ QList<VideoTag> ObjectDetector::AnalyzeVideo() {
                     qDebug() << "Detection of class " << classID << " at: " << timestamp;
                 }
             }
-        }
+        }*/
     }
+    return *(tagList);
+}
+
+std::vector<cv::String> ObjectDetector::getOutputsNames(const cv::dnn::Net& n) {
+    static std::vector<cv::String> names;
+
+    if (names.empty()) {
+        //Get the indices of the output layers, i.e. the layers with unconnected outputs
+        std::vector<int> outLayers = n.getUnconnectedOutLayers();
+
+        //get the names of all the layers in the network
+        std::vector<cv::String> layersNames = n.getLayerNames();
+
+        // Get the names of the output layers in names
+        names.resize(outLayers.size());
+        for (size_t i = 0; i < outLayers.size(); ++i)
+            names[i] = layersNames[outLayers[i] - 1];
+    }
+    return names;
 }

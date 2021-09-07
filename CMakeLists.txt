@@ -28,6 +28,8 @@ file(COPY "${OpenCV_INCLUDE_DIRS}/../x64/mingw/bin/" DESTINATION "${CMAKE_CURREN
 #copys the images folder into the buildfolder
 file(COPY "images/" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/images")
 
+file(COPY "OD/" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/OD")
+
 include_directories(libraries ${OpenCV_INCLUDE_DIRS})
 
 set(PROJECT_SOURCES
@@ -57,7 +59,7 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
             MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
             )
 elseif(WIN32)
-    add_executable(VTEg WIN32
+    add_executable(VTEg
         ${PROJECT_SOURCES}
     )
     #this will move the necessary compiler DLL files to the applications path, if this causes any problems, uncomment it and move them yourself

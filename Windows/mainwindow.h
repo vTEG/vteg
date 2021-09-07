@@ -101,7 +101,7 @@ private slots:
 
     void on_action_write_to_CSV_triggered();
 
-    void on_action_analyzeVideo_triggered();
+    void on_action_Analyze_Video_triggered();
 
 
     void tagEntryClickTimeout();
