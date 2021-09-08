@@ -515,11 +515,12 @@ void MainWindow::on_action_write_to_CSV_triggered() {
 }
 
 void MainWindow::on_action_Analyze_Video_triggered() {
+    auto *progressDialog = new QProgressDialog("Analyzing video", "Cancel",
+                                               0, static_cast<int>(player->duration()), this);
+    progressDialog->setAutoClose(true);
     player->pause();
     ObjectDetector od(player->currentMedia().canonicalUrl().path().remove(0,1).toStdString());
-    auto list = od.AnalyzeVideo();
-
-    qDebug() << "Analyze";
+    auto list = od.AnalyzeVideo(progressDialog);
 
     for(auto t : list)
         addExistingTagToList(t);

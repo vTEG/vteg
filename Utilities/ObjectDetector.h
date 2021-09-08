@@ -30,12 +30,12 @@
 #include "Utilities/VideoTag.h"
 
 #include <QDebug>
+#include <QProgressDialog>
 
 class ObjectDetector {
 public:
     explicit ObjectDetector(const std::string&);
-    QList<VideoTag*> AnalyzeVideo();
-    std::vector<cv::String> getOutputsNames(const cv::dnn::Net& net);
+    QList<VideoTag*> AnalyzeVideo(QProgressDialog*);
 
 private:
     cv::dnn::Net net;

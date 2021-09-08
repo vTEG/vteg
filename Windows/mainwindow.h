@@ -59,6 +59,7 @@
 #include <QPushButton>
 #include <QInputDialog>
 #include <iterator>
+#include <QProgressDialog>
 
 // Includes for time. (Detection of single- vs double-click on ListItems)
 #include <ctime>

@@ -37,7 +37,7 @@ ObjectDetector::ObjectDetector(const std::string& p) : min_confidence(Settings::
 /**
  * Analyzes the videofile of the ObjectDetector and writes all recognized objects into a .CSV
  */
-QList<VideoTag*> ObjectDetector::AnalyzeVideo() {
+QList<VideoTag*> ObjectDetector::AnalyzeVideo(QProgressDialog* progressDialog) {
     if (!videoCapture.isOpened())
         if (!videoCapture.open(pathToVideo)) {
             qDebug() << "OpenCV couldn't open video at: " << QString::fromStdString(pathToVideo);
@@ -45,6 +45,8 @@ QList<VideoTag*> ObjectDetector::AnalyzeVideo() {
         }
 
     qDebug() << "Analyzing video started";
+
+    progressDialog->open();
     // Keep track of which class has been detected in the last x seconds
     auto *detectionMap = new QMap<int, int>(); // <classID, timestamp>
     auto *tagList = new QList<VideoTag*>();
@@ -67,11 +69,14 @@ QList<VideoTag*> ObjectDetector::AnalyzeVideo() {
         videoCapture.set(cv::CAP_PROP_POS_MSEC, skipper += 250);
 
         qDebug() << "Skipped to ms " << skipper << " on iteration " << iterations++;
+        progressDialog->setValue(skipper);
 
         if (img.empty()) {
             qDebug() << "Couldn't load frame, we're probably done";
             break;
         }
+        else if(progressDialog->wasCanceled())
+            break;
 
         // create Blob
         cv::Mat blob = cv::dnn::blobFromImage(img, 1/255.0, cv::Size(inpWidth, inpHeight), cv::Scalar(0,0,0), true, false);
@@ -79,7 +84,7 @@ QList<VideoTag*> ObjectDetector::AnalyzeVideo() {
         net.setInput(blob);
 
         std::vector<cv::Mat> outs;
-        net.forward(outs, getOutputsNames(net));
+        net.forward(outs);
 
         for (size_t i = 0; i < outs.size(); i += 10) {
             auto* data = (float*)outs[i].data;
@@ -115,62 +120,7 @@ QList<VideoTag*> ObjectDetector::AnalyzeVideo() {
         double freq = cv::getTickFrequency() / 1000;
         double t = (double) net.getPerfProfile(layersTimes) / freq;
         qDebug() << QString::asprintf("Inference time for a frame : %.2f ms", t);
-        /*
-
-        // Matrix with all class detections
-        cv::Mat results(output.size[2], output.size[3], CV_32F, output.ptr<float>());
-
-
-        // Iterate over detection classes to determine weather one meets the detection threshold
-        for (int i = 0; i < results.rows; i++) {
-
-            // Pick selected class and check if confidence exceeds threshold
-            int classID = int(results.at<float>(i, 1));
-            float confidence = results.at<float>(i, 2);
-
-            // If a class was detected, create a tag and add it to our list
-            if (confidence > min_confidence) {
-
-                // Check if this class has already been detected in the last x seconds
-                int lastDetection = static_cast<int>(detectionMap->value(classID, -1));
-
-                timestamp = (end - start) / (qint64) cv::getTickFrequency();
-
-                if (lastDetection == -1 || (timestamp - lastDetection) > 5) {
-                    // Add new VideoTag to the list
-                    tagList->append(new VideoTag(QString::asprintf("ClassID: %d", classID),
-                                                 "Description: ",
-                                                 QImage(img.data, img.cols, img.rows, static_cast<int>(img.step),
-                                                        QImage::Format_RGB888).copy(),
-                                                 timestamp));
-                    qDebug() << "Appended a tag to the list";
-
-                    // Set last reference
-                    detectionMap->insert(classID, timestamp);
-
-                    // Debug
-                    qDebug() << "Detection of class " << classID << " at: " << timestamp;
-                }
-            }
-        }*/
     }
+    progressDialog->setValue(progressDialog->maximum());
     return *(tagList);
-}
-
-std::vector<cv::String> ObjectDetector::getOutputsNames(const cv::dnn::Net& n) {
-    static std::vector<cv::String> names;
-
-    if (names.empty()) {
-        //Get the indices of the output layers, i.e. the layers with unconnected outputs
-        std::vector<int> outLayers = n.getUnconnectedOutLayers();
-
-        //get the names of all the layers in the network
-        std::vector<cv::String> layersNames = n.getLayerNames();
-
-        // Get the names of the output layers in names
-        names.resize(outLayers.size());
-        for (size_t i = 0; i < outLayers.size(); ++i)
-            names[i] = layersNames[outLayers[i] - 1];
-    }
-    return names;
 }
