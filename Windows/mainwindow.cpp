@@ -528,6 +528,7 @@ void MainWindow::on_action_Analyze_Video_triggered() {
         progressDialog->setStyleSheet("QProgressBar {"
                                   "border: 2px solid grey;"
                                   "border-radius: 5px;"
+                                  "margin-right: 30px;"
                                   "}");
     player->pause();
     ObjectDetector od(player->currentMedia().canonicalUrl().path().remove(0,1).toStdString());
