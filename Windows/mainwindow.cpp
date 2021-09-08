@@ -456,7 +456,6 @@ void MainWindow::on_action_load_from_CSV_triggered() {
  * Todo: move to static class for readability
  */
 void MainWindow::on_action_write_to_CSV_triggered() {
-
     QMessageBox msg;
     if (playerState == QMediaPlayer::StoppedState || videoTags->empty()){
         msg.setText("No video loaded or tag list empty.");
@@ -515,9 +514,21 @@ void MainWindow::on_action_write_to_CSV_triggered() {
 }
 
 void MainWindow::on_action_Analyze_Video_triggered() {
+    if (playerState == QMediaPlayer::StoppedState){
+        QMessageBox msg;
+        msg.setText("No video loaded or tag list empty.");
+        msg.exec();
+        return;
+    }
+
     auto *progressDialog = new QProgressDialog("Analyzing video", "Cancel",
                                                0, static_cast<int>(player->duration()), this);
     progressDialog->setAutoClose(true);
+    if(Settings::getInstance()->getTheme() != "classic")
+        progressDialog->setStyleSheet("QProgressBar {"
+                                  "border: 2px solid grey;"
+                                  "border-radius: 5px;"
+                                  "}");
     player->pause();
     ObjectDetector od(player->currentMedia().canonicalUrl().path().remove(0,1).toStdString());
     auto list = od.AnalyzeVideo(progressDialog);
