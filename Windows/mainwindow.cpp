@@ -513,6 +513,9 @@ void MainWindow::on_action_write_to_CSV_triggered() {
     msg.exec();
 }
 
+/**
+ * Analyzes currently playing video if there is one active
+ */
 void MainWindow::on_action_Analyze_Video_triggered() {
     if (playerState == QMediaPlayer::StoppedState){
         QMessageBox msg;
