@@ -31,6 +31,7 @@
 
 #include <QDebug>
 #include <QProgressDialog>
+#include <fstream>
 
 class ObjectDetector {
 public:

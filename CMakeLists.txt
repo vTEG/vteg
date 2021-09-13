@@ -47,7 +47,8 @@ set(PROJECT_SOURCES
         Utilities/Settings.cpp Utilities/Settings.h
         Utilities/HotkeyManager.h
         Utilities/FrameGrabber.cpp Utilities/FrameGrabber.h
-        Utilities/ObjectDetector.cpp Utilities/ObjectDetector.h)
+        Utilities/ObjectDetector.cpp Utilities/ObjectDetector.h
+        Utilities/TensorflowObjectDetection.cpp Utilities/TensorflowObjectDetection.h)
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     add_executable(VTEg MACOSX_BUNDLE

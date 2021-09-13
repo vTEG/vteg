@@ -531,7 +531,7 @@ void MainWindow::on_action_Analyze_Video_triggered() {
                                   "margin-right: 30px;"
                                   "}");
     player->pause();
-    ObjectDetector od(player->currentMedia().canonicalUrl().path().remove(0,1).toStdString());
+    TensorflowObjectDetection od(player->currentMedia().canonicalUrl().path().remove(0,1).toStdString());
     auto list = od.AnalyzeVideo(progressDialog);
 
     for(auto t : list)

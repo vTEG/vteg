@@ -34,7 +34,6 @@
 #include <QMenuBar>
 #include <QAction>
 
-#include <libraries/json.hpp>
 #include <QLabel>
 
 using json = nlohmann::json;

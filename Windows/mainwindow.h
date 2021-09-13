@@ -42,6 +42,7 @@
 #include "Utilities/HotkeyManager.h"
 #include "Utilities/FrameGrabber.h"
 #include "Utilities/ObjectDetector.h"
+#include "Utilities/TensorflowObjectDetection.h"
 
 //Including Qt dependencies
 #include <QMainWindow>

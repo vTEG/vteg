@@ -22,16 +22,19 @@
     under certain conditions.
 */
 
-#include <fstream>
 #include "ObjectDetector.h"
 
-ObjectDetector::ObjectDetector(const std::string& p) : min_confidence(Settings::getInstance()->getImageRecognitionConfidence()) {
+/**
+ * Creates an ObjectDetector object
+ * @param video the path to the video as a std::string
+ */
+ObjectDetector::ObjectDetector(const std::string& video) : min_confidence(Settings::getInstance()->getImageRecognitionConfidence()) {
     net = cv::dnn::readNetFromDarknet(pathToOd + "yolov3-tiny.cfg", pathToOd + "yolov3-tiny.weights");
     net.setPreferableBackend(cv::dnn::DNN_BACKEND_DEFAULT);
     net.setPreferableTarget(cv::dnn::DNN_TARGET_CPU);
 
-    videoCapture.open(p);
-    pathToVideo = p;
+    videoCapture.open(video);
+    pathToVideo = video;
 }
 
 /**
