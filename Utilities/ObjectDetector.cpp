@@ -27,7 +27,7 @@
 
 ObjectDetector::ObjectDetector(const std::string& p) : min_confidence(Settings::getInstance()->getImageRecognitionConfidence()) {
     net = cv::dnn::readNetFromDarknet(pathToOd + "yolov3-tiny.cfg", pathToOd + "yolov3-tiny.weights");
-    net.setPreferableBackend(cv::dnn::DNN_BACKEND_OPENCV);
+    net.setPreferableBackend(cv::dnn::DNN_BACKEND_DEFAULT);
     net.setPreferableTarget(cv::dnn::DNN_TARGET_CPU);
 
     videoCapture.open(p);
@@ -50,8 +50,8 @@ QList<VideoTag*> ObjectDetector::AnalyzeVideo(QProgressDialog* progressDialog) {
     // Keep track of which class has been detected in the last x seconds
     auto *detectionMap = new QMap<int, int>(); // <classID, timestamp>
     auto *tagList = new QList<VideoTag*>();
-    int inpWidth = 416;        // Width of network's input image
-    int inpHeight = 416;       // Height of network's input image
+    int inpWidth = 320;        // Width of network's input image
+    int inpHeight = 320;       // Height of network's input image
 
     int iterations = 1, skipper = 1;
 
@@ -63,13 +63,11 @@ QList<VideoTag*> ObjectDetector::AnalyzeVideo(QProgressDialog* progressDialog) {
         class_names.push_back(line);
 
     while (videoCapture.isOpened()) {
-        cv::Mat img;
-        videoCapture >> img;
-
         videoCapture.set(cv::CAP_PROP_POS_MSEC, skipper += 250);
 
         qDebug() << "Skipped to ms " << skipper << " on iteration " << iterations++;
-        progressDialog->setValue(skipper);
+        cv::Mat img;
+        videoCapture >> img;
 
         if (img.empty()) {
             qDebug() << "Couldn't load frame, we're probably done";
@@ -83,36 +81,37 @@ QList<VideoTag*> ObjectDetector::AnalyzeVideo(QProgressDialog* progressDialog) {
         //throw Matrix into neural network
         net.setInput(blob);
 
-        std::vector<cv::Mat> outs;
-        net.forward(outs);
+        cv::Mat out;
+        net.forward(out);
 
-        for (size_t i = 0; i < outs.size(); i += 10) {
-            auto* data = (float*)outs[i].data;
-            for(int j = 0; j < outs[i].rows; ++j, data += outs[i].cols) {
-                cv::Mat scores = outs[i].row(j).colRange(5, outs[i].cols);
-                cv::Point classIdPoint;
-                double confidence;
+        int rowsNoOfDetection = out.rows;
+        int colsCoordinatesPlusClassScore = out.cols;
 
-                cv::minMaxLoc(scores, 0, &confidence, 0, &classIdPoint);
+        for (int i = 0; i < rowsNoOfDetection; ++i) {            // for each row, the score is from element 5 up to number of classes index
+            progressDialog->setValue(skipper);
 
-                if(confidence > min_confidence) {
-                    // Check if this class has already been detected in the last x seconds
-                    int lastDetection = detectionMap->value(classIdPoint.x, -1);
+            //(5 - N columns)
+            cv::Mat scores = out.row(i).colRange(5, colsCoordinatesPlusClassScore);
+            cv::Point PositionOfMax;
+            double confidence;
+            cv::minMaxLoc(scores, 0, &confidence, 0, &PositionOfMax);
 
-                    qDebug() << QString::asprintf("Confidence: %.2f", confidence);
+            if(confidence > min_confidence) {
+                // Check if this class has already been detected in the last x seconds
+                int lastDetection = detectionMap->value(PositionOfMax.x, -1);
+                qDebug() << QString::asprintf("Confidence: %.2f", confidence);
 
-                    if (lastDetection == -1 || (skipper - lastDetection) > 2000) {
-                        int secs = skipper/1000;
-                        int mins = secs/60;
-                        secs = secs%60;
-                        tagList->append(new VideoTag(QString::asprintf("%02d:%02d", mins, secs),
-                                                     QString::fromStdString(class_names[classIdPoint.x]),
-                                                     QImage(img.data, img.cols, img.rows, static_cast<int>(img.step),
-                                                            QImage::Format_RGB888).copy(),
-                                                     skipper));
-                    }
-                    detectionMap->insert(classIdPoint.x, skipper);
+                if (lastDetection == -1 || (skipper - lastDetection) > 2000) {
+                    int secs = skipper/1000;
+                    int mins = secs/60;
+                    secs = secs%60;
+                    tagList->append(new VideoTag(QString::asprintf("%02d:%02d", mins, secs),
+                                                 QString::fromStdString(class_names[PositionOfMax.x]),
+                                                 QImage(img.data, img.cols, img.rows, static_cast<int>(img.step),
+                                                        QImage::Format_RGB888).copy(),
+                                                 skipper));
                 }
+                detectionMap->insert(PositionOfMax.x, skipper);
             }
         }
 
