@@ -29,7 +29,7 @@ HotKeyManager* HotKeyManager::instance = nullptr;
 /**
  * Deserializing our settings file in case there is one
  */
-Settings::Settings() : additionToTag(0), showFrames(false), theme("dark"), csvPolicy(";"), imageRecognitionConfidence(0.8) {}
+Settings::Settings() : additionToTag(0), showFrames(false), theme("dark"), csvPolicy(";"), imageRecognitionConfidence(0.95) {}
 
 /**
  * Deleting the Settings object

@@ -74,15 +74,17 @@ QList<VideoTag*> TensorflowObjectDetection::AnalyzeVideo(QProgressDialog* progre
         bool isSuccess = videoCapture.read(image);
 
         // Check if image is loaded in correctly
-        if (!isSuccess){
+        if (!isSuccess) {
             std::cout << "Could not load the image!" << std::endl;
             break;
         }
 
+
+        
+
         // Create a blob from the image
         cv::Mat blob = cv::dnn::blobFromImage(image, 1.0, cv::Size(300, 300), cv::Scalar(127.5, 127.5, 127.5),
                                  true, false);
-
 
         // Set the blob to be input to the neural network
         net.setInput(blob);
@@ -90,15 +92,11 @@ QList<VideoTag*> TensorflowObjectDetection::AnalyzeVideo(QProgressDialog* progre
         // Forward pass of the blob through the neural network to get the predictions
         cv::Mat output = net.forward();
 
-
-
         // Matrix with all the detections
         cv::Mat results(output.size[2], output.size[3], CV_32F, output.ptr<float>());
 
         // Run through all the predictions
         for (int i = 0; i < results.rows; i++) {
-
-
             int class_id = int(results.at<float>(i, 1));
             class_id--;
             float confidence = results.at<float>(i, 2);
