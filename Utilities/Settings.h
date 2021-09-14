@@ -25,7 +25,7 @@
 #ifndef VTEG_SETTINGS_H
 #define VTEG_SETTINGS_H
 
-#include "HotkeyManager.h"
+#include "HotKeyManager.h"
 
 #include <QFile>
 #include <QDebug>

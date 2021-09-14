@@ -45,7 +45,7 @@ set(PROJECT_SOURCES
         Utilities/VideoPreview.cpp Utilities/VideoPreview.h
         Windows/SettingsWidget.cpp Windows/SettingsWidget.h
         Utilities/Settings.cpp Utilities/Settings.h
-        Utilities/HotkeyManager.h
+        Utilities/HotKeyManager.h
         Utilities/FrameGrabber.cpp Utilities/FrameGrabber.h
         Utilities/ObjectDetector.cpp Utilities/ObjectDetector.h
         Utilities/TensorflowObjectDetection.cpp Utilities/TensorflowObjectDetection.h)

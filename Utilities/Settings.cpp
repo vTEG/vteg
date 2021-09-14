@@ -24,7 +24,7 @@
 
 #include "Settings.h"
 Settings* Settings::instance = nullptr;
-HotkeyManager* HotkeyManager::instance = nullptr;
+HotKeyManager* HotKeyManager::instance = nullptr;
 
 /**
  * Deserializing our settings file in case there is one

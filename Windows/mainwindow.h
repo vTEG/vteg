@@ -39,7 +39,7 @@
 #include "Utilities/Settings.h"
 #include "libraries/csv.h"
 #include "build/VTEg_autogen/include/ui/ui_mainwindow.h"
-#include "Utilities/HotkeyManager.h"
+#include "Utilities/HotKeyManager.h"
 #include "Utilities/FrameGrabber.h"
 #include "Utilities/ObjectDetector.h"
 #include "Utilities/TensorflowObjectDetection.h"
@@ -125,6 +125,9 @@ public slots:
 protected:
     bool eventFilter(QObject *object, QEvent *event) override;
 
+    // Event handling
+
+
     void resizeEvent(QResizeEvent *) override;
 
     void fireResizeEvent();
@@ -144,7 +147,7 @@ private:
     QListWidgetItem *tagListClickedItem{};
 
     QString maxDuration;
-    HotkeyManager *hotkeyManager;
+    HotKeyManager *hotkeyManager;
 
     int currentTime = 0;
     bool mDoubleClicked{};

@@ -37,7 +37,7 @@ TensorflowObjectDetection::TensorflowObjectDetection(const std::string& video) :
 }
 
 /**
- * Analyzes the videofile of the ObjectDetector and writes all recognized objects into a .CSV
+ * Analyzes the video file of the ObjectDetector and writes all recognized objects into a .CSV
  * @param progressDialog QProgressDialog where we update the user on the analyzing progress
  */
 QList<VideoTag*> TensorflowObjectDetection::AnalyzeVideo(QProgressDialog* progressDialog) {
@@ -48,6 +48,7 @@ QList<VideoTag*> TensorflowObjectDetection::AnalyzeVideo(QProgressDialog* progre
         }
 
     qDebug() << "Analyzing video started";
+    qDebug() << "Min. confidence: " << min_confidence;
 
     progressDialog->open();
 
@@ -105,7 +106,7 @@ QList<VideoTag*> TensorflowObjectDetection::AnalyzeVideo(QProgressDialog* progre
             if (confidence > min_confidence) {
                 // Check if this class has already been detected in the last x seconds
                 int lastDetection = detectionMap->value(class_id, -1);
-                qDebug() << QString::asprintf("Confidence: %.2f", confidence);
+                qDebug() << QString::asprintf("Confidence: %.2f (min := %.2f)", confidence, min_confidence);
 
                 if (lastDetection == -1 || (skipper - lastDetection) > 2000) {
                     int secs = skipper / 1000;

@@ -66,7 +66,7 @@ MainWindow::MainWindow(QWidget *parent)
     removeTag = new QPushButton("-", tagButtonWidget);
     jumpToTag = new QPushButton("->", tagButtonWidget);
     listView = new QListWidget(this);
-    hotkeyManager = new HotkeyManager;
+    hotkeyManager = new HotKeyManager;
     maxDuration = "/00:00";
 
     customSlider = new CustomVideoSlider(this, videoTags);
@@ -185,9 +185,9 @@ MainWindow::MainWindow(QWidget *parent)
 
 
 
-    //this->installEventFilter(this);
+    this->installEventFilter(this);
 
-    QCoreApplication::instance()->installEventFilter(this);
+    //QCoreApplication::instance()->installEventFilter(this);
 
     /**
      * Triggers a resize event so the scaling of everything will be correct on startup
@@ -715,8 +715,12 @@ void MainWindow::setPosition(int position)
 bool MainWindow::eventFilter(QObject *object, QEvent *event) {
     QImage frame;
 
+    // unchangeable hotkeys
+    if (event->type() == QEvent::KeyPress){
+
+    }
+
     if (event->type() == QEvent::MouseButtonPress){
-        qDebug() << "Mouse";
         return QMainWindow::eventFilter(object, event);
     }
 
@@ -732,7 +736,7 @@ bool MainWindow::eventFilter(QObject *object, QEvent *event) {
                                              keyEvent->modifiers().testFlag(Qt::ControlModifier),
                                              keyEvent->modifiers().testFlag(Qt::ShiftModifier));
 
-        HotKeyAction action = HotkeyManager::getInstance()->getAction(entry);
+        HotKeyAction action = HotKeyManager::getInstance()->getAction(entry);
 
         switch (action){
             case OPEN_FILE:
