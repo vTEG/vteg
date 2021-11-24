@@ -1,11 +1,9 @@
-This project is still WIP!
-
 # vTEG
 
 vTEG is a C++ application for watching, analysing and tagging videos, so you could jump back and forth between the most important parts of the video. You can either save/load tags from our own .vteg format, or load/write them from and to .CSV files, for compatibility with other tagging software.
 
 ## Download
-Fully compiled binarys will be linked here when available
+[v0.0.1](https://github.com/vTEG/vteg/releases)
 
 If you're using windows, you need an external video codec, because Qt's multimedia library won't work otherwise. In development, we've used [K-Lite Codec Pack Basic](https://codecguide.com/download_k-lite_codec_pack_basic.htm).
 Mac and Linux should be able to handle this natively.
