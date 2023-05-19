@@ -48,6 +48,7 @@
 #include <QMainWindow>
 #include <QWindow>
 #include <QMediaPlayer>
+#include <QAudioOutput>
 #include <QVideoWidget>
 #include <QFileDialog>
 #include <QLabel>
@@ -65,7 +66,6 @@
 // Includes for time. (Detection of single- vs double-click on ListItems)
 #include <ctime>
 #include <chrono>
-#include <QVideoProbe>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -135,7 +135,7 @@ protected:
 private:
     Ui::MainWindow *ui;
     QMediaPlayer *player;
-    QMediaPlayer::State playerState;
+    QMediaPlayer::PlaybackState playerState;
     VideoWidget *vw{};
     QWidget *mainWidget, *videoWidget, *videoControlsWidget, *videoTimeWidget, *videoButtonsWidget, *tagWidget, *tagButtonWidget;
     QSlider *volume;

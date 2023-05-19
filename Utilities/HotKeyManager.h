@@ -25,10 +25,12 @@
 #ifndef VTEG_HOTKEYMANAGER_H
 #define VTEG_HOTKEYMANAGER_H
 
+#include <QObject>
 #include <QtGlobal>
 #include <QMap>
+#include <QKeySequence>
 
-class HotKeyActionWrapper : QObject {
+class HotKeyActionWrapper : public QObject {
     Q_OBJECT
 public:
     enum HotKeyAction {
@@ -45,7 +47,7 @@ public:
 };
 
 
-class HotKeyManager {
+class HotKeyManager : public QObject {
     Q_OBJECT
 
 private:
@@ -65,7 +67,7 @@ private:
     HotKeyManager() {
         hotkeys = new QMap<QKeySequence*, HotKeyActionWrapper::HotKeyAction>();
     };
-    ~HotKeyManager(){
+    ~HotKeyManager() override{
         delete hotkeys;
     };
 
@@ -121,6 +123,7 @@ QDataStream& operator>>(QDataStream &in, const HotKeyManager &manager){
         HotKeyActionWrapper::HotKeyAction action;
         in >> action;
     }
+    return in;
 }
 
-#endif //VTEG_HOTKEYMANAGER_H
+#endif VTEG_HOTKEYMANAGER_H

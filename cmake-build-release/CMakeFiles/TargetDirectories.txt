@@ -1,0 +1,9 @@
+/Users/tommetz/CLionProjects/vteg/cmake-build-release/CMakeFiles/breeze_themes.dir
+/Users/tommetz/CLionProjects/vteg/cmake-build-release/CMakeFiles/run_python_breeze.dir
+/Users/tommetz/CLionProjects/vteg/cmake-build-release/CMakeFiles/VTEg.dir
+/Users/tommetz/CLionProjects/vteg/cmake-build-release/CMakeFiles/edit_cache.dir
+/Users/tommetz/CLionProjects/vteg/cmake-build-release/CMakeFiles/rebuild_cache.dir
+/Users/tommetz/CLionProjects/vteg/cmake-build-release/CMakeFiles/breeze_themes_autogen_timestamp_deps.dir
+/Users/tommetz/CLionProjects/vteg/cmake-build-release/CMakeFiles/breeze_themes_autogen.dir
+/Users/tommetz/CLionProjects/vteg/cmake-build-release/CMakeFiles/VTEg_autogen_timestamp_deps.dir
+/Users/tommetz/CLionProjects/vteg/cmake-build-release/CMakeFiles/VTEg_autogen.dir

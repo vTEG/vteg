@@ -25,11 +25,9 @@
 #include "videowidgetsurface.h"
 
 #include <QtWidgets>
-#include <qabstractvideosurface.h>
-#include <qvideosurfaceformat.h>
 
 VideoWidgetSurface::VideoWidgetSurface(QWidget *widget, QObject *parent)
-        : QAbstractVideoSurface(parent)
+        : QVideoSink(parent)
         , widget(widget)
         , imageFormat(QImage::Format_Invalid)
 {
@@ -38,45 +36,43 @@ VideoWidgetSurface::VideoWidgetSurface(QWidget *widget, QObject *parent)
 VideoWidgetSurface::~VideoWidgetSurface() = default;
 
 //! [0]
-QList<QVideoFrame::PixelFormat> VideoWidgetSurface::supportedPixelFormats(
-        QAbstractVideoBuffer::HandleType handleType) const
+QList<QVideoFrameFormat::PixelFormat> VideoWidgetSurface::supportedPixelFormats(
+        QVideoFrame::HandleType handleType) const
 {
-    if (handleType == QAbstractVideoBuffer::NoHandle) {
-        return QList<QVideoFrame::PixelFormat>()
-                << QVideoFrame::Format_RGB32
-                << QVideoFrame::Format_ARGB32
-                << QVideoFrame::Format_ARGB32_Premultiplied
-                << QVideoFrame::Format_RGB565
-                << QVideoFrame::Format_RGB555;
+    if (handleType == QVideoFrame::NoHandle) {
+        return QList<QVideoFrameFormat::PixelFormat>()
+                << QVideoFrameFormat::Format_XRGB8888
+                << QVideoFrameFormat::Format_ARGB8888
+                << QVideoFrameFormat::Format_ARGB8888_Premultiplied;
     } else {
-        return QList<QVideoFrame::PixelFormat>();
+        return {};
     }
 }
 //! [0]
 
 //! [1]
-bool VideoWidgetSurface::isFormatSupported(const QVideoSurfaceFormat &format) const
+bool VideoWidgetSurface::isFormatSupported(const QVideoFrame &format) const
 {
-    const QImage::Format imageFormat = QVideoFrame::imageFormatFromPixelFormat(format.pixelFormat());
-    const QSize size = format.frameSize();
+    const QImage::Format imageFormat = QVideoFrameFormat::imageFormatFromPixelFormat(format.pixelFormat());
+    const QSize size = format.size();
 
     return imageFormat != QImage::Format_Invalid
            && !size.isEmpty()
-           && format.handleType() == QAbstractVideoBuffer::NoHandle;
+           && format.handleType() == QVideoFrame::NoHandle;
 }
 //! [1]
 
 //! [2]
-bool VideoWidgetSurface::start(const QVideoSurfaceFormat &format)
+bool VideoWidgetSurface::start(const QVideoFrameFormat &format)
 {
-    const QImage::Format imageFormat = QVideoFrame::imageFormatFromPixelFormat(format.pixelFormat());
+    const QImage::Format imageFormat = QVideoFrameFormat::imageFormatFromPixelFormat(format.pixelFormat());
     const QSize size = format.frameSize();
 
     if (imageFormat != QImage::Format_Invalid && !size.isEmpty()) {
         this->imageFormat = imageFormat;
         sourceRect = format.viewport();
 
-        QAbstractVideoSurface::start(format);
+        QMediaPlayer::start(format);
 
         widget->updateGeometry();
         updateVideoRect();
@@ -94,7 +90,7 @@ void VideoWidgetSurface::stop()
     currentFrame = QVideoFrame();
     targetRect = QRect();
 
-    QAbstractVideoSurface::stop();
+    QMediaPlayer::stop();
 
     widget->update();
 }

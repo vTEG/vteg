@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/Users/tommetz/CLionProjects/vteg/cmake-build-release/_deps/breeze_stylesheets-subbuild/CMakeFiles/breeze_stylesheets-populate"
+		},
+		{
+			"file" : "/Users/tommetz/CLionProjects/vteg/cmake-build-release/_deps/breeze_stylesheets-subbuild/CMakeFiles/breeze_stylesheets-populate.rule"
+		},
+		{
+			"file" : "/Users/tommetz/CLionProjects/vteg/cmake-build-release/_deps/breeze_stylesheets-subbuild/CMakeFiles/breeze_stylesheets-populate-complete.rule"
+		},
+		{
+			"file" : "/Users/tommetz/CLionProjects/vteg/cmake-build-release/_deps/breeze_stylesheets-subbuild/breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-build.rule"
+		},
+		{
+			"file" : "/Users/tommetz/CLionProjects/vteg/cmake-build-release/_deps/breeze_stylesheets-subbuild/breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-configure.rule"
+		},
+		{
+			"file" : "/Users/tommetz/CLionProjects/vteg/cmake-build-release/_deps/breeze_stylesheets-subbuild/breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-download.rule"
+		},
+		{
+			"file" : "/Users/tommetz/CLionProjects/vteg/cmake-build-release/_deps/breeze_stylesheets-subbuild/breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-install.rule"
+		},
+		{
+			"file" : "/Users/tommetz/CLionProjects/vteg/cmake-build-release/_deps/breeze_stylesheets-subbuild/breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-mkdir.rule"
+		},
+		{
+			"file" : "/Users/tommetz/CLionProjects/vteg/cmake-build-release/_deps/breeze_stylesheets-subbuild/breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-patch.rule"
+		},
+		{
+			"file" : "/Users/tommetz/CLionProjects/vteg/cmake-build-release/_deps/breeze_stylesheets-subbuild/breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-test.rule"
+		},
+		{
+			"file" : "/Users/tommetz/CLionProjects/vteg/cmake-build-release/_deps/breeze_stylesheets-subbuild/breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"breeze_stylesheets-populate"
+		],
+		"name" : "breeze_stylesheets-populate"
+	}
+}

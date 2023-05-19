@@ -25,12 +25,13 @@
 #ifndef VTEG_VIDEOWIDGETSURFACE_H
 #define VTEG_VIDEOWIDGETSURFACE_H
 
-#include <QAbstractVideoSurface>
+#include <QVideoSink>
 #include <QImage>
 #include <QRect>
 #include <QVideoFrame>
+#include <QMediaPlayer>
 
-class VideoWidgetSurface : public QAbstractVideoSurface
+class VideoWidgetSurface : public QVideoSink
 {
 Q_OBJECT
 
@@ -39,16 +40,16 @@ public:
 
     ~VideoWidgetSurface() override;
 
-    QList<QVideoFrame::PixelFormat> supportedPixelFormats(
-            QAbstractVideoBuffer::HandleType handleType = QAbstractVideoBuffer::NoHandle) const override;
-    bool isFormatSupported(const QVideoSurfaceFormat &format) const override;
+    QList<QVideoFrameFormat::PixelFormat> supportedPixelFormats(
+            QVideoFrame::HandleType handleType = QVideoFrame::NoHandle) const;
+    bool isFormatSupported(const QVideoFrame &format) const;
 
-    bool start(const QVideoSurfaceFormat &format) override;
-    void stop() override;
+    bool start(const QVideoFrameFormat &format);
+    void stop();
 
-    bool present(const QVideoFrame &frame) override;
+    bool present(const QVideoFrame &frame);
 
-    QRect videoRect() const { return targetRect; }
+    [[nodiscard]] QRect videoRect() const { return targetRect; }
     void updateVideoRect();
 
     void paint(QPainter *painter);

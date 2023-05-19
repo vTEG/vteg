@@ -1,0 +1,199 @@
+## This file contains all the build statements describing the
+# compilation DAG.
+
+# =============================================================================
+# Write statements declared in CMakeLists.txt:
+# 
+# Which is the root file.
+# =============================================================================
+
+# =============================================================================
+# Project: breeze_stylesheets-populate
+# Configurations: 
+# =============================================================================
+
+#############################################
+# Minimal version of Ninja required by this file
+
+ninja_required_version = 1.5
+
+# =============================================================================
+# Include auxiliary files.
+
+
+#############################################
+# Include rules file.
+
+include CMakeFiles/rules.ninja
+
+# =============================================================================
+
+#############################################
+# Logical path to working directory; prefix for absolute paths.
+
+cmake_ninja_workdir = /Users/tommetz/CLionProjects/vteg/cmake-build-release/_deps/breeze_stylesheets-subbuild/
+
+#############################################
+# Utility command for breeze_stylesheets-populate
+
+build breeze_stylesheets-populate: phony CMakeFiles/breeze_stylesheets-populate CMakeFiles/breeze_stylesheets-populate-complete breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-done breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-build breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-configure breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-download breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-install breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-mkdir breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-patch breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-test breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-update
+
+
+#############################################
+# Utility command for edit_cache
+
+build CMakeFiles/edit_cache.util: CUSTOM_COMMAND
+  COMMAND = cd /Users/tommetz/CLionProjects/vteg/cmake-build-release/_deps/breeze_stylesheets-subbuild && /Users/tommetz/Qt/Tools/CMake/CMake.app/Contents/bin/ccmake -S/Users/tommetz/CLionProjects/vteg/cmake-build-release/_deps/breeze_stylesheets-subbuild -B/Users/tommetz/CLionProjects/vteg/cmake-build-release/_deps/breeze_stylesheets-subbuild
+  DESC = Running CMake cache editor...
+  pool = console
+  restat = 1
+
+build edit_cache: phony CMakeFiles/edit_cache.util
+
+
+#############################################
+# Utility command for rebuild_cache
+
+build CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
+  COMMAND = cd /Users/tommetz/CLionProjects/vteg/cmake-build-release/_deps/breeze_stylesheets-subbuild && /Users/tommetz/Qt/Tools/CMake/CMake.app/Contents/bin/cmake --regenerate-during-build -S/Users/tommetz/CLionProjects/vteg/cmake-build-release/_deps/breeze_stylesheets-subbuild -B/Users/tommetz/CLionProjects/vteg/cmake-build-release/_deps/breeze_stylesheets-subbuild
+  DESC = Running CMake to regenerate build system...
+  pool = console
+  restat = 1
+
+build rebuild_cache: phony CMakeFiles/rebuild_cache.util
+
+
+#############################################
+# Phony custom command for CMakeFiles/breeze_stylesheets-populate
+
+build CMakeFiles/breeze_stylesheets-populate | ${cmake_ninja_workdir}CMakeFiles/breeze_stylesheets-populate: phony CMakeFiles/breeze_stylesheets-populate-complete
+
+
+#############################################
+# Custom command for CMakeFiles/breeze_stylesheets-populate-complete
+
+build CMakeFiles/breeze_stylesheets-populate-complete breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-done | ${cmake_ninja_workdir}CMakeFiles/breeze_stylesheets-populate-complete ${cmake_ninja_workdir}breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-done: CUSTOM_COMMAND breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-install breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-mkdir breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-download breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-update breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-patch breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-configure breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-build breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-install breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-test
+  COMMAND = cd /Users/tommetz/CLionProjects/vteg/cmake-build-release/_deps/breeze_stylesheets-subbuild && /Users/tommetz/Qt/Tools/CMake/CMake.app/Contents/bin/cmake -E make_directory /Users/tommetz/CLionProjects/vteg/cmake-build-release/_deps/breeze_stylesheets-subbuild/CMakeFiles && /Users/tommetz/Qt/Tools/CMake/CMake.app/Contents/bin/cmake -E touch /Users/tommetz/CLionProjects/vteg/cmake-build-release/_deps/breeze_stylesheets-subbuild/CMakeFiles/breeze_stylesheets-populate-complete && /Users/tommetz/Qt/Tools/CMake/CMake.app/Contents/bin/cmake -E touch /Users/tommetz/CLionProjects/vteg/cmake-build-release/_deps/breeze_stylesheets-subbuild/breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-done
+  DESC = Completed 'breeze_stylesheets-populate'
+  restat = 1
+
+
+#############################################
+# Custom command for breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-build
+
+build breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-build | ${cmake_ninja_workdir}breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-build: CUSTOM_COMMAND breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-configure
+  COMMAND = cd /Users/tommetz/CLionProjects/vteg/cmake-build-release/_deps/breeze_stylesheets-build && /Users/tommetz/Qt/Tools/CMake/CMake.app/Contents/bin/cmake -E echo_append && /Users/tommetz/Qt/Tools/CMake/CMake.app/Contents/bin/cmake -E touch /Users/tommetz/CLionProjects/vteg/cmake-build-release/_deps/breeze_stylesheets-subbuild/breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-build
+  DESC = No build step for 'breeze_stylesheets-populate'
+  restat = 1
+
+
+#############################################
+# Custom command for breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-configure
+
+build breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-configure | ${cmake_ninja_workdir}breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-configure: CUSTOM_COMMAND breeze_stylesheets-populate-prefix/tmp/breeze_stylesheets-populate-cfgcmd.txt breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-patch
+  COMMAND = cd /Users/tommetz/CLionProjects/vteg/cmake-build-release/_deps/breeze_stylesheets-build && /Users/tommetz/Qt/Tools/CMake/CMake.app/Contents/bin/cmake -E echo_append && /Users/tommetz/Qt/Tools/CMake/CMake.app/Contents/bin/cmake -E touch /Users/tommetz/CLionProjects/vteg/cmake-build-release/_deps/breeze_stylesheets-subbuild/breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-configure
+  DESC = No configure step for 'breeze_stylesheets-populate'
+  restat = 1
+
+
+#############################################
+# Custom command for breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-download
+
+build breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-download | ${cmake_ninja_workdir}breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-download: CUSTOM_COMMAND breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-gitinfo.txt breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-mkdir
+  COMMAND = cd /Users/tommetz/CLionProjects/vteg/cmake-build-release/_deps && /Users/tommetz/Qt/Tools/CMake/CMake.app/Contents/bin/cmake -P /Users/tommetz/CLionProjects/vteg/cmake-build-release/_deps/breeze_stylesheets-subbuild/breeze_stylesheets-populate-prefix/tmp/breeze_stylesheets-populate-gitclone.cmake && /Users/tommetz/Qt/Tools/CMake/CMake.app/Contents/bin/cmake -E touch /Users/tommetz/CLionProjects/vteg/cmake-build-release/_deps/breeze_stylesheets-subbuild/breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-download
+  DESC = Performing download step (git clone) for 'breeze_stylesheets-populate'
+  pool = console
+  restat = 1
+
+
+#############################################
+# Custom command for breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-install
+
+build breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-install | ${cmake_ninja_workdir}breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-install: CUSTOM_COMMAND breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-build
+  COMMAND = cd /Users/tommetz/CLionProjects/vteg/cmake-build-release/_deps/breeze_stylesheets-build && /Users/tommetz/Qt/Tools/CMake/CMake.app/Contents/bin/cmake -E echo_append && /Users/tommetz/Qt/Tools/CMake/CMake.app/Contents/bin/cmake -E touch /Users/tommetz/CLionProjects/vteg/cmake-build-release/_deps/breeze_stylesheets-subbuild/breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-install
+  DESC = No install step for 'breeze_stylesheets-populate'
+  restat = 1
+
+
+#############################################
+# Custom command for breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-mkdir
+
+build breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-mkdir | ${cmake_ninja_workdir}breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-mkdir: CUSTOM_COMMAND
+  COMMAND = cd /Users/tommetz/CLionProjects/vteg/cmake-build-release/_deps/breeze_stylesheets-subbuild && /Users/tommetz/Qt/Tools/CMake/CMake.app/Contents/bin/cmake -Dcfgdir= -P /Users/tommetz/CLionProjects/vteg/cmake-build-release/_deps/breeze_stylesheets-subbuild/breeze_stylesheets-populate-prefix/tmp/breeze_stylesheets-populate-mkdirs.cmake && /Users/tommetz/Qt/Tools/CMake/CMake.app/Contents/bin/cmake -E touch /Users/tommetz/CLionProjects/vteg/cmake-build-release/_deps/breeze_stylesheets-subbuild/breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-mkdir
+  DESC = Creating directories for 'breeze_stylesheets-populate'
+  restat = 1
+
+
+#############################################
+# Custom command for breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-patch
+
+build breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-patch | ${cmake_ninja_workdir}breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-patch: CUSTOM_COMMAND breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-update
+  COMMAND = cd /Users/tommetz/CLionProjects/vteg/cmake-build-release/_deps/breeze_stylesheets-subbuild && /Users/tommetz/Qt/Tools/CMake/CMake.app/Contents/bin/cmake -E echo_append && /Users/tommetz/Qt/Tools/CMake/CMake.app/Contents/bin/cmake -E touch /Users/tommetz/CLionProjects/vteg/cmake-build-release/_deps/breeze_stylesheets-subbuild/breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-patch
+  DESC = No patch step for 'breeze_stylesheets-populate'
+  pool = console
+  restat = 1
+
+
+#############################################
+# Custom command for breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-test
+
+build breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-test | ${cmake_ninja_workdir}breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-test: CUSTOM_COMMAND breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-install
+  COMMAND = cd /Users/tommetz/CLionProjects/vteg/cmake-build-release/_deps/breeze_stylesheets-build && /Users/tommetz/Qt/Tools/CMake/CMake.app/Contents/bin/cmake -E echo_append && /Users/tommetz/Qt/Tools/CMake/CMake.app/Contents/bin/cmake -E touch /Users/tommetz/CLionProjects/vteg/cmake-build-release/_deps/breeze_stylesheets-subbuild/breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-test
+  DESC = No test step for 'breeze_stylesheets-populate'
+  restat = 1
+
+
+#############################################
+# Custom command for breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-update
+
+build breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-update | ${cmake_ninja_workdir}breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-update: CUSTOM_COMMAND breeze_stylesheets-populate-prefix/src/breeze_stylesheets-populate-stamp/breeze_stylesheets-populate-download
+  COMMAND = cd /Users/tommetz/CLionProjects/vteg/cmake-build-release/_deps/breeze_stylesheets-src && /Users/tommetz/Qt/Tools/CMake/CMake.app/Contents/bin/cmake -P /Users/tommetz/CLionProjects/vteg/cmake-build-release/_deps/breeze_stylesheets-subbuild/breeze_stylesheets-populate-prefix/tmp/breeze_stylesheets-populate-gitupdate.cmake
+  DESC = Performing update step for 'breeze_stylesheets-populate'
+  pool = console
+
+# =============================================================================
+# Target aliases.
+
+# =============================================================================
+# Folder targets.
+
+# =============================================================================
+
+#############################################
+# Folder: /Users/tommetz/CLionProjects/vteg/cmake-build-release/_deps/breeze_stylesheets-subbuild
+
+build all: phony breeze_stylesheets-populate
+
+# =============================================================================
+# Built-in targets
+
+
+#############################################
+# Re-run CMake if any of its inputs changed.
+
+build build.ninja: RERUN_CMAKE | /Users/tommetz/Qt/Tools/CMake/CMake.app/Contents/share/cmake-3.24/Modules/CMakeGenericSystem.cmake /Users/tommetz/Qt/Tools/CMake/CMake.app/Contents/share/cmake-3.24/Modules/CMakeInitializeConfigs.cmake /Users/tommetz/Qt/Tools/CMake/CMake.app/Contents/share/cmake-3.24/Modules/CMakeSystemSpecificInformation.cmake /Users/tommetz/Qt/Tools/CMake/CMake.app/Contents/share/cmake-3.24/Modules/CMakeSystemSpecificInitialize.cmake /Users/tommetz/Qt/Tools/CMake/CMake.app/Contents/share/cmake-3.24/Modules/ExternalProject.cmake /Users/tommetz/Qt/Tools/CMake/CMake.app/Contents/share/cmake-3.24/Modules/ExternalProject/RepositoryInfo.txt.in /Users/tommetz/Qt/Tools/CMake/CMake.app/Contents/share/cmake-3.24/Modules/ExternalProject/cfgcmd.txt.in /Users/tommetz/Qt/Tools/CMake/CMake.app/Contents/share/cmake-3.24/Modules/ExternalProject/gitclone.cmake.in /Users/tommetz/Qt/Tools/CMake/CMake.app/Contents/share/cmake-3.24/Modules/ExternalProject/gitupdate.cmake.in /Users/tommetz/Qt/Tools/CMake/CMake.app/Contents/share/cmake-3.24/Modules/ExternalProject/mkdirs.cmake.in /Users/tommetz/Qt/Tools/CMake/CMake.app/Contents/share/cmake-3.24/Modules/Platform/Darwin-Initialize.cmake /Users/tommetz/Qt/Tools/CMake/CMake.app/Contents/share/cmake-3.24/Modules/Platform/Darwin.cmake /Users/tommetz/Qt/Tools/CMake/CMake.app/Contents/share/cmake-3.24/Modules/Platform/UnixPaths.cmake CMakeCache.txt CMakeFiles/3.24.2/CMakeSystem.cmake CMakeLists.txt breeze_stylesheets-populate-prefix/tmp/breeze_stylesheets-populate-mkdirs.cmake
+  pool = console
+
+
+#############################################
+# A missing CMake input file is not an error.
+
+build /Users/tommetz/Qt/Tools/CMake/CMake.app/Contents/share/cmake-3.24/Modules/CMakeGenericSystem.cmake /Users/tommetz/Qt/Tools/CMake/CMake.app/Contents/share/cmake-3.24/Modules/CMakeInitializeConfigs.cmake /Users/tommetz/Qt/Tools/CMake/CMake.app/Contents/share/cmake-3.24/Modules/CMakeSystemSpecificInformation.cmake /Users/tommetz/Qt/Tools/CMake/CMake.app/Contents/share/cmake-3.24/Modules/CMakeSystemSpecificInitialize.cmake /Users/tommetz/Qt/Tools/CMake/CMake.app/Contents/share/cmake-3.24/Modules/ExternalProject.cmake /Users/tommetz/Qt/Tools/CMake/CMake.app/Contents/share/cmake-3.24/Modules/ExternalProject/RepositoryInfo.txt.in /Users/tommetz/Qt/Tools/CMake/CMake.app/Contents/share/cmake-3.24/Modules/ExternalProject/cfgcmd.txt.in /Users/tommetz/Qt/Tools/CMake/CMake.app/Contents/share/cmake-3.24/Modules/ExternalProject/gitclone.cmake.in /Users/tommetz/Qt/Tools/CMake/CMake.app/Contents/share/cmake-3.24/Modules/ExternalProject/gitupdate.cmake.in /Users/tommetz/Qt/Tools/CMake/CMake.app/Contents/share/cmake-3.24/Modules/ExternalProject/mkdirs.cmake.in /Users/tommetz/Qt/Tools/CMake/CMake.app/Contents/share/cmake-3.24/Modules/Platform/Darwin-Initialize.cmake /Users/tommetz/Qt/Tools/CMake/CMake.app/Contents/share/cmake-3.24/Modules/Platform/Darwin.cmake /Users/tommetz/Qt/Tools/CMake/CMake.app/Contents/share/cmake-3.24/Modules/Platform/UnixPaths.cmake CMakeCache.txt CMakeFiles/3.24.2/CMakeSystem.cmake CMakeLists.txt breeze_stylesheets-populate-prefix/tmp/breeze_stylesheets-populate-mkdirs.cmake: phony
+
+
+#############################################
+# Clean all the built files.
+
+build clean: CLEAN
+
+
+#############################################
+# Print all primary targets available.
+
+build help: HELP
+
+
+#############################################
+# Make the all target the default.
+
+default all

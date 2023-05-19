@@ -37,7 +37,7 @@ SettingsWidget::SettingsWidget(QWidget *parent): QDialog(parent) {
      */
     additionLabel = new QLabel("Added time when jumping");
     additionText = new QLineEdit;
-    additionText->setValidator(new QRegExpValidator(QRegExp("-?[0-9]*"), additionText));
+    additionText->setValidator(new QRegularExpressionValidator(QRegularExpression("-?[0-9]*"), additionText));
     themeLabel = new QLabel("Theme (Restart needed)");
     themeSelect = new QComboBox;
     showFramesLabel = new QLabel("Display frames");
@@ -48,7 +48,7 @@ SettingsWidget::SettingsWidget(QWidget *parent): QDialog(parent) {
     cancel = new QPushButton("Cancel");
     imageRecognitionPolicyLabel = new QLabel("Percentage of confidence for analyzing video");
     imageRecognitionPolicyText = new QLineEdit;
-    imageRecognitionPolicyText->setValidator(new QRegExpValidator(QRegExp("-?[0-9]*"), imageRecognitionPolicyText));
+    imageRecognitionPolicyText->setValidator(new QRegularExpressionValidator(QRegularExpression("-?[0-9]*"), imageRecognitionPolicyText));
     
     gridLayout = new QGridLayout(this);
     setLayout(gridLayout);

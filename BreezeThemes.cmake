@@ -4,7 +4,7 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
 find_package(
-  QT NAMES Qt5
+  QT NAMES Qt6
   COMPONENTS Core
   REQUIRED)
 find_package(
@@ -34,7 +34,7 @@ FetchContent_GetProperties(breeze_stylesheets)
 if(NOT breeze_stylesheets_POPULATED)
   FetchContent_Populate(breeze_stylesheets)
 
-  add_library(breeze_themes STATIC "${breeze_stylesheets_SOURCE_DIR}/dist/breeze_themes.qrc")
+  add_library(breeze_themes STATIC "${breeze_stylesheets_SOURCE_DIR}/dist/qrc/breeze_themes.qrc")
 
   add_custom_target(
           run_python_breeze ALL

@@ -25,7 +25,7 @@
 #include "videowidget.h"
 
 #include <QtWidgets>
-#include <qvideosurfaceformat.h>
+#include <QVideoFrameFormat>
 
 //! [0]
 VideoWidget::VideoWidget(QWidget *parent)
@@ -53,7 +53,8 @@ VideoWidget::~VideoWidget()
 //! [2]
 QSize VideoWidget::sizeHint() const
 {
-    return surface->surfaceFormat().sizeHint();
+//    return surface->surfaceFormat().sizeHint();
+    return surface->videoSize();
 }
 //! [2]
 

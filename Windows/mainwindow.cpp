@@ -30,7 +30,7 @@
 MainWindow::MainWindow(QWidget *parent)
         : QMainWindow(parent)
         , ui(new Ui::MainWindow)
-        , player(new QMediaPlayer(nullptr, QMediaPlayer::VideoSurface))
+        , player(new QMediaPlayer(nullptr))
 {
     /*
      * Default settings
@@ -66,7 +66,7 @@ MainWindow::MainWindow(QWidget *parent)
     removeTag = new QPushButton("-", tagButtonWidget);
     jumpToTag = new QPushButton("->", tagButtonWidget);
     listView = new QListWidget(this);
-    hotkeyManager = new HotKeyManager;
+    hotkeyManager = HotKeyManager::getInstance();
     maxDuration = "/00:00";
 
     customSlider = new CustomVideoSlider(this, videoTags);
@@ -149,7 +149,7 @@ MainWindow::MainWindow(QWidget *parent)
     customSlider->setOrientation(Qt::Horizontal);
     volume->setOrientation(Qt::Horizontal);
     volume->setValue(50);
-    player->volumeChanged(50);
+    player->audioOutput()->setVolume(50);
 
 
 #pragma endregion Parenting and layouting
@@ -164,8 +164,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(customSlider, &QSlider::sliderMoved, this, &MainWindow::setPosition);
     connect(customSlider, &CustomVideoSlider::mouseHover, this, &MainWindow::handleMouseHover);
 
-    connect(volume, &QSlider::valueChanged, player, &QMediaPlayer::volumeChanged);
-    connect(volume, &QSlider::valueChanged, player, &QMediaPlayer::setVolume);
+    connect(volume, &QSlider::valueChanged, player->audioOutput(), &QAudioOutput::volumeChanged);
+    connect(volume, &QSlider::valueChanged, player->audioOutput(), &QAudioOutput::setVolume);
 
     /*
      * Button clicked events
@@ -241,9 +241,9 @@ void MainWindow::on_actionOpen_triggered() {
     QString filename = QFileDialog::getOpenFileName(this, "Open a File", "", "Videos file(*.mp4 *.mpeg *.avi *.wmv *.mov)");
     on_actionStop_triggered();
 
-    QMediaContent media = QUrl::fromLocalFile(filename);
+    QUrl media = QUrl::fromLocalFile(filename);
 
-    player->setMedia(media);
+    player->setSource(media);
     currentTime = 0;
     playerState = QMediaPlayer::PlayingState;
     on_actionPlay_triggered();
@@ -368,7 +368,7 @@ void MainWindow::on_action_load_from_CSV_triggered() {
      *
      * Todo: find a better solution (maybe put it in its own function with a constexpr char as an argument
      */
-    FrameGrabber frameGrabber(player->currentMedia().canonicalUrl().path().remove(0,1));
+    FrameGrabber frameGrabber(player->source().path().remove(0,1));
     if(Settings::getInstance()->getCsvPolicy() == ";") {
         io::CSVReader<2, io::trim_chars<' ', '\t'>, io::no_quote_escape<';'>> in(filePath.toStdString());
         try {
@@ -496,11 +496,11 @@ void MainWindow::on_action_write_to_CSV_triggered() {
     QTextStream stream(&file);
 
     // save header
-    stream << "timestamp" << delimiter << "description" << endl;
+    stream << "timestamp" << delimiter << "description" << Qt::endl;
 
     for (int i = 0; i < videoTags->size(); i++){
         t = videoTags->value(i);
-        stream << t->getTimestamp() << delimiter << t->getDescription() << endl;
+        stream << t->getTimestamp() << delimiter << t->getDescription() << Qt::endl;
     }
 
     // Flush and close stream
@@ -534,7 +534,7 @@ void MainWindow::on_action_Analyze_Video_triggered() {
                                   "margin-right: 30px;"
                                   "}");
     player->pause();
-    TensorflowObjectDetection od(player->currentMedia().canonicalUrl().path().remove(0,1).toStdString());
+    TensorflowObjectDetection od(player->source().path().remove(0,1).toStdString());
     auto list = od.AnalyzeVideo(progressDialog);
 
     for(auto t : list)
@@ -578,7 +578,7 @@ void MainWindow::addTagToList() const {
 void MainWindow::addExistingTagToList(VideoTag *tag) const {
     videoTags->push_back(tag);
 
-    qSort(videoTags->begin(), videoTags->end(),
+    std::sort(videoTags->begin(), videoTags->end(),
           [] (const VideoTag* a, const VideoTag* b) {return a->getTimestamp() < b->getTimestamp();});
 
     auto *item = new QListWidgetItem(tag->getTitle() + "\n" + tag->getDescription());
@@ -898,9 +898,9 @@ void MainWindow::load(const QString& filePath){
 
     qint64 previousPosition = player->position();
     quint16 failedEntries = 0;
-    player->setMuted(true);
+    player->audioOutput()->setMuted(true);
 
-    FrameGrabber frameGrabber(player->currentMedia().canonicalUrl().path().remove(0,1));
+    FrameGrabber frameGrabber(player->source().path().remove(0,1));
 
     for (int i = 0; i < size; i++){
         auto tag = new VideoTag();
@@ -949,7 +949,7 @@ void MainWindow::load(const QString& filePath){
 
     // Restore player state
     player->play();
-    player->setMuted(false);
+    player->audioOutput()->setMuted(false);
 
     // Debug: feedback
     qDebug() << list->size() << " Tags loaded from file at " << filePath;

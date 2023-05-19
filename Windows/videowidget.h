@@ -38,7 +38,7 @@ public:
     explicit VideoWidget(QWidget *parent = nullptr);
     ~VideoWidget() override;
 
-    QAbstractVideoSurface *videoSurface() const { return surface; }
+    QVideoSink *videoSurface() const { return surface; }
 
     QSize sizeHint() const override;
 

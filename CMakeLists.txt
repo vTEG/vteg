@@ -11,19 +11,19 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+#Change this path to your local QT cmake path
+set(CMAKE_PREFIX_PATH "/Users/tommetz/Qt/6.5.0/macos/lib/cmake")
+
 include(BreezeThemes.cmake)
 
-#Change this path to your local QT cmake path
-#set(CMAKE_PREFIX_PATH "/Path/To/Your/Qt/Folder")
-
 #Change this path to your local OpenCV path
-set(OpenCV_DIR "C:/OpenCV-MinGW-Build")
+set(OpenCV_DIR "/Users/tommetz/opencv-4.5.0/build/include")
 
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Gui Multimedia MultimediaWidgets LinguistTools)
 find_package(OpenCV REQUIRED)
 
 #Change this path to the bin folder of your OpenCV build, if its not in PATH
-file(COPY "${OpenCV_INCLUDE_DIRS}/../x64/mingw/bin/" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/")
+file(COPY "/Users/tommetz/opencv-4.5.0/build/bin/" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/")
 
 #copys the images folder into the buildfolder
 file(COPY "images/" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/images")

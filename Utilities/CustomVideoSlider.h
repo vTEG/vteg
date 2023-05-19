@@ -33,6 +33,7 @@
 #include <QPaintEvent>
 #include <QLabel>
 #include <QList>
+#include <QPainterPath>
 
 #include "Utilities/VideoTag.h"
 

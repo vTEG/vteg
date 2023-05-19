@@ -1,0 +1,3 @@
+/Users/tommetz/CLionProjects/vteg/cmake-build-release/_deps/breeze_stylesheets-subbuild/CMakeFiles/breeze_stylesheets-populate.dir
+/Users/tommetz/CLionProjects/vteg/cmake-build-release/_deps/breeze_stylesheets-subbuild/CMakeFiles/edit_cache.dir
+/Users/tommetz/CLionProjects/vteg/cmake-build-release/_deps/breeze_stylesheets-subbuild/CMakeFiles/rebuild_cache.dir
