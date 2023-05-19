@@ -11,19 +11,19 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-#Change this path to your local QT cmake path
-set(CMAKE_PREFIX_PATH "/Users/tommetz/Qt/6.5.0/macos/lib/cmake")
-
 include(BreezeThemes.cmake)
 
+#Change this path to your local QT cmake path
+#set(CMAKE_PREFIX_PATH "/Path/To/Your/Qt/Folder")
+
 #Change this path to your local OpenCV path
-set(OpenCV_DIR "/Users/tommetz/opencv-4.5.0/build/include")
+set(OpenCV_DIR "C:/OpenCV-MinGW-Build")
 
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Gui Multimedia MultimediaWidgets LinguistTools)
 find_package(OpenCV REQUIRED)
 
 #Change this path to the bin folder of your OpenCV build, if its not in PATH
-file(COPY "/Users/tommetz/opencv-4.5.0/build/bin/" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/")
+file(COPY "${OpenCV_INCLUDE_DIRS}/../x64/mingw/bin/" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/")
 
 #copys the images folder into the buildfolder
 file(COPY "images/" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/images")
@@ -53,7 +53,7 @@ set(PROJECT_SOURCES
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     add_executable(VTEg MACOSX_BUNDLE
             ${PROJECT_SOURCES}
-    )
+            )
     set_target_properties(VTEg PROPERTIES
             MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
             MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
@@ -61,8 +61,8 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
             )
 elseif(WIN32)
     add_executable(VTEg WIN32
-        ${PROJECT_SOURCES}
-    )
+            ${PROJECT_SOURCES}
+            )
     #this will move the necessary compiler DLL files to the applications path, if this causes any problems, uncomment it and move them yourself
     if(MINGW)
         message(STATUS "Installing system-libraries: MinGW DLLs.")
@@ -76,4 +76,3 @@ elseif(LINUX)
 endif()
 
 target_link_libraries(VTEg PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Gui Qt${QT_VERSION_MAJOR}::Multimedia Qt${QT_VERSION_MAJOR}::MultimediaWidgets breeze_themes ${OpenCV_LIBS})
-
